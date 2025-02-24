@@ -1,0 +1,17 @@
+// ab*c => 12*3
+.decl labelled_edge(x:number, l:number, y:number)
+.input labelled_edge(filename="input/dataset1.facts")
+
+.decl bc_reachable(x:number, y:number)
+.output bc_reachable(filename="output/bc_reachable_dataset1.csv")
+
+.decl abc_reachable(x:number, y:number)
+.output abc_reachable(filename="output/abc_reachable_dataset1.csv")
+
+bc_reachable(x, y) :- labelled_edge(x, 3, y).
+bc_reachable(x, y) :- labelled_edge(x, 2, z), bc_reachable(z, y).
+abc_reachable(x, y) :- labelled_edge(x, 1, z), bc_reachable(z, y).
+
+.decl deg(x: number, d: number)
+.output deg(filename="dbg/dataset1_deg.csv")
+deg(x, count : { bc_reachable(x, _) }) :- bc_reachable(x, _).

@@ -1,0 +1,2060 @@
+
+.decl labelled_edge(x:number, l:number, y:number)
+.input labelled_edge(filename="dataset1.facts")
+        
+.decl bc_reachable0(y:number)
+.output bc_reachable0(filename="out/out_bc_reachable_with_limit_0")
+
+bc_reachable0(y) :- labelled_edge(0, 3, y).
+.limitsize bc_reachable0(n=10)
+
+.decl deg0(d:number)
+.decl bc_light0(y:number)
+.decl bc_heavy0(y:number)
+.decl Q_light0(y:number)
+.decl Q_heavy0(y:number)
+.decl T0(y:number)
+
+deg0(count : { bc_reachable0(_) }) :- bc_reachable0(_).
+.output deg0(filename="out/deg_with_limit_0")
+
+bc_light0(y) :- bc_reachable0(y), deg0(d), d < 10.
+bc_heavy0(y) :- bc_reachable0(y), deg0(d), d = 10.
+        
+.decl bc_reachable1(y:number)
+.output bc_reachable1(filename="out/out_bc_reachable_with_limit_1")
+
+bc_reachable1(y) :- labelled_edge(1, 3, y).
+.limitsize bc_reachable1(n=10)
+
+.decl deg1(d:number)
+.decl bc_light1(y:number)
+.decl bc_heavy1(y:number)
+.decl Q_light1(y:number)
+.decl Q_heavy1(y:number)
+.decl T1(y:number)
+
+deg1(count : { bc_reachable1(_) }) :- bc_reachable1(_).
+.output deg1(filename="out/deg_with_limit_1")
+
+bc_light1(y) :- bc_reachable1(y), deg1(d), d < 10.
+bc_heavy1(y) :- bc_reachable1(y), deg1(d), d = 10.
+        
+.decl bc_reachable2(y:number)
+.output bc_reachable2(filename="out/out_bc_reachable_with_limit_2")
+
+bc_reachable2(y) :- labelled_edge(2, 3, y).
+.limitsize bc_reachable2(n=10)
+
+.decl deg2(d:number)
+.decl bc_light2(y:number)
+.decl bc_heavy2(y:number)
+.decl Q_light2(y:number)
+.decl Q_heavy2(y:number)
+.decl T2(y:number)
+
+deg2(count : { bc_reachable2(_) }) :- bc_reachable2(_).
+.output deg2(filename="out/deg_with_limit_2")
+
+bc_light2(y) :- bc_reachable2(y), deg2(d), d < 10.
+bc_heavy2(y) :- bc_reachable2(y), deg2(d), d = 10.
+        
+.decl bc_reachable3(y:number)
+.output bc_reachable3(filename="out/out_bc_reachable_with_limit_3")
+
+bc_reachable3(y) :- labelled_edge(3, 3, y).
+.limitsize bc_reachable3(n=10)
+
+.decl deg3(d:number)
+.decl bc_light3(y:number)
+.decl bc_heavy3(y:number)
+.decl Q_light3(y:number)
+.decl Q_heavy3(y:number)
+.decl T3(y:number)
+
+deg3(count : { bc_reachable3(_) }) :- bc_reachable3(_).
+.output deg3(filename="out/deg_with_limit_3")
+
+bc_light3(y) :- bc_reachable3(y), deg3(d), d < 10.
+bc_heavy3(y) :- bc_reachable3(y), deg3(d), d = 10.
+        
+.decl bc_reachable4(y:number)
+.output bc_reachable4(filename="out/out_bc_reachable_with_limit_4")
+
+bc_reachable4(y) :- labelled_edge(4, 3, y).
+.limitsize bc_reachable4(n=10)
+
+.decl deg4(d:number)
+.decl bc_light4(y:number)
+.decl bc_heavy4(y:number)
+.decl Q_light4(y:number)
+.decl Q_heavy4(y:number)
+.decl T4(y:number)
+
+deg4(count : { bc_reachable4(_) }) :- bc_reachable4(_).
+.output deg4(filename="out/deg_with_limit_4")
+
+bc_light4(y) :- bc_reachable4(y), deg4(d), d < 10.
+bc_heavy4(y) :- bc_reachable4(y), deg4(d), d = 10.
+        
+.decl bc_reachable5(y:number)
+.output bc_reachable5(filename="out/out_bc_reachable_with_limit_5")
+
+bc_reachable5(y) :- labelled_edge(5, 3, y).
+.limitsize bc_reachable5(n=10)
+
+.decl deg5(d:number)
+.decl bc_light5(y:number)
+.decl bc_heavy5(y:number)
+.decl Q_light5(y:number)
+.decl Q_heavy5(y:number)
+.decl T5(y:number)
+
+deg5(count : { bc_reachable5(_) }) :- bc_reachable5(_).
+.output deg5(filename="out/deg_with_limit_5")
+
+bc_light5(y) :- bc_reachable5(y), deg5(d), d < 10.
+bc_heavy5(y) :- bc_reachable5(y), deg5(d), d = 10.
+        
+.decl bc_reachable6(y:number)
+.output bc_reachable6(filename="out/out_bc_reachable_with_limit_6")
+
+bc_reachable6(y) :- labelled_edge(6, 3, y).
+.limitsize bc_reachable6(n=10)
+
+.decl deg6(d:number)
+.decl bc_light6(y:number)
+.decl bc_heavy6(y:number)
+.decl Q_light6(y:number)
+.decl Q_heavy6(y:number)
+.decl T6(y:number)
+
+deg6(count : { bc_reachable6(_) }) :- bc_reachable6(_).
+.output deg6(filename="out/deg_with_limit_6")
+
+bc_light6(y) :- bc_reachable6(y), deg6(d), d < 10.
+bc_heavy6(y) :- bc_reachable6(y), deg6(d), d = 10.
+        
+.decl bc_reachable7(y:number)
+.output bc_reachable7(filename="out/out_bc_reachable_with_limit_7")
+
+bc_reachable7(y) :- labelled_edge(7, 3, y).
+.limitsize bc_reachable7(n=10)
+
+.decl deg7(d:number)
+.decl bc_light7(y:number)
+.decl bc_heavy7(y:number)
+.decl Q_light7(y:number)
+.decl Q_heavy7(y:number)
+.decl T7(y:number)
+
+deg7(count : { bc_reachable7(_) }) :- bc_reachable7(_).
+.output deg7(filename="out/deg_with_limit_7")
+
+bc_light7(y) :- bc_reachable7(y), deg7(d), d < 10.
+bc_heavy7(y) :- bc_reachable7(y), deg7(d), d = 10.
+        
+.decl bc_reachable8(y:number)
+.output bc_reachable8(filename="out/out_bc_reachable_with_limit_8")
+
+bc_reachable8(y) :- labelled_edge(8, 3, y).
+.limitsize bc_reachable8(n=10)
+
+.decl deg8(d:number)
+.decl bc_light8(y:number)
+.decl bc_heavy8(y:number)
+.decl Q_light8(y:number)
+.decl Q_heavy8(y:number)
+.decl T8(y:number)
+
+deg8(count : { bc_reachable8(_) }) :- bc_reachable8(_).
+.output deg8(filename="out/deg_with_limit_8")
+
+bc_light8(y) :- bc_reachable8(y), deg8(d), d < 10.
+bc_heavy8(y) :- bc_reachable8(y), deg8(d), d = 10.
+        
+.decl bc_reachable9(y:number)
+.output bc_reachable9(filename="out/out_bc_reachable_with_limit_9")
+
+bc_reachable9(y) :- labelled_edge(9, 3, y).
+.limitsize bc_reachable9(n=10)
+
+.decl deg9(d:number)
+.decl bc_light9(y:number)
+.decl bc_heavy9(y:number)
+.decl Q_light9(y:number)
+.decl Q_heavy9(y:number)
+.decl T9(y:number)
+
+deg9(count : { bc_reachable9(_) }) :- bc_reachable9(_).
+.output deg9(filename="out/deg_with_limit_9")
+
+bc_light9(y) :- bc_reachable9(y), deg9(d), d < 10.
+bc_heavy9(y) :- bc_reachable9(y), deg9(d), d = 10.
+        
+.decl bc_reachable10(y:number)
+.output bc_reachable10(filename="out/out_bc_reachable_with_limit_10")
+
+bc_reachable10(y) :- labelled_edge(10, 3, y).
+.limitsize bc_reachable10(n=10)
+
+.decl deg10(d:number)
+.decl bc_light10(y:number)
+.decl bc_heavy10(y:number)
+.decl Q_light10(y:number)
+.decl Q_heavy10(y:number)
+.decl T10(y:number)
+
+deg10(count : { bc_reachable10(_) }) :- bc_reachable10(_).
+.output deg10(filename="out/deg_with_limit_10")
+
+bc_light10(y) :- bc_reachable10(y), deg10(d), d < 10.
+bc_heavy10(y) :- bc_reachable10(y), deg10(d), d = 10.
+        
+.decl bc_reachable11(y:number)
+.output bc_reachable11(filename="out/out_bc_reachable_with_limit_11")
+
+bc_reachable11(y) :- labelled_edge(11, 3, y).
+.limitsize bc_reachable11(n=10)
+
+.decl deg11(d:number)
+.decl bc_light11(y:number)
+.decl bc_heavy11(y:number)
+.decl Q_light11(y:number)
+.decl Q_heavy11(y:number)
+.decl T11(y:number)
+
+deg11(count : { bc_reachable11(_) }) :- bc_reachable11(_).
+.output deg11(filename="out/deg_with_limit_11")
+
+bc_light11(y) :- bc_reachable11(y), deg11(d), d < 10.
+bc_heavy11(y) :- bc_reachable11(y), deg11(d), d = 10.
+        
+.decl bc_reachable12(y:number)
+.output bc_reachable12(filename="out/out_bc_reachable_with_limit_12")
+
+bc_reachable12(y) :- labelled_edge(12, 3, y).
+.limitsize bc_reachable12(n=10)
+
+.decl deg12(d:number)
+.decl bc_light12(y:number)
+.decl bc_heavy12(y:number)
+.decl Q_light12(y:number)
+.decl Q_heavy12(y:number)
+.decl T12(y:number)
+
+deg12(count : { bc_reachable12(_) }) :- bc_reachable12(_).
+.output deg12(filename="out/deg_with_limit_12")
+
+bc_light12(y) :- bc_reachable12(y), deg12(d), d < 10.
+bc_heavy12(y) :- bc_reachable12(y), deg12(d), d = 10.
+        
+.decl bc_reachable13(y:number)
+.output bc_reachable13(filename="out/out_bc_reachable_with_limit_13")
+
+bc_reachable13(y) :- labelled_edge(13, 3, y).
+.limitsize bc_reachable13(n=10)
+
+.decl deg13(d:number)
+.decl bc_light13(y:number)
+.decl bc_heavy13(y:number)
+.decl Q_light13(y:number)
+.decl Q_heavy13(y:number)
+.decl T13(y:number)
+
+deg13(count : { bc_reachable13(_) }) :- bc_reachable13(_).
+.output deg13(filename="out/deg_with_limit_13")
+
+bc_light13(y) :- bc_reachable13(y), deg13(d), d < 10.
+bc_heavy13(y) :- bc_reachable13(y), deg13(d), d = 10.
+        
+.decl bc_reachable14(y:number)
+.output bc_reachable14(filename="out/out_bc_reachable_with_limit_14")
+
+bc_reachable14(y) :- labelled_edge(14, 3, y).
+.limitsize bc_reachable14(n=10)
+
+.decl deg14(d:number)
+.decl bc_light14(y:number)
+.decl bc_heavy14(y:number)
+.decl Q_light14(y:number)
+.decl Q_heavy14(y:number)
+.decl T14(y:number)
+
+deg14(count : { bc_reachable14(_) }) :- bc_reachable14(_).
+.output deg14(filename="out/deg_with_limit_14")
+
+bc_light14(y) :- bc_reachable14(y), deg14(d), d < 10.
+bc_heavy14(y) :- bc_reachable14(y), deg14(d), d = 10.
+        
+.decl bc_reachable15(y:number)
+.output bc_reachable15(filename="out/out_bc_reachable_with_limit_15")
+
+bc_reachable15(y) :- labelled_edge(15, 3, y).
+.limitsize bc_reachable15(n=10)
+
+.decl deg15(d:number)
+.decl bc_light15(y:number)
+.decl bc_heavy15(y:number)
+.decl Q_light15(y:number)
+.decl Q_heavy15(y:number)
+.decl T15(y:number)
+
+deg15(count : { bc_reachable15(_) }) :- bc_reachable15(_).
+.output deg15(filename="out/deg_with_limit_15")
+
+bc_light15(y) :- bc_reachable15(y), deg15(d), d < 10.
+bc_heavy15(y) :- bc_reachable15(y), deg15(d), d = 10.
+        
+.decl bc_reachable16(y:number)
+.output bc_reachable16(filename="out/out_bc_reachable_with_limit_16")
+
+bc_reachable16(y) :- labelled_edge(16, 3, y).
+.limitsize bc_reachable16(n=10)
+
+.decl deg16(d:number)
+.decl bc_light16(y:number)
+.decl bc_heavy16(y:number)
+.decl Q_light16(y:number)
+.decl Q_heavy16(y:number)
+.decl T16(y:number)
+
+deg16(count : { bc_reachable16(_) }) :- bc_reachable16(_).
+.output deg16(filename="out/deg_with_limit_16")
+
+bc_light16(y) :- bc_reachable16(y), deg16(d), d < 10.
+bc_heavy16(y) :- bc_reachable16(y), deg16(d), d = 10.
+        
+bc_reachable0(y) :- labelled_edge(0, 2, 0), bc_reachable0(y).
+Q_light0(y) :- labelled_edge(0, 1, 0), bc_light0(y).
+T0(y) :- labelled_edge(0, 1, 0), bc_heavy0(y).
+T0(y) :- T0(0), labelled_edge(0, 2, y).
+Q_heavy0(y) :- T0(0), labelled_edge(0, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 1), bc_reachable1(y).
+Q_light0(y) :- labelled_edge(0, 1, 1), bc_light1(y).
+T0(y) :- labelled_edge(0, 1, 1), bc_heavy1(y).
+T0(y) :- T0(1), labelled_edge(1, 2, y).
+Q_heavy0(y) :- T0(1), labelled_edge(1, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 2), bc_reachable2(y).
+Q_light0(y) :- labelled_edge(0, 1, 2), bc_light2(y).
+T0(y) :- labelled_edge(0, 1, 2), bc_heavy2(y).
+T0(y) :- T0(2), labelled_edge(2, 2, y).
+Q_heavy0(y) :- T0(2), labelled_edge(2, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 3), bc_reachable3(y).
+Q_light0(y) :- labelled_edge(0, 1, 3), bc_light3(y).
+T0(y) :- labelled_edge(0, 1, 3), bc_heavy3(y).
+T0(y) :- T0(3), labelled_edge(3, 2, y).
+Q_heavy0(y) :- T0(3), labelled_edge(3, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 4), bc_reachable4(y).
+Q_light0(y) :- labelled_edge(0, 1, 4), bc_light4(y).
+T0(y) :- labelled_edge(0, 1, 4), bc_heavy4(y).
+T0(y) :- T0(4), labelled_edge(4, 2, y).
+Q_heavy0(y) :- T0(4), labelled_edge(4, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 5), bc_reachable5(y).
+Q_light0(y) :- labelled_edge(0, 1, 5), bc_light5(y).
+T0(y) :- labelled_edge(0, 1, 5), bc_heavy5(y).
+T0(y) :- T0(5), labelled_edge(5, 2, y).
+Q_heavy0(y) :- T0(5), labelled_edge(5, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 6), bc_reachable6(y).
+Q_light0(y) :- labelled_edge(0, 1, 6), bc_light6(y).
+T0(y) :- labelled_edge(0, 1, 6), bc_heavy6(y).
+T0(y) :- T0(6), labelled_edge(6, 2, y).
+Q_heavy0(y) :- T0(6), labelled_edge(6, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 7), bc_reachable7(y).
+Q_light0(y) :- labelled_edge(0, 1, 7), bc_light7(y).
+T0(y) :- labelled_edge(0, 1, 7), bc_heavy7(y).
+T0(y) :- T0(7), labelled_edge(7, 2, y).
+Q_heavy0(y) :- T0(7), labelled_edge(7, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 8), bc_reachable8(y).
+Q_light0(y) :- labelled_edge(0, 1, 8), bc_light8(y).
+T0(y) :- labelled_edge(0, 1, 8), bc_heavy8(y).
+T0(y) :- T0(8), labelled_edge(8, 2, y).
+Q_heavy0(y) :- T0(8), labelled_edge(8, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 9), bc_reachable9(y).
+Q_light0(y) :- labelled_edge(0, 1, 9), bc_light9(y).
+T0(y) :- labelled_edge(0, 1, 9), bc_heavy9(y).
+T0(y) :- T0(9), labelled_edge(9, 2, y).
+Q_heavy0(y) :- T0(9), labelled_edge(9, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 10), bc_reachable10(y).
+Q_light0(y) :- labelled_edge(0, 1, 10), bc_light10(y).
+T0(y) :- labelled_edge(0, 1, 10), bc_heavy10(y).
+T0(y) :- T0(10), labelled_edge(10, 2, y).
+Q_heavy0(y) :- T0(10), labelled_edge(10, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 11), bc_reachable11(y).
+Q_light0(y) :- labelled_edge(0, 1, 11), bc_light11(y).
+T0(y) :- labelled_edge(0, 1, 11), bc_heavy11(y).
+T0(y) :- T0(11), labelled_edge(11, 2, y).
+Q_heavy0(y) :- T0(11), labelled_edge(11, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 12), bc_reachable12(y).
+Q_light0(y) :- labelled_edge(0, 1, 12), bc_light12(y).
+T0(y) :- labelled_edge(0, 1, 12), bc_heavy12(y).
+T0(y) :- T0(12), labelled_edge(12, 2, y).
+Q_heavy0(y) :- T0(12), labelled_edge(12, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 13), bc_reachable13(y).
+Q_light0(y) :- labelled_edge(0, 1, 13), bc_light13(y).
+T0(y) :- labelled_edge(0, 1, 13), bc_heavy13(y).
+T0(y) :- T0(13), labelled_edge(13, 2, y).
+Q_heavy0(y) :- T0(13), labelled_edge(13, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 14), bc_reachable14(y).
+Q_light0(y) :- labelled_edge(0, 1, 14), bc_light14(y).
+T0(y) :- labelled_edge(0, 1, 14), bc_heavy14(y).
+T0(y) :- T0(14), labelled_edge(14, 2, y).
+Q_heavy0(y) :- T0(14), labelled_edge(14, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 15), bc_reachable15(y).
+Q_light0(y) :- labelled_edge(0, 1, 15), bc_light15(y).
+T0(y) :- labelled_edge(0, 1, 15), bc_heavy15(y).
+T0(y) :- T0(15), labelled_edge(15, 2, y).
+Q_heavy0(y) :- T0(15), labelled_edge(15, 3, y).
+
+bc_reachable0(y) :- labelled_edge(0, 2, 16), bc_reachable16(y).
+Q_light0(y) :- labelled_edge(0, 1, 16), bc_light16(y).
+T0(y) :- labelled_edge(0, 1, 16), bc_heavy16(y).
+T0(y) :- T0(16), labelled_edge(16, 2, y).
+Q_heavy0(y) :- T0(16), labelled_edge(16, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 0), bc_reachable0(y).
+Q_light1(y) :- labelled_edge(1, 1, 0), bc_light0(y).
+T1(y) :- labelled_edge(1, 1, 0), bc_heavy0(y).
+T1(y) :- T1(0), labelled_edge(0, 2, y).
+Q_heavy1(y) :- T1(0), labelled_edge(0, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 1), bc_reachable1(y).
+Q_light1(y) :- labelled_edge(1, 1, 1), bc_light1(y).
+T1(y) :- labelled_edge(1, 1, 1), bc_heavy1(y).
+T1(y) :- T1(1), labelled_edge(1, 2, y).
+Q_heavy1(y) :- T1(1), labelled_edge(1, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 2), bc_reachable2(y).
+Q_light1(y) :- labelled_edge(1, 1, 2), bc_light2(y).
+T1(y) :- labelled_edge(1, 1, 2), bc_heavy2(y).
+T1(y) :- T1(2), labelled_edge(2, 2, y).
+Q_heavy1(y) :- T1(2), labelled_edge(2, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 3), bc_reachable3(y).
+Q_light1(y) :- labelled_edge(1, 1, 3), bc_light3(y).
+T1(y) :- labelled_edge(1, 1, 3), bc_heavy3(y).
+T1(y) :- T1(3), labelled_edge(3, 2, y).
+Q_heavy1(y) :- T1(3), labelled_edge(3, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 4), bc_reachable4(y).
+Q_light1(y) :- labelled_edge(1, 1, 4), bc_light4(y).
+T1(y) :- labelled_edge(1, 1, 4), bc_heavy4(y).
+T1(y) :- T1(4), labelled_edge(4, 2, y).
+Q_heavy1(y) :- T1(4), labelled_edge(4, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 5), bc_reachable5(y).
+Q_light1(y) :- labelled_edge(1, 1, 5), bc_light5(y).
+T1(y) :- labelled_edge(1, 1, 5), bc_heavy5(y).
+T1(y) :- T1(5), labelled_edge(5, 2, y).
+Q_heavy1(y) :- T1(5), labelled_edge(5, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 6), bc_reachable6(y).
+Q_light1(y) :- labelled_edge(1, 1, 6), bc_light6(y).
+T1(y) :- labelled_edge(1, 1, 6), bc_heavy6(y).
+T1(y) :- T1(6), labelled_edge(6, 2, y).
+Q_heavy1(y) :- T1(6), labelled_edge(6, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 7), bc_reachable7(y).
+Q_light1(y) :- labelled_edge(1, 1, 7), bc_light7(y).
+T1(y) :- labelled_edge(1, 1, 7), bc_heavy7(y).
+T1(y) :- T1(7), labelled_edge(7, 2, y).
+Q_heavy1(y) :- T1(7), labelled_edge(7, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 8), bc_reachable8(y).
+Q_light1(y) :- labelled_edge(1, 1, 8), bc_light8(y).
+T1(y) :- labelled_edge(1, 1, 8), bc_heavy8(y).
+T1(y) :- T1(8), labelled_edge(8, 2, y).
+Q_heavy1(y) :- T1(8), labelled_edge(8, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 9), bc_reachable9(y).
+Q_light1(y) :- labelled_edge(1, 1, 9), bc_light9(y).
+T1(y) :- labelled_edge(1, 1, 9), bc_heavy9(y).
+T1(y) :- T1(9), labelled_edge(9, 2, y).
+Q_heavy1(y) :- T1(9), labelled_edge(9, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 10), bc_reachable10(y).
+Q_light1(y) :- labelled_edge(1, 1, 10), bc_light10(y).
+T1(y) :- labelled_edge(1, 1, 10), bc_heavy10(y).
+T1(y) :- T1(10), labelled_edge(10, 2, y).
+Q_heavy1(y) :- T1(10), labelled_edge(10, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 11), bc_reachable11(y).
+Q_light1(y) :- labelled_edge(1, 1, 11), bc_light11(y).
+T1(y) :- labelled_edge(1, 1, 11), bc_heavy11(y).
+T1(y) :- T1(11), labelled_edge(11, 2, y).
+Q_heavy1(y) :- T1(11), labelled_edge(11, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 12), bc_reachable12(y).
+Q_light1(y) :- labelled_edge(1, 1, 12), bc_light12(y).
+T1(y) :- labelled_edge(1, 1, 12), bc_heavy12(y).
+T1(y) :- T1(12), labelled_edge(12, 2, y).
+Q_heavy1(y) :- T1(12), labelled_edge(12, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 13), bc_reachable13(y).
+Q_light1(y) :- labelled_edge(1, 1, 13), bc_light13(y).
+T1(y) :- labelled_edge(1, 1, 13), bc_heavy13(y).
+T1(y) :- T1(13), labelled_edge(13, 2, y).
+Q_heavy1(y) :- T1(13), labelled_edge(13, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 14), bc_reachable14(y).
+Q_light1(y) :- labelled_edge(1, 1, 14), bc_light14(y).
+T1(y) :- labelled_edge(1, 1, 14), bc_heavy14(y).
+T1(y) :- T1(14), labelled_edge(14, 2, y).
+Q_heavy1(y) :- T1(14), labelled_edge(14, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 15), bc_reachable15(y).
+Q_light1(y) :- labelled_edge(1, 1, 15), bc_light15(y).
+T1(y) :- labelled_edge(1, 1, 15), bc_heavy15(y).
+T1(y) :- T1(15), labelled_edge(15, 2, y).
+Q_heavy1(y) :- T1(15), labelled_edge(15, 3, y).
+
+bc_reachable1(y) :- labelled_edge(1, 2, 16), bc_reachable16(y).
+Q_light1(y) :- labelled_edge(1, 1, 16), bc_light16(y).
+T1(y) :- labelled_edge(1, 1, 16), bc_heavy16(y).
+T1(y) :- T1(16), labelled_edge(16, 2, y).
+Q_heavy1(y) :- T1(16), labelled_edge(16, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 0), bc_reachable0(y).
+Q_light2(y) :- labelled_edge(2, 1, 0), bc_light0(y).
+T2(y) :- labelled_edge(2, 1, 0), bc_heavy0(y).
+T2(y) :- T2(0), labelled_edge(0, 2, y).
+Q_heavy2(y) :- T2(0), labelled_edge(0, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 1), bc_reachable1(y).
+Q_light2(y) :- labelled_edge(2, 1, 1), bc_light1(y).
+T2(y) :- labelled_edge(2, 1, 1), bc_heavy1(y).
+T2(y) :- T2(1), labelled_edge(1, 2, y).
+Q_heavy2(y) :- T2(1), labelled_edge(1, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 2), bc_reachable2(y).
+Q_light2(y) :- labelled_edge(2, 1, 2), bc_light2(y).
+T2(y) :- labelled_edge(2, 1, 2), bc_heavy2(y).
+T2(y) :- T2(2), labelled_edge(2, 2, y).
+Q_heavy2(y) :- T2(2), labelled_edge(2, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 3), bc_reachable3(y).
+Q_light2(y) :- labelled_edge(2, 1, 3), bc_light3(y).
+T2(y) :- labelled_edge(2, 1, 3), bc_heavy3(y).
+T2(y) :- T2(3), labelled_edge(3, 2, y).
+Q_heavy2(y) :- T2(3), labelled_edge(3, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 4), bc_reachable4(y).
+Q_light2(y) :- labelled_edge(2, 1, 4), bc_light4(y).
+T2(y) :- labelled_edge(2, 1, 4), bc_heavy4(y).
+T2(y) :- T2(4), labelled_edge(4, 2, y).
+Q_heavy2(y) :- T2(4), labelled_edge(4, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 5), bc_reachable5(y).
+Q_light2(y) :- labelled_edge(2, 1, 5), bc_light5(y).
+T2(y) :- labelled_edge(2, 1, 5), bc_heavy5(y).
+T2(y) :- T2(5), labelled_edge(5, 2, y).
+Q_heavy2(y) :- T2(5), labelled_edge(5, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 6), bc_reachable6(y).
+Q_light2(y) :- labelled_edge(2, 1, 6), bc_light6(y).
+T2(y) :- labelled_edge(2, 1, 6), bc_heavy6(y).
+T2(y) :- T2(6), labelled_edge(6, 2, y).
+Q_heavy2(y) :- T2(6), labelled_edge(6, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 7), bc_reachable7(y).
+Q_light2(y) :- labelled_edge(2, 1, 7), bc_light7(y).
+T2(y) :- labelled_edge(2, 1, 7), bc_heavy7(y).
+T2(y) :- T2(7), labelled_edge(7, 2, y).
+Q_heavy2(y) :- T2(7), labelled_edge(7, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 8), bc_reachable8(y).
+Q_light2(y) :- labelled_edge(2, 1, 8), bc_light8(y).
+T2(y) :- labelled_edge(2, 1, 8), bc_heavy8(y).
+T2(y) :- T2(8), labelled_edge(8, 2, y).
+Q_heavy2(y) :- T2(8), labelled_edge(8, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 9), bc_reachable9(y).
+Q_light2(y) :- labelled_edge(2, 1, 9), bc_light9(y).
+T2(y) :- labelled_edge(2, 1, 9), bc_heavy9(y).
+T2(y) :- T2(9), labelled_edge(9, 2, y).
+Q_heavy2(y) :- T2(9), labelled_edge(9, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 10), bc_reachable10(y).
+Q_light2(y) :- labelled_edge(2, 1, 10), bc_light10(y).
+T2(y) :- labelled_edge(2, 1, 10), bc_heavy10(y).
+T2(y) :- T2(10), labelled_edge(10, 2, y).
+Q_heavy2(y) :- T2(10), labelled_edge(10, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 11), bc_reachable11(y).
+Q_light2(y) :- labelled_edge(2, 1, 11), bc_light11(y).
+T2(y) :- labelled_edge(2, 1, 11), bc_heavy11(y).
+T2(y) :- T2(11), labelled_edge(11, 2, y).
+Q_heavy2(y) :- T2(11), labelled_edge(11, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 12), bc_reachable12(y).
+Q_light2(y) :- labelled_edge(2, 1, 12), bc_light12(y).
+T2(y) :- labelled_edge(2, 1, 12), bc_heavy12(y).
+T2(y) :- T2(12), labelled_edge(12, 2, y).
+Q_heavy2(y) :- T2(12), labelled_edge(12, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 13), bc_reachable13(y).
+Q_light2(y) :- labelled_edge(2, 1, 13), bc_light13(y).
+T2(y) :- labelled_edge(2, 1, 13), bc_heavy13(y).
+T2(y) :- T2(13), labelled_edge(13, 2, y).
+Q_heavy2(y) :- T2(13), labelled_edge(13, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 14), bc_reachable14(y).
+Q_light2(y) :- labelled_edge(2, 1, 14), bc_light14(y).
+T2(y) :- labelled_edge(2, 1, 14), bc_heavy14(y).
+T2(y) :- T2(14), labelled_edge(14, 2, y).
+Q_heavy2(y) :- T2(14), labelled_edge(14, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 15), bc_reachable15(y).
+Q_light2(y) :- labelled_edge(2, 1, 15), bc_light15(y).
+T2(y) :- labelled_edge(2, 1, 15), bc_heavy15(y).
+T2(y) :- T2(15), labelled_edge(15, 2, y).
+Q_heavy2(y) :- T2(15), labelled_edge(15, 3, y).
+
+bc_reachable2(y) :- labelled_edge(2, 2, 16), bc_reachable16(y).
+Q_light2(y) :- labelled_edge(2, 1, 16), bc_light16(y).
+T2(y) :- labelled_edge(2, 1, 16), bc_heavy16(y).
+T2(y) :- T2(16), labelled_edge(16, 2, y).
+Q_heavy2(y) :- T2(16), labelled_edge(16, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 0), bc_reachable0(y).
+Q_light3(y) :- labelled_edge(3, 1, 0), bc_light0(y).
+T3(y) :- labelled_edge(3, 1, 0), bc_heavy0(y).
+T3(y) :- T3(0), labelled_edge(0, 2, y).
+Q_heavy3(y) :- T3(0), labelled_edge(0, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 1), bc_reachable1(y).
+Q_light3(y) :- labelled_edge(3, 1, 1), bc_light1(y).
+T3(y) :- labelled_edge(3, 1, 1), bc_heavy1(y).
+T3(y) :- T3(1), labelled_edge(1, 2, y).
+Q_heavy3(y) :- T3(1), labelled_edge(1, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 2), bc_reachable2(y).
+Q_light3(y) :- labelled_edge(3, 1, 2), bc_light2(y).
+T3(y) :- labelled_edge(3, 1, 2), bc_heavy2(y).
+T3(y) :- T3(2), labelled_edge(2, 2, y).
+Q_heavy3(y) :- T3(2), labelled_edge(2, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 3), bc_reachable3(y).
+Q_light3(y) :- labelled_edge(3, 1, 3), bc_light3(y).
+T3(y) :- labelled_edge(3, 1, 3), bc_heavy3(y).
+T3(y) :- T3(3), labelled_edge(3, 2, y).
+Q_heavy3(y) :- T3(3), labelled_edge(3, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 4), bc_reachable4(y).
+Q_light3(y) :- labelled_edge(3, 1, 4), bc_light4(y).
+T3(y) :- labelled_edge(3, 1, 4), bc_heavy4(y).
+T3(y) :- T3(4), labelled_edge(4, 2, y).
+Q_heavy3(y) :- T3(4), labelled_edge(4, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 5), bc_reachable5(y).
+Q_light3(y) :- labelled_edge(3, 1, 5), bc_light5(y).
+T3(y) :- labelled_edge(3, 1, 5), bc_heavy5(y).
+T3(y) :- T3(5), labelled_edge(5, 2, y).
+Q_heavy3(y) :- T3(5), labelled_edge(5, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 6), bc_reachable6(y).
+Q_light3(y) :- labelled_edge(3, 1, 6), bc_light6(y).
+T3(y) :- labelled_edge(3, 1, 6), bc_heavy6(y).
+T3(y) :- T3(6), labelled_edge(6, 2, y).
+Q_heavy3(y) :- T3(6), labelled_edge(6, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 7), bc_reachable7(y).
+Q_light3(y) :- labelled_edge(3, 1, 7), bc_light7(y).
+T3(y) :- labelled_edge(3, 1, 7), bc_heavy7(y).
+T3(y) :- T3(7), labelled_edge(7, 2, y).
+Q_heavy3(y) :- T3(7), labelled_edge(7, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 8), bc_reachable8(y).
+Q_light3(y) :- labelled_edge(3, 1, 8), bc_light8(y).
+T3(y) :- labelled_edge(3, 1, 8), bc_heavy8(y).
+T3(y) :- T3(8), labelled_edge(8, 2, y).
+Q_heavy3(y) :- T3(8), labelled_edge(8, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 9), bc_reachable9(y).
+Q_light3(y) :- labelled_edge(3, 1, 9), bc_light9(y).
+T3(y) :- labelled_edge(3, 1, 9), bc_heavy9(y).
+T3(y) :- T3(9), labelled_edge(9, 2, y).
+Q_heavy3(y) :- T3(9), labelled_edge(9, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 10), bc_reachable10(y).
+Q_light3(y) :- labelled_edge(3, 1, 10), bc_light10(y).
+T3(y) :- labelled_edge(3, 1, 10), bc_heavy10(y).
+T3(y) :- T3(10), labelled_edge(10, 2, y).
+Q_heavy3(y) :- T3(10), labelled_edge(10, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 11), bc_reachable11(y).
+Q_light3(y) :- labelled_edge(3, 1, 11), bc_light11(y).
+T3(y) :- labelled_edge(3, 1, 11), bc_heavy11(y).
+T3(y) :- T3(11), labelled_edge(11, 2, y).
+Q_heavy3(y) :- T3(11), labelled_edge(11, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 12), bc_reachable12(y).
+Q_light3(y) :- labelled_edge(3, 1, 12), bc_light12(y).
+T3(y) :- labelled_edge(3, 1, 12), bc_heavy12(y).
+T3(y) :- T3(12), labelled_edge(12, 2, y).
+Q_heavy3(y) :- T3(12), labelled_edge(12, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 13), bc_reachable13(y).
+Q_light3(y) :- labelled_edge(3, 1, 13), bc_light13(y).
+T3(y) :- labelled_edge(3, 1, 13), bc_heavy13(y).
+T3(y) :- T3(13), labelled_edge(13, 2, y).
+Q_heavy3(y) :- T3(13), labelled_edge(13, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 14), bc_reachable14(y).
+Q_light3(y) :- labelled_edge(3, 1, 14), bc_light14(y).
+T3(y) :- labelled_edge(3, 1, 14), bc_heavy14(y).
+T3(y) :- T3(14), labelled_edge(14, 2, y).
+Q_heavy3(y) :- T3(14), labelled_edge(14, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 15), bc_reachable15(y).
+Q_light3(y) :- labelled_edge(3, 1, 15), bc_light15(y).
+T3(y) :- labelled_edge(3, 1, 15), bc_heavy15(y).
+T3(y) :- T3(15), labelled_edge(15, 2, y).
+Q_heavy3(y) :- T3(15), labelled_edge(15, 3, y).
+
+bc_reachable3(y) :- labelled_edge(3, 2, 16), bc_reachable16(y).
+Q_light3(y) :- labelled_edge(3, 1, 16), bc_light16(y).
+T3(y) :- labelled_edge(3, 1, 16), bc_heavy16(y).
+T3(y) :- T3(16), labelled_edge(16, 2, y).
+Q_heavy3(y) :- T3(16), labelled_edge(16, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 0), bc_reachable0(y).
+Q_light4(y) :- labelled_edge(4, 1, 0), bc_light0(y).
+T4(y) :- labelled_edge(4, 1, 0), bc_heavy0(y).
+T4(y) :- T4(0), labelled_edge(0, 2, y).
+Q_heavy4(y) :- T4(0), labelled_edge(0, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 1), bc_reachable1(y).
+Q_light4(y) :- labelled_edge(4, 1, 1), bc_light1(y).
+T4(y) :- labelled_edge(4, 1, 1), bc_heavy1(y).
+T4(y) :- T4(1), labelled_edge(1, 2, y).
+Q_heavy4(y) :- T4(1), labelled_edge(1, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 2), bc_reachable2(y).
+Q_light4(y) :- labelled_edge(4, 1, 2), bc_light2(y).
+T4(y) :- labelled_edge(4, 1, 2), bc_heavy2(y).
+T4(y) :- T4(2), labelled_edge(2, 2, y).
+Q_heavy4(y) :- T4(2), labelled_edge(2, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 3), bc_reachable3(y).
+Q_light4(y) :- labelled_edge(4, 1, 3), bc_light3(y).
+T4(y) :- labelled_edge(4, 1, 3), bc_heavy3(y).
+T4(y) :- T4(3), labelled_edge(3, 2, y).
+Q_heavy4(y) :- T4(3), labelled_edge(3, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 4), bc_reachable4(y).
+Q_light4(y) :- labelled_edge(4, 1, 4), bc_light4(y).
+T4(y) :- labelled_edge(4, 1, 4), bc_heavy4(y).
+T4(y) :- T4(4), labelled_edge(4, 2, y).
+Q_heavy4(y) :- T4(4), labelled_edge(4, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 5), bc_reachable5(y).
+Q_light4(y) :- labelled_edge(4, 1, 5), bc_light5(y).
+T4(y) :- labelled_edge(4, 1, 5), bc_heavy5(y).
+T4(y) :- T4(5), labelled_edge(5, 2, y).
+Q_heavy4(y) :- T4(5), labelled_edge(5, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 6), bc_reachable6(y).
+Q_light4(y) :- labelled_edge(4, 1, 6), bc_light6(y).
+T4(y) :- labelled_edge(4, 1, 6), bc_heavy6(y).
+T4(y) :- T4(6), labelled_edge(6, 2, y).
+Q_heavy4(y) :- T4(6), labelled_edge(6, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 7), bc_reachable7(y).
+Q_light4(y) :- labelled_edge(4, 1, 7), bc_light7(y).
+T4(y) :- labelled_edge(4, 1, 7), bc_heavy7(y).
+T4(y) :- T4(7), labelled_edge(7, 2, y).
+Q_heavy4(y) :- T4(7), labelled_edge(7, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 8), bc_reachable8(y).
+Q_light4(y) :- labelled_edge(4, 1, 8), bc_light8(y).
+T4(y) :- labelled_edge(4, 1, 8), bc_heavy8(y).
+T4(y) :- T4(8), labelled_edge(8, 2, y).
+Q_heavy4(y) :- T4(8), labelled_edge(8, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 9), bc_reachable9(y).
+Q_light4(y) :- labelled_edge(4, 1, 9), bc_light9(y).
+T4(y) :- labelled_edge(4, 1, 9), bc_heavy9(y).
+T4(y) :- T4(9), labelled_edge(9, 2, y).
+Q_heavy4(y) :- T4(9), labelled_edge(9, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 10), bc_reachable10(y).
+Q_light4(y) :- labelled_edge(4, 1, 10), bc_light10(y).
+T4(y) :- labelled_edge(4, 1, 10), bc_heavy10(y).
+T4(y) :- T4(10), labelled_edge(10, 2, y).
+Q_heavy4(y) :- T4(10), labelled_edge(10, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 11), bc_reachable11(y).
+Q_light4(y) :- labelled_edge(4, 1, 11), bc_light11(y).
+T4(y) :- labelled_edge(4, 1, 11), bc_heavy11(y).
+T4(y) :- T4(11), labelled_edge(11, 2, y).
+Q_heavy4(y) :- T4(11), labelled_edge(11, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 12), bc_reachable12(y).
+Q_light4(y) :- labelled_edge(4, 1, 12), bc_light12(y).
+T4(y) :- labelled_edge(4, 1, 12), bc_heavy12(y).
+T4(y) :- T4(12), labelled_edge(12, 2, y).
+Q_heavy4(y) :- T4(12), labelled_edge(12, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 13), bc_reachable13(y).
+Q_light4(y) :- labelled_edge(4, 1, 13), bc_light13(y).
+T4(y) :- labelled_edge(4, 1, 13), bc_heavy13(y).
+T4(y) :- T4(13), labelled_edge(13, 2, y).
+Q_heavy4(y) :- T4(13), labelled_edge(13, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 14), bc_reachable14(y).
+Q_light4(y) :- labelled_edge(4, 1, 14), bc_light14(y).
+T4(y) :- labelled_edge(4, 1, 14), bc_heavy14(y).
+T4(y) :- T4(14), labelled_edge(14, 2, y).
+Q_heavy4(y) :- T4(14), labelled_edge(14, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 15), bc_reachable15(y).
+Q_light4(y) :- labelled_edge(4, 1, 15), bc_light15(y).
+T4(y) :- labelled_edge(4, 1, 15), bc_heavy15(y).
+T4(y) :- T4(15), labelled_edge(15, 2, y).
+Q_heavy4(y) :- T4(15), labelled_edge(15, 3, y).
+
+bc_reachable4(y) :- labelled_edge(4, 2, 16), bc_reachable16(y).
+Q_light4(y) :- labelled_edge(4, 1, 16), bc_light16(y).
+T4(y) :- labelled_edge(4, 1, 16), bc_heavy16(y).
+T4(y) :- T4(16), labelled_edge(16, 2, y).
+Q_heavy4(y) :- T4(16), labelled_edge(16, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 0), bc_reachable0(y).
+Q_light5(y) :- labelled_edge(5, 1, 0), bc_light0(y).
+T5(y) :- labelled_edge(5, 1, 0), bc_heavy0(y).
+T5(y) :- T5(0), labelled_edge(0, 2, y).
+Q_heavy5(y) :- T5(0), labelled_edge(0, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 1), bc_reachable1(y).
+Q_light5(y) :- labelled_edge(5, 1, 1), bc_light1(y).
+T5(y) :- labelled_edge(5, 1, 1), bc_heavy1(y).
+T5(y) :- T5(1), labelled_edge(1, 2, y).
+Q_heavy5(y) :- T5(1), labelled_edge(1, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 2), bc_reachable2(y).
+Q_light5(y) :- labelled_edge(5, 1, 2), bc_light2(y).
+T5(y) :- labelled_edge(5, 1, 2), bc_heavy2(y).
+T5(y) :- T5(2), labelled_edge(2, 2, y).
+Q_heavy5(y) :- T5(2), labelled_edge(2, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 3), bc_reachable3(y).
+Q_light5(y) :- labelled_edge(5, 1, 3), bc_light3(y).
+T5(y) :- labelled_edge(5, 1, 3), bc_heavy3(y).
+T5(y) :- T5(3), labelled_edge(3, 2, y).
+Q_heavy5(y) :- T5(3), labelled_edge(3, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 4), bc_reachable4(y).
+Q_light5(y) :- labelled_edge(5, 1, 4), bc_light4(y).
+T5(y) :- labelled_edge(5, 1, 4), bc_heavy4(y).
+T5(y) :- T5(4), labelled_edge(4, 2, y).
+Q_heavy5(y) :- T5(4), labelled_edge(4, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 5), bc_reachable5(y).
+Q_light5(y) :- labelled_edge(5, 1, 5), bc_light5(y).
+T5(y) :- labelled_edge(5, 1, 5), bc_heavy5(y).
+T5(y) :- T5(5), labelled_edge(5, 2, y).
+Q_heavy5(y) :- T5(5), labelled_edge(5, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 6), bc_reachable6(y).
+Q_light5(y) :- labelled_edge(5, 1, 6), bc_light6(y).
+T5(y) :- labelled_edge(5, 1, 6), bc_heavy6(y).
+T5(y) :- T5(6), labelled_edge(6, 2, y).
+Q_heavy5(y) :- T5(6), labelled_edge(6, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 7), bc_reachable7(y).
+Q_light5(y) :- labelled_edge(5, 1, 7), bc_light7(y).
+T5(y) :- labelled_edge(5, 1, 7), bc_heavy7(y).
+T5(y) :- T5(7), labelled_edge(7, 2, y).
+Q_heavy5(y) :- T5(7), labelled_edge(7, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 8), bc_reachable8(y).
+Q_light5(y) :- labelled_edge(5, 1, 8), bc_light8(y).
+T5(y) :- labelled_edge(5, 1, 8), bc_heavy8(y).
+T5(y) :- T5(8), labelled_edge(8, 2, y).
+Q_heavy5(y) :- T5(8), labelled_edge(8, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 9), bc_reachable9(y).
+Q_light5(y) :- labelled_edge(5, 1, 9), bc_light9(y).
+T5(y) :- labelled_edge(5, 1, 9), bc_heavy9(y).
+T5(y) :- T5(9), labelled_edge(9, 2, y).
+Q_heavy5(y) :- T5(9), labelled_edge(9, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 10), bc_reachable10(y).
+Q_light5(y) :- labelled_edge(5, 1, 10), bc_light10(y).
+T5(y) :- labelled_edge(5, 1, 10), bc_heavy10(y).
+T5(y) :- T5(10), labelled_edge(10, 2, y).
+Q_heavy5(y) :- T5(10), labelled_edge(10, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 11), bc_reachable11(y).
+Q_light5(y) :- labelled_edge(5, 1, 11), bc_light11(y).
+T5(y) :- labelled_edge(5, 1, 11), bc_heavy11(y).
+T5(y) :- T5(11), labelled_edge(11, 2, y).
+Q_heavy5(y) :- T5(11), labelled_edge(11, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 12), bc_reachable12(y).
+Q_light5(y) :- labelled_edge(5, 1, 12), bc_light12(y).
+T5(y) :- labelled_edge(5, 1, 12), bc_heavy12(y).
+T5(y) :- T5(12), labelled_edge(12, 2, y).
+Q_heavy5(y) :- T5(12), labelled_edge(12, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 13), bc_reachable13(y).
+Q_light5(y) :- labelled_edge(5, 1, 13), bc_light13(y).
+T5(y) :- labelled_edge(5, 1, 13), bc_heavy13(y).
+T5(y) :- T5(13), labelled_edge(13, 2, y).
+Q_heavy5(y) :- T5(13), labelled_edge(13, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 14), bc_reachable14(y).
+Q_light5(y) :- labelled_edge(5, 1, 14), bc_light14(y).
+T5(y) :- labelled_edge(5, 1, 14), bc_heavy14(y).
+T5(y) :- T5(14), labelled_edge(14, 2, y).
+Q_heavy5(y) :- T5(14), labelled_edge(14, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 15), bc_reachable15(y).
+Q_light5(y) :- labelled_edge(5, 1, 15), bc_light15(y).
+T5(y) :- labelled_edge(5, 1, 15), bc_heavy15(y).
+T5(y) :- T5(15), labelled_edge(15, 2, y).
+Q_heavy5(y) :- T5(15), labelled_edge(15, 3, y).
+
+bc_reachable5(y) :- labelled_edge(5, 2, 16), bc_reachable16(y).
+Q_light5(y) :- labelled_edge(5, 1, 16), bc_light16(y).
+T5(y) :- labelled_edge(5, 1, 16), bc_heavy16(y).
+T5(y) :- T5(16), labelled_edge(16, 2, y).
+Q_heavy5(y) :- T5(16), labelled_edge(16, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 0), bc_reachable0(y).
+Q_light6(y) :- labelled_edge(6, 1, 0), bc_light0(y).
+T6(y) :- labelled_edge(6, 1, 0), bc_heavy0(y).
+T6(y) :- T6(0), labelled_edge(0, 2, y).
+Q_heavy6(y) :- T6(0), labelled_edge(0, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 1), bc_reachable1(y).
+Q_light6(y) :- labelled_edge(6, 1, 1), bc_light1(y).
+T6(y) :- labelled_edge(6, 1, 1), bc_heavy1(y).
+T6(y) :- T6(1), labelled_edge(1, 2, y).
+Q_heavy6(y) :- T6(1), labelled_edge(1, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 2), bc_reachable2(y).
+Q_light6(y) :- labelled_edge(6, 1, 2), bc_light2(y).
+T6(y) :- labelled_edge(6, 1, 2), bc_heavy2(y).
+T6(y) :- T6(2), labelled_edge(2, 2, y).
+Q_heavy6(y) :- T6(2), labelled_edge(2, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 3), bc_reachable3(y).
+Q_light6(y) :- labelled_edge(6, 1, 3), bc_light3(y).
+T6(y) :- labelled_edge(6, 1, 3), bc_heavy3(y).
+T6(y) :- T6(3), labelled_edge(3, 2, y).
+Q_heavy6(y) :- T6(3), labelled_edge(3, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 4), bc_reachable4(y).
+Q_light6(y) :- labelled_edge(6, 1, 4), bc_light4(y).
+T6(y) :- labelled_edge(6, 1, 4), bc_heavy4(y).
+T6(y) :- T6(4), labelled_edge(4, 2, y).
+Q_heavy6(y) :- T6(4), labelled_edge(4, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 5), bc_reachable5(y).
+Q_light6(y) :- labelled_edge(6, 1, 5), bc_light5(y).
+T6(y) :- labelled_edge(6, 1, 5), bc_heavy5(y).
+T6(y) :- T6(5), labelled_edge(5, 2, y).
+Q_heavy6(y) :- T6(5), labelled_edge(5, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 6), bc_reachable6(y).
+Q_light6(y) :- labelled_edge(6, 1, 6), bc_light6(y).
+T6(y) :- labelled_edge(6, 1, 6), bc_heavy6(y).
+T6(y) :- T6(6), labelled_edge(6, 2, y).
+Q_heavy6(y) :- T6(6), labelled_edge(6, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 7), bc_reachable7(y).
+Q_light6(y) :- labelled_edge(6, 1, 7), bc_light7(y).
+T6(y) :- labelled_edge(6, 1, 7), bc_heavy7(y).
+T6(y) :- T6(7), labelled_edge(7, 2, y).
+Q_heavy6(y) :- T6(7), labelled_edge(7, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 8), bc_reachable8(y).
+Q_light6(y) :- labelled_edge(6, 1, 8), bc_light8(y).
+T6(y) :- labelled_edge(6, 1, 8), bc_heavy8(y).
+T6(y) :- T6(8), labelled_edge(8, 2, y).
+Q_heavy6(y) :- T6(8), labelled_edge(8, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 9), bc_reachable9(y).
+Q_light6(y) :- labelled_edge(6, 1, 9), bc_light9(y).
+T6(y) :- labelled_edge(6, 1, 9), bc_heavy9(y).
+T6(y) :- T6(9), labelled_edge(9, 2, y).
+Q_heavy6(y) :- T6(9), labelled_edge(9, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 10), bc_reachable10(y).
+Q_light6(y) :- labelled_edge(6, 1, 10), bc_light10(y).
+T6(y) :- labelled_edge(6, 1, 10), bc_heavy10(y).
+T6(y) :- T6(10), labelled_edge(10, 2, y).
+Q_heavy6(y) :- T6(10), labelled_edge(10, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 11), bc_reachable11(y).
+Q_light6(y) :- labelled_edge(6, 1, 11), bc_light11(y).
+T6(y) :- labelled_edge(6, 1, 11), bc_heavy11(y).
+T6(y) :- T6(11), labelled_edge(11, 2, y).
+Q_heavy6(y) :- T6(11), labelled_edge(11, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 12), bc_reachable12(y).
+Q_light6(y) :- labelled_edge(6, 1, 12), bc_light12(y).
+T6(y) :- labelled_edge(6, 1, 12), bc_heavy12(y).
+T6(y) :- T6(12), labelled_edge(12, 2, y).
+Q_heavy6(y) :- T6(12), labelled_edge(12, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 13), bc_reachable13(y).
+Q_light6(y) :- labelled_edge(6, 1, 13), bc_light13(y).
+T6(y) :- labelled_edge(6, 1, 13), bc_heavy13(y).
+T6(y) :- T6(13), labelled_edge(13, 2, y).
+Q_heavy6(y) :- T6(13), labelled_edge(13, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 14), bc_reachable14(y).
+Q_light6(y) :- labelled_edge(6, 1, 14), bc_light14(y).
+T6(y) :- labelled_edge(6, 1, 14), bc_heavy14(y).
+T6(y) :- T6(14), labelled_edge(14, 2, y).
+Q_heavy6(y) :- T6(14), labelled_edge(14, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 15), bc_reachable15(y).
+Q_light6(y) :- labelled_edge(6, 1, 15), bc_light15(y).
+T6(y) :- labelled_edge(6, 1, 15), bc_heavy15(y).
+T6(y) :- T6(15), labelled_edge(15, 2, y).
+Q_heavy6(y) :- T6(15), labelled_edge(15, 3, y).
+
+bc_reachable6(y) :- labelled_edge(6, 2, 16), bc_reachable16(y).
+Q_light6(y) :- labelled_edge(6, 1, 16), bc_light16(y).
+T6(y) :- labelled_edge(6, 1, 16), bc_heavy16(y).
+T6(y) :- T6(16), labelled_edge(16, 2, y).
+Q_heavy6(y) :- T6(16), labelled_edge(16, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 0), bc_reachable0(y).
+Q_light7(y) :- labelled_edge(7, 1, 0), bc_light0(y).
+T7(y) :- labelled_edge(7, 1, 0), bc_heavy0(y).
+T7(y) :- T7(0), labelled_edge(0, 2, y).
+Q_heavy7(y) :- T7(0), labelled_edge(0, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 1), bc_reachable1(y).
+Q_light7(y) :- labelled_edge(7, 1, 1), bc_light1(y).
+T7(y) :- labelled_edge(7, 1, 1), bc_heavy1(y).
+T7(y) :- T7(1), labelled_edge(1, 2, y).
+Q_heavy7(y) :- T7(1), labelled_edge(1, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 2), bc_reachable2(y).
+Q_light7(y) :- labelled_edge(7, 1, 2), bc_light2(y).
+T7(y) :- labelled_edge(7, 1, 2), bc_heavy2(y).
+T7(y) :- T7(2), labelled_edge(2, 2, y).
+Q_heavy7(y) :- T7(2), labelled_edge(2, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 3), bc_reachable3(y).
+Q_light7(y) :- labelled_edge(7, 1, 3), bc_light3(y).
+T7(y) :- labelled_edge(7, 1, 3), bc_heavy3(y).
+T7(y) :- T7(3), labelled_edge(3, 2, y).
+Q_heavy7(y) :- T7(3), labelled_edge(3, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 4), bc_reachable4(y).
+Q_light7(y) :- labelled_edge(7, 1, 4), bc_light4(y).
+T7(y) :- labelled_edge(7, 1, 4), bc_heavy4(y).
+T7(y) :- T7(4), labelled_edge(4, 2, y).
+Q_heavy7(y) :- T7(4), labelled_edge(4, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 5), bc_reachable5(y).
+Q_light7(y) :- labelled_edge(7, 1, 5), bc_light5(y).
+T7(y) :- labelled_edge(7, 1, 5), bc_heavy5(y).
+T7(y) :- T7(5), labelled_edge(5, 2, y).
+Q_heavy7(y) :- T7(5), labelled_edge(5, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 6), bc_reachable6(y).
+Q_light7(y) :- labelled_edge(7, 1, 6), bc_light6(y).
+T7(y) :- labelled_edge(7, 1, 6), bc_heavy6(y).
+T7(y) :- T7(6), labelled_edge(6, 2, y).
+Q_heavy7(y) :- T7(6), labelled_edge(6, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 7), bc_reachable7(y).
+Q_light7(y) :- labelled_edge(7, 1, 7), bc_light7(y).
+T7(y) :- labelled_edge(7, 1, 7), bc_heavy7(y).
+T7(y) :- T7(7), labelled_edge(7, 2, y).
+Q_heavy7(y) :- T7(7), labelled_edge(7, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 8), bc_reachable8(y).
+Q_light7(y) :- labelled_edge(7, 1, 8), bc_light8(y).
+T7(y) :- labelled_edge(7, 1, 8), bc_heavy8(y).
+T7(y) :- T7(8), labelled_edge(8, 2, y).
+Q_heavy7(y) :- T7(8), labelled_edge(8, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 9), bc_reachable9(y).
+Q_light7(y) :- labelled_edge(7, 1, 9), bc_light9(y).
+T7(y) :- labelled_edge(7, 1, 9), bc_heavy9(y).
+T7(y) :- T7(9), labelled_edge(9, 2, y).
+Q_heavy7(y) :- T7(9), labelled_edge(9, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 10), bc_reachable10(y).
+Q_light7(y) :- labelled_edge(7, 1, 10), bc_light10(y).
+T7(y) :- labelled_edge(7, 1, 10), bc_heavy10(y).
+T7(y) :- T7(10), labelled_edge(10, 2, y).
+Q_heavy7(y) :- T7(10), labelled_edge(10, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 11), bc_reachable11(y).
+Q_light7(y) :- labelled_edge(7, 1, 11), bc_light11(y).
+T7(y) :- labelled_edge(7, 1, 11), bc_heavy11(y).
+T7(y) :- T7(11), labelled_edge(11, 2, y).
+Q_heavy7(y) :- T7(11), labelled_edge(11, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 12), bc_reachable12(y).
+Q_light7(y) :- labelled_edge(7, 1, 12), bc_light12(y).
+T7(y) :- labelled_edge(7, 1, 12), bc_heavy12(y).
+T7(y) :- T7(12), labelled_edge(12, 2, y).
+Q_heavy7(y) :- T7(12), labelled_edge(12, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 13), bc_reachable13(y).
+Q_light7(y) :- labelled_edge(7, 1, 13), bc_light13(y).
+T7(y) :- labelled_edge(7, 1, 13), bc_heavy13(y).
+T7(y) :- T7(13), labelled_edge(13, 2, y).
+Q_heavy7(y) :- T7(13), labelled_edge(13, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 14), bc_reachable14(y).
+Q_light7(y) :- labelled_edge(7, 1, 14), bc_light14(y).
+T7(y) :- labelled_edge(7, 1, 14), bc_heavy14(y).
+T7(y) :- T7(14), labelled_edge(14, 2, y).
+Q_heavy7(y) :- T7(14), labelled_edge(14, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 15), bc_reachable15(y).
+Q_light7(y) :- labelled_edge(7, 1, 15), bc_light15(y).
+T7(y) :- labelled_edge(7, 1, 15), bc_heavy15(y).
+T7(y) :- T7(15), labelled_edge(15, 2, y).
+Q_heavy7(y) :- T7(15), labelled_edge(15, 3, y).
+
+bc_reachable7(y) :- labelled_edge(7, 2, 16), bc_reachable16(y).
+Q_light7(y) :- labelled_edge(7, 1, 16), bc_light16(y).
+T7(y) :- labelled_edge(7, 1, 16), bc_heavy16(y).
+T7(y) :- T7(16), labelled_edge(16, 2, y).
+Q_heavy7(y) :- T7(16), labelled_edge(16, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 0), bc_reachable0(y).
+Q_light8(y) :- labelled_edge(8, 1, 0), bc_light0(y).
+T8(y) :- labelled_edge(8, 1, 0), bc_heavy0(y).
+T8(y) :- T8(0), labelled_edge(0, 2, y).
+Q_heavy8(y) :- T8(0), labelled_edge(0, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 1), bc_reachable1(y).
+Q_light8(y) :- labelled_edge(8, 1, 1), bc_light1(y).
+T8(y) :- labelled_edge(8, 1, 1), bc_heavy1(y).
+T8(y) :- T8(1), labelled_edge(1, 2, y).
+Q_heavy8(y) :- T8(1), labelled_edge(1, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 2), bc_reachable2(y).
+Q_light8(y) :- labelled_edge(8, 1, 2), bc_light2(y).
+T8(y) :- labelled_edge(8, 1, 2), bc_heavy2(y).
+T8(y) :- T8(2), labelled_edge(2, 2, y).
+Q_heavy8(y) :- T8(2), labelled_edge(2, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 3), bc_reachable3(y).
+Q_light8(y) :- labelled_edge(8, 1, 3), bc_light3(y).
+T8(y) :- labelled_edge(8, 1, 3), bc_heavy3(y).
+T8(y) :- T8(3), labelled_edge(3, 2, y).
+Q_heavy8(y) :- T8(3), labelled_edge(3, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 4), bc_reachable4(y).
+Q_light8(y) :- labelled_edge(8, 1, 4), bc_light4(y).
+T8(y) :- labelled_edge(8, 1, 4), bc_heavy4(y).
+T8(y) :- T8(4), labelled_edge(4, 2, y).
+Q_heavy8(y) :- T8(4), labelled_edge(4, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 5), bc_reachable5(y).
+Q_light8(y) :- labelled_edge(8, 1, 5), bc_light5(y).
+T8(y) :- labelled_edge(8, 1, 5), bc_heavy5(y).
+T8(y) :- T8(5), labelled_edge(5, 2, y).
+Q_heavy8(y) :- T8(5), labelled_edge(5, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 6), bc_reachable6(y).
+Q_light8(y) :- labelled_edge(8, 1, 6), bc_light6(y).
+T8(y) :- labelled_edge(8, 1, 6), bc_heavy6(y).
+T8(y) :- T8(6), labelled_edge(6, 2, y).
+Q_heavy8(y) :- T8(6), labelled_edge(6, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 7), bc_reachable7(y).
+Q_light8(y) :- labelled_edge(8, 1, 7), bc_light7(y).
+T8(y) :- labelled_edge(8, 1, 7), bc_heavy7(y).
+T8(y) :- T8(7), labelled_edge(7, 2, y).
+Q_heavy8(y) :- T8(7), labelled_edge(7, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 8), bc_reachable8(y).
+Q_light8(y) :- labelled_edge(8, 1, 8), bc_light8(y).
+T8(y) :- labelled_edge(8, 1, 8), bc_heavy8(y).
+T8(y) :- T8(8), labelled_edge(8, 2, y).
+Q_heavy8(y) :- T8(8), labelled_edge(8, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 9), bc_reachable9(y).
+Q_light8(y) :- labelled_edge(8, 1, 9), bc_light9(y).
+T8(y) :- labelled_edge(8, 1, 9), bc_heavy9(y).
+T8(y) :- T8(9), labelled_edge(9, 2, y).
+Q_heavy8(y) :- T8(9), labelled_edge(9, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 10), bc_reachable10(y).
+Q_light8(y) :- labelled_edge(8, 1, 10), bc_light10(y).
+T8(y) :- labelled_edge(8, 1, 10), bc_heavy10(y).
+T8(y) :- T8(10), labelled_edge(10, 2, y).
+Q_heavy8(y) :- T8(10), labelled_edge(10, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 11), bc_reachable11(y).
+Q_light8(y) :- labelled_edge(8, 1, 11), bc_light11(y).
+T8(y) :- labelled_edge(8, 1, 11), bc_heavy11(y).
+T8(y) :- T8(11), labelled_edge(11, 2, y).
+Q_heavy8(y) :- T8(11), labelled_edge(11, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 12), bc_reachable12(y).
+Q_light8(y) :- labelled_edge(8, 1, 12), bc_light12(y).
+T8(y) :- labelled_edge(8, 1, 12), bc_heavy12(y).
+T8(y) :- T8(12), labelled_edge(12, 2, y).
+Q_heavy8(y) :- T8(12), labelled_edge(12, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 13), bc_reachable13(y).
+Q_light8(y) :- labelled_edge(8, 1, 13), bc_light13(y).
+T8(y) :- labelled_edge(8, 1, 13), bc_heavy13(y).
+T8(y) :- T8(13), labelled_edge(13, 2, y).
+Q_heavy8(y) :- T8(13), labelled_edge(13, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 14), bc_reachable14(y).
+Q_light8(y) :- labelled_edge(8, 1, 14), bc_light14(y).
+T8(y) :- labelled_edge(8, 1, 14), bc_heavy14(y).
+T8(y) :- T8(14), labelled_edge(14, 2, y).
+Q_heavy8(y) :- T8(14), labelled_edge(14, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 15), bc_reachable15(y).
+Q_light8(y) :- labelled_edge(8, 1, 15), bc_light15(y).
+T8(y) :- labelled_edge(8, 1, 15), bc_heavy15(y).
+T8(y) :- T8(15), labelled_edge(15, 2, y).
+Q_heavy8(y) :- T8(15), labelled_edge(15, 3, y).
+
+bc_reachable8(y) :- labelled_edge(8, 2, 16), bc_reachable16(y).
+Q_light8(y) :- labelled_edge(8, 1, 16), bc_light16(y).
+T8(y) :- labelled_edge(8, 1, 16), bc_heavy16(y).
+T8(y) :- T8(16), labelled_edge(16, 2, y).
+Q_heavy8(y) :- T8(16), labelled_edge(16, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 0), bc_reachable0(y).
+Q_light9(y) :- labelled_edge(9, 1, 0), bc_light0(y).
+T9(y) :- labelled_edge(9, 1, 0), bc_heavy0(y).
+T9(y) :- T9(0), labelled_edge(0, 2, y).
+Q_heavy9(y) :- T9(0), labelled_edge(0, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 1), bc_reachable1(y).
+Q_light9(y) :- labelled_edge(9, 1, 1), bc_light1(y).
+T9(y) :- labelled_edge(9, 1, 1), bc_heavy1(y).
+T9(y) :- T9(1), labelled_edge(1, 2, y).
+Q_heavy9(y) :- T9(1), labelled_edge(1, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 2), bc_reachable2(y).
+Q_light9(y) :- labelled_edge(9, 1, 2), bc_light2(y).
+T9(y) :- labelled_edge(9, 1, 2), bc_heavy2(y).
+T9(y) :- T9(2), labelled_edge(2, 2, y).
+Q_heavy9(y) :- T9(2), labelled_edge(2, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 3), bc_reachable3(y).
+Q_light9(y) :- labelled_edge(9, 1, 3), bc_light3(y).
+T9(y) :- labelled_edge(9, 1, 3), bc_heavy3(y).
+T9(y) :- T9(3), labelled_edge(3, 2, y).
+Q_heavy9(y) :- T9(3), labelled_edge(3, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 4), bc_reachable4(y).
+Q_light9(y) :- labelled_edge(9, 1, 4), bc_light4(y).
+T9(y) :- labelled_edge(9, 1, 4), bc_heavy4(y).
+T9(y) :- T9(4), labelled_edge(4, 2, y).
+Q_heavy9(y) :- T9(4), labelled_edge(4, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 5), bc_reachable5(y).
+Q_light9(y) :- labelled_edge(9, 1, 5), bc_light5(y).
+T9(y) :- labelled_edge(9, 1, 5), bc_heavy5(y).
+T9(y) :- T9(5), labelled_edge(5, 2, y).
+Q_heavy9(y) :- T9(5), labelled_edge(5, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 6), bc_reachable6(y).
+Q_light9(y) :- labelled_edge(9, 1, 6), bc_light6(y).
+T9(y) :- labelled_edge(9, 1, 6), bc_heavy6(y).
+T9(y) :- T9(6), labelled_edge(6, 2, y).
+Q_heavy9(y) :- T9(6), labelled_edge(6, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 7), bc_reachable7(y).
+Q_light9(y) :- labelled_edge(9, 1, 7), bc_light7(y).
+T9(y) :- labelled_edge(9, 1, 7), bc_heavy7(y).
+T9(y) :- T9(7), labelled_edge(7, 2, y).
+Q_heavy9(y) :- T9(7), labelled_edge(7, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 8), bc_reachable8(y).
+Q_light9(y) :- labelled_edge(9, 1, 8), bc_light8(y).
+T9(y) :- labelled_edge(9, 1, 8), bc_heavy8(y).
+T9(y) :- T9(8), labelled_edge(8, 2, y).
+Q_heavy9(y) :- T9(8), labelled_edge(8, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 9), bc_reachable9(y).
+Q_light9(y) :- labelled_edge(9, 1, 9), bc_light9(y).
+T9(y) :- labelled_edge(9, 1, 9), bc_heavy9(y).
+T9(y) :- T9(9), labelled_edge(9, 2, y).
+Q_heavy9(y) :- T9(9), labelled_edge(9, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 10), bc_reachable10(y).
+Q_light9(y) :- labelled_edge(9, 1, 10), bc_light10(y).
+T9(y) :- labelled_edge(9, 1, 10), bc_heavy10(y).
+T9(y) :- T9(10), labelled_edge(10, 2, y).
+Q_heavy9(y) :- T9(10), labelled_edge(10, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 11), bc_reachable11(y).
+Q_light9(y) :- labelled_edge(9, 1, 11), bc_light11(y).
+T9(y) :- labelled_edge(9, 1, 11), bc_heavy11(y).
+T9(y) :- T9(11), labelled_edge(11, 2, y).
+Q_heavy9(y) :- T9(11), labelled_edge(11, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 12), bc_reachable12(y).
+Q_light9(y) :- labelled_edge(9, 1, 12), bc_light12(y).
+T9(y) :- labelled_edge(9, 1, 12), bc_heavy12(y).
+T9(y) :- T9(12), labelled_edge(12, 2, y).
+Q_heavy9(y) :- T9(12), labelled_edge(12, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 13), bc_reachable13(y).
+Q_light9(y) :- labelled_edge(9, 1, 13), bc_light13(y).
+T9(y) :- labelled_edge(9, 1, 13), bc_heavy13(y).
+T9(y) :- T9(13), labelled_edge(13, 2, y).
+Q_heavy9(y) :- T9(13), labelled_edge(13, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 14), bc_reachable14(y).
+Q_light9(y) :- labelled_edge(9, 1, 14), bc_light14(y).
+T9(y) :- labelled_edge(9, 1, 14), bc_heavy14(y).
+T9(y) :- T9(14), labelled_edge(14, 2, y).
+Q_heavy9(y) :- T9(14), labelled_edge(14, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 15), bc_reachable15(y).
+Q_light9(y) :- labelled_edge(9, 1, 15), bc_light15(y).
+T9(y) :- labelled_edge(9, 1, 15), bc_heavy15(y).
+T9(y) :- T9(15), labelled_edge(15, 2, y).
+Q_heavy9(y) :- T9(15), labelled_edge(15, 3, y).
+
+bc_reachable9(y) :- labelled_edge(9, 2, 16), bc_reachable16(y).
+Q_light9(y) :- labelled_edge(9, 1, 16), bc_light16(y).
+T9(y) :- labelled_edge(9, 1, 16), bc_heavy16(y).
+T9(y) :- T9(16), labelled_edge(16, 2, y).
+Q_heavy9(y) :- T9(16), labelled_edge(16, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 0), bc_reachable0(y).
+Q_light10(y) :- labelled_edge(10, 1, 0), bc_light0(y).
+T10(y) :- labelled_edge(10, 1, 0), bc_heavy0(y).
+T10(y) :- T10(0), labelled_edge(0, 2, y).
+Q_heavy10(y) :- T10(0), labelled_edge(0, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 1), bc_reachable1(y).
+Q_light10(y) :- labelled_edge(10, 1, 1), bc_light1(y).
+T10(y) :- labelled_edge(10, 1, 1), bc_heavy1(y).
+T10(y) :- T10(1), labelled_edge(1, 2, y).
+Q_heavy10(y) :- T10(1), labelled_edge(1, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 2), bc_reachable2(y).
+Q_light10(y) :- labelled_edge(10, 1, 2), bc_light2(y).
+T10(y) :- labelled_edge(10, 1, 2), bc_heavy2(y).
+T10(y) :- T10(2), labelled_edge(2, 2, y).
+Q_heavy10(y) :- T10(2), labelled_edge(2, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 3), bc_reachable3(y).
+Q_light10(y) :- labelled_edge(10, 1, 3), bc_light3(y).
+T10(y) :- labelled_edge(10, 1, 3), bc_heavy3(y).
+T10(y) :- T10(3), labelled_edge(3, 2, y).
+Q_heavy10(y) :- T10(3), labelled_edge(3, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 4), bc_reachable4(y).
+Q_light10(y) :- labelled_edge(10, 1, 4), bc_light4(y).
+T10(y) :- labelled_edge(10, 1, 4), bc_heavy4(y).
+T10(y) :- T10(4), labelled_edge(4, 2, y).
+Q_heavy10(y) :- T10(4), labelled_edge(4, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 5), bc_reachable5(y).
+Q_light10(y) :- labelled_edge(10, 1, 5), bc_light5(y).
+T10(y) :- labelled_edge(10, 1, 5), bc_heavy5(y).
+T10(y) :- T10(5), labelled_edge(5, 2, y).
+Q_heavy10(y) :- T10(5), labelled_edge(5, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 6), bc_reachable6(y).
+Q_light10(y) :- labelled_edge(10, 1, 6), bc_light6(y).
+T10(y) :- labelled_edge(10, 1, 6), bc_heavy6(y).
+T10(y) :- T10(6), labelled_edge(6, 2, y).
+Q_heavy10(y) :- T10(6), labelled_edge(6, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 7), bc_reachable7(y).
+Q_light10(y) :- labelled_edge(10, 1, 7), bc_light7(y).
+T10(y) :- labelled_edge(10, 1, 7), bc_heavy7(y).
+T10(y) :- T10(7), labelled_edge(7, 2, y).
+Q_heavy10(y) :- T10(7), labelled_edge(7, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 8), bc_reachable8(y).
+Q_light10(y) :- labelled_edge(10, 1, 8), bc_light8(y).
+T10(y) :- labelled_edge(10, 1, 8), bc_heavy8(y).
+T10(y) :- T10(8), labelled_edge(8, 2, y).
+Q_heavy10(y) :- T10(8), labelled_edge(8, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 9), bc_reachable9(y).
+Q_light10(y) :- labelled_edge(10, 1, 9), bc_light9(y).
+T10(y) :- labelled_edge(10, 1, 9), bc_heavy9(y).
+T10(y) :- T10(9), labelled_edge(9, 2, y).
+Q_heavy10(y) :- T10(9), labelled_edge(9, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 10), bc_reachable10(y).
+Q_light10(y) :- labelled_edge(10, 1, 10), bc_light10(y).
+T10(y) :- labelled_edge(10, 1, 10), bc_heavy10(y).
+T10(y) :- T10(10), labelled_edge(10, 2, y).
+Q_heavy10(y) :- T10(10), labelled_edge(10, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 11), bc_reachable11(y).
+Q_light10(y) :- labelled_edge(10, 1, 11), bc_light11(y).
+T10(y) :- labelled_edge(10, 1, 11), bc_heavy11(y).
+T10(y) :- T10(11), labelled_edge(11, 2, y).
+Q_heavy10(y) :- T10(11), labelled_edge(11, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 12), bc_reachable12(y).
+Q_light10(y) :- labelled_edge(10, 1, 12), bc_light12(y).
+T10(y) :- labelled_edge(10, 1, 12), bc_heavy12(y).
+T10(y) :- T10(12), labelled_edge(12, 2, y).
+Q_heavy10(y) :- T10(12), labelled_edge(12, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 13), bc_reachable13(y).
+Q_light10(y) :- labelled_edge(10, 1, 13), bc_light13(y).
+T10(y) :- labelled_edge(10, 1, 13), bc_heavy13(y).
+T10(y) :- T10(13), labelled_edge(13, 2, y).
+Q_heavy10(y) :- T10(13), labelled_edge(13, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 14), bc_reachable14(y).
+Q_light10(y) :- labelled_edge(10, 1, 14), bc_light14(y).
+T10(y) :- labelled_edge(10, 1, 14), bc_heavy14(y).
+T10(y) :- T10(14), labelled_edge(14, 2, y).
+Q_heavy10(y) :- T10(14), labelled_edge(14, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 15), bc_reachable15(y).
+Q_light10(y) :- labelled_edge(10, 1, 15), bc_light15(y).
+T10(y) :- labelled_edge(10, 1, 15), bc_heavy15(y).
+T10(y) :- T10(15), labelled_edge(15, 2, y).
+Q_heavy10(y) :- T10(15), labelled_edge(15, 3, y).
+
+bc_reachable10(y) :- labelled_edge(10, 2, 16), bc_reachable16(y).
+Q_light10(y) :- labelled_edge(10, 1, 16), bc_light16(y).
+T10(y) :- labelled_edge(10, 1, 16), bc_heavy16(y).
+T10(y) :- T10(16), labelled_edge(16, 2, y).
+Q_heavy10(y) :- T10(16), labelled_edge(16, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 0), bc_reachable0(y).
+Q_light11(y) :- labelled_edge(11, 1, 0), bc_light0(y).
+T11(y) :- labelled_edge(11, 1, 0), bc_heavy0(y).
+T11(y) :- T11(0), labelled_edge(0, 2, y).
+Q_heavy11(y) :- T11(0), labelled_edge(0, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 1), bc_reachable1(y).
+Q_light11(y) :- labelled_edge(11, 1, 1), bc_light1(y).
+T11(y) :- labelled_edge(11, 1, 1), bc_heavy1(y).
+T11(y) :- T11(1), labelled_edge(1, 2, y).
+Q_heavy11(y) :- T11(1), labelled_edge(1, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 2), bc_reachable2(y).
+Q_light11(y) :- labelled_edge(11, 1, 2), bc_light2(y).
+T11(y) :- labelled_edge(11, 1, 2), bc_heavy2(y).
+T11(y) :- T11(2), labelled_edge(2, 2, y).
+Q_heavy11(y) :- T11(2), labelled_edge(2, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 3), bc_reachable3(y).
+Q_light11(y) :- labelled_edge(11, 1, 3), bc_light3(y).
+T11(y) :- labelled_edge(11, 1, 3), bc_heavy3(y).
+T11(y) :- T11(3), labelled_edge(3, 2, y).
+Q_heavy11(y) :- T11(3), labelled_edge(3, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 4), bc_reachable4(y).
+Q_light11(y) :- labelled_edge(11, 1, 4), bc_light4(y).
+T11(y) :- labelled_edge(11, 1, 4), bc_heavy4(y).
+T11(y) :- T11(4), labelled_edge(4, 2, y).
+Q_heavy11(y) :- T11(4), labelled_edge(4, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 5), bc_reachable5(y).
+Q_light11(y) :- labelled_edge(11, 1, 5), bc_light5(y).
+T11(y) :- labelled_edge(11, 1, 5), bc_heavy5(y).
+T11(y) :- T11(5), labelled_edge(5, 2, y).
+Q_heavy11(y) :- T11(5), labelled_edge(5, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 6), bc_reachable6(y).
+Q_light11(y) :- labelled_edge(11, 1, 6), bc_light6(y).
+T11(y) :- labelled_edge(11, 1, 6), bc_heavy6(y).
+T11(y) :- T11(6), labelled_edge(6, 2, y).
+Q_heavy11(y) :- T11(6), labelled_edge(6, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 7), bc_reachable7(y).
+Q_light11(y) :- labelled_edge(11, 1, 7), bc_light7(y).
+T11(y) :- labelled_edge(11, 1, 7), bc_heavy7(y).
+T11(y) :- T11(7), labelled_edge(7, 2, y).
+Q_heavy11(y) :- T11(7), labelled_edge(7, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 8), bc_reachable8(y).
+Q_light11(y) :- labelled_edge(11, 1, 8), bc_light8(y).
+T11(y) :- labelled_edge(11, 1, 8), bc_heavy8(y).
+T11(y) :- T11(8), labelled_edge(8, 2, y).
+Q_heavy11(y) :- T11(8), labelled_edge(8, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 9), bc_reachable9(y).
+Q_light11(y) :- labelled_edge(11, 1, 9), bc_light9(y).
+T11(y) :- labelled_edge(11, 1, 9), bc_heavy9(y).
+T11(y) :- T11(9), labelled_edge(9, 2, y).
+Q_heavy11(y) :- T11(9), labelled_edge(9, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 10), bc_reachable10(y).
+Q_light11(y) :- labelled_edge(11, 1, 10), bc_light10(y).
+T11(y) :- labelled_edge(11, 1, 10), bc_heavy10(y).
+T11(y) :- T11(10), labelled_edge(10, 2, y).
+Q_heavy11(y) :- T11(10), labelled_edge(10, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 11), bc_reachable11(y).
+Q_light11(y) :- labelled_edge(11, 1, 11), bc_light11(y).
+T11(y) :- labelled_edge(11, 1, 11), bc_heavy11(y).
+T11(y) :- T11(11), labelled_edge(11, 2, y).
+Q_heavy11(y) :- T11(11), labelled_edge(11, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 12), bc_reachable12(y).
+Q_light11(y) :- labelled_edge(11, 1, 12), bc_light12(y).
+T11(y) :- labelled_edge(11, 1, 12), bc_heavy12(y).
+T11(y) :- T11(12), labelled_edge(12, 2, y).
+Q_heavy11(y) :- T11(12), labelled_edge(12, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 13), bc_reachable13(y).
+Q_light11(y) :- labelled_edge(11, 1, 13), bc_light13(y).
+T11(y) :- labelled_edge(11, 1, 13), bc_heavy13(y).
+T11(y) :- T11(13), labelled_edge(13, 2, y).
+Q_heavy11(y) :- T11(13), labelled_edge(13, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 14), bc_reachable14(y).
+Q_light11(y) :- labelled_edge(11, 1, 14), bc_light14(y).
+T11(y) :- labelled_edge(11, 1, 14), bc_heavy14(y).
+T11(y) :- T11(14), labelled_edge(14, 2, y).
+Q_heavy11(y) :- T11(14), labelled_edge(14, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 15), bc_reachable15(y).
+Q_light11(y) :- labelled_edge(11, 1, 15), bc_light15(y).
+T11(y) :- labelled_edge(11, 1, 15), bc_heavy15(y).
+T11(y) :- T11(15), labelled_edge(15, 2, y).
+Q_heavy11(y) :- T11(15), labelled_edge(15, 3, y).
+
+bc_reachable11(y) :- labelled_edge(11, 2, 16), bc_reachable16(y).
+Q_light11(y) :- labelled_edge(11, 1, 16), bc_light16(y).
+T11(y) :- labelled_edge(11, 1, 16), bc_heavy16(y).
+T11(y) :- T11(16), labelled_edge(16, 2, y).
+Q_heavy11(y) :- T11(16), labelled_edge(16, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 0), bc_reachable0(y).
+Q_light12(y) :- labelled_edge(12, 1, 0), bc_light0(y).
+T12(y) :- labelled_edge(12, 1, 0), bc_heavy0(y).
+T12(y) :- T12(0), labelled_edge(0, 2, y).
+Q_heavy12(y) :- T12(0), labelled_edge(0, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 1), bc_reachable1(y).
+Q_light12(y) :- labelled_edge(12, 1, 1), bc_light1(y).
+T12(y) :- labelled_edge(12, 1, 1), bc_heavy1(y).
+T12(y) :- T12(1), labelled_edge(1, 2, y).
+Q_heavy12(y) :- T12(1), labelled_edge(1, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 2), bc_reachable2(y).
+Q_light12(y) :- labelled_edge(12, 1, 2), bc_light2(y).
+T12(y) :- labelled_edge(12, 1, 2), bc_heavy2(y).
+T12(y) :- T12(2), labelled_edge(2, 2, y).
+Q_heavy12(y) :- T12(2), labelled_edge(2, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 3), bc_reachable3(y).
+Q_light12(y) :- labelled_edge(12, 1, 3), bc_light3(y).
+T12(y) :- labelled_edge(12, 1, 3), bc_heavy3(y).
+T12(y) :- T12(3), labelled_edge(3, 2, y).
+Q_heavy12(y) :- T12(3), labelled_edge(3, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 4), bc_reachable4(y).
+Q_light12(y) :- labelled_edge(12, 1, 4), bc_light4(y).
+T12(y) :- labelled_edge(12, 1, 4), bc_heavy4(y).
+T12(y) :- T12(4), labelled_edge(4, 2, y).
+Q_heavy12(y) :- T12(4), labelled_edge(4, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 5), bc_reachable5(y).
+Q_light12(y) :- labelled_edge(12, 1, 5), bc_light5(y).
+T12(y) :- labelled_edge(12, 1, 5), bc_heavy5(y).
+T12(y) :- T12(5), labelled_edge(5, 2, y).
+Q_heavy12(y) :- T12(5), labelled_edge(5, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 6), bc_reachable6(y).
+Q_light12(y) :- labelled_edge(12, 1, 6), bc_light6(y).
+T12(y) :- labelled_edge(12, 1, 6), bc_heavy6(y).
+T12(y) :- T12(6), labelled_edge(6, 2, y).
+Q_heavy12(y) :- T12(6), labelled_edge(6, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 7), bc_reachable7(y).
+Q_light12(y) :- labelled_edge(12, 1, 7), bc_light7(y).
+T12(y) :- labelled_edge(12, 1, 7), bc_heavy7(y).
+T12(y) :- T12(7), labelled_edge(7, 2, y).
+Q_heavy12(y) :- T12(7), labelled_edge(7, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 8), bc_reachable8(y).
+Q_light12(y) :- labelled_edge(12, 1, 8), bc_light8(y).
+T12(y) :- labelled_edge(12, 1, 8), bc_heavy8(y).
+T12(y) :- T12(8), labelled_edge(8, 2, y).
+Q_heavy12(y) :- T12(8), labelled_edge(8, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 9), bc_reachable9(y).
+Q_light12(y) :- labelled_edge(12, 1, 9), bc_light9(y).
+T12(y) :- labelled_edge(12, 1, 9), bc_heavy9(y).
+T12(y) :- T12(9), labelled_edge(9, 2, y).
+Q_heavy12(y) :- T12(9), labelled_edge(9, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 10), bc_reachable10(y).
+Q_light12(y) :- labelled_edge(12, 1, 10), bc_light10(y).
+T12(y) :- labelled_edge(12, 1, 10), bc_heavy10(y).
+T12(y) :- T12(10), labelled_edge(10, 2, y).
+Q_heavy12(y) :- T12(10), labelled_edge(10, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 11), bc_reachable11(y).
+Q_light12(y) :- labelled_edge(12, 1, 11), bc_light11(y).
+T12(y) :- labelled_edge(12, 1, 11), bc_heavy11(y).
+T12(y) :- T12(11), labelled_edge(11, 2, y).
+Q_heavy12(y) :- T12(11), labelled_edge(11, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 12), bc_reachable12(y).
+Q_light12(y) :- labelled_edge(12, 1, 12), bc_light12(y).
+T12(y) :- labelled_edge(12, 1, 12), bc_heavy12(y).
+T12(y) :- T12(12), labelled_edge(12, 2, y).
+Q_heavy12(y) :- T12(12), labelled_edge(12, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 13), bc_reachable13(y).
+Q_light12(y) :- labelled_edge(12, 1, 13), bc_light13(y).
+T12(y) :- labelled_edge(12, 1, 13), bc_heavy13(y).
+T12(y) :- T12(13), labelled_edge(13, 2, y).
+Q_heavy12(y) :- T12(13), labelled_edge(13, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 14), bc_reachable14(y).
+Q_light12(y) :- labelled_edge(12, 1, 14), bc_light14(y).
+T12(y) :- labelled_edge(12, 1, 14), bc_heavy14(y).
+T12(y) :- T12(14), labelled_edge(14, 2, y).
+Q_heavy12(y) :- T12(14), labelled_edge(14, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 15), bc_reachable15(y).
+Q_light12(y) :- labelled_edge(12, 1, 15), bc_light15(y).
+T12(y) :- labelled_edge(12, 1, 15), bc_heavy15(y).
+T12(y) :- T12(15), labelled_edge(15, 2, y).
+Q_heavy12(y) :- T12(15), labelled_edge(15, 3, y).
+
+bc_reachable12(y) :- labelled_edge(12, 2, 16), bc_reachable16(y).
+Q_light12(y) :- labelled_edge(12, 1, 16), bc_light16(y).
+T12(y) :- labelled_edge(12, 1, 16), bc_heavy16(y).
+T12(y) :- T12(16), labelled_edge(16, 2, y).
+Q_heavy12(y) :- T12(16), labelled_edge(16, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 0), bc_reachable0(y).
+Q_light13(y) :- labelled_edge(13, 1, 0), bc_light0(y).
+T13(y) :- labelled_edge(13, 1, 0), bc_heavy0(y).
+T13(y) :- T13(0), labelled_edge(0, 2, y).
+Q_heavy13(y) :- T13(0), labelled_edge(0, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 1), bc_reachable1(y).
+Q_light13(y) :- labelled_edge(13, 1, 1), bc_light1(y).
+T13(y) :- labelled_edge(13, 1, 1), bc_heavy1(y).
+T13(y) :- T13(1), labelled_edge(1, 2, y).
+Q_heavy13(y) :- T13(1), labelled_edge(1, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 2), bc_reachable2(y).
+Q_light13(y) :- labelled_edge(13, 1, 2), bc_light2(y).
+T13(y) :- labelled_edge(13, 1, 2), bc_heavy2(y).
+T13(y) :- T13(2), labelled_edge(2, 2, y).
+Q_heavy13(y) :- T13(2), labelled_edge(2, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 3), bc_reachable3(y).
+Q_light13(y) :- labelled_edge(13, 1, 3), bc_light3(y).
+T13(y) :- labelled_edge(13, 1, 3), bc_heavy3(y).
+T13(y) :- T13(3), labelled_edge(3, 2, y).
+Q_heavy13(y) :- T13(3), labelled_edge(3, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 4), bc_reachable4(y).
+Q_light13(y) :- labelled_edge(13, 1, 4), bc_light4(y).
+T13(y) :- labelled_edge(13, 1, 4), bc_heavy4(y).
+T13(y) :- T13(4), labelled_edge(4, 2, y).
+Q_heavy13(y) :- T13(4), labelled_edge(4, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 5), bc_reachable5(y).
+Q_light13(y) :- labelled_edge(13, 1, 5), bc_light5(y).
+T13(y) :- labelled_edge(13, 1, 5), bc_heavy5(y).
+T13(y) :- T13(5), labelled_edge(5, 2, y).
+Q_heavy13(y) :- T13(5), labelled_edge(5, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 6), bc_reachable6(y).
+Q_light13(y) :- labelled_edge(13, 1, 6), bc_light6(y).
+T13(y) :- labelled_edge(13, 1, 6), bc_heavy6(y).
+T13(y) :- T13(6), labelled_edge(6, 2, y).
+Q_heavy13(y) :- T13(6), labelled_edge(6, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 7), bc_reachable7(y).
+Q_light13(y) :- labelled_edge(13, 1, 7), bc_light7(y).
+T13(y) :- labelled_edge(13, 1, 7), bc_heavy7(y).
+T13(y) :- T13(7), labelled_edge(7, 2, y).
+Q_heavy13(y) :- T13(7), labelled_edge(7, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 8), bc_reachable8(y).
+Q_light13(y) :- labelled_edge(13, 1, 8), bc_light8(y).
+T13(y) :- labelled_edge(13, 1, 8), bc_heavy8(y).
+T13(y) :- T13(8), labelled_edge(8, 2, y).
+Q_heavy13(y) :- T13(8), labelled_edge(8, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 9), bc_reachable9(y).
+Q_light13(y) :- labelled_edge(13, 1, 9), bc_light9(y).
+T13(y) :- labelled_edge(13, 1, 9), bc_heavy9(y).
+T13(y) :- T13(9), labelled_edge(9, 2, y).
+Q_heavy13(y) :- T13(9), labelled_edge(9, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 10), bc_reachable10(y).
+Q_light13(y) :- labelled_edge(13, 1, 10), bc_light10(y).
+T13(y) :- labelled_edge(13, 1, 10), bc_heavy10(y).
+T13(y) :- T13(10), labelled_edge(10, 2, y).
+Q_heavy13(y) :- T13(10), labelled_edge(10, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 11), bc_reachable11(y).
+Q_light13(y) :- labelled_edge(13, 1, 11), bc_light11(y).
+T13(y) :- labelled_edge(13, 1, 11), bc_heavy11(y).
+T13(y) :- T13(11), labelled_edge(11, 2, y).
+Q_heavy13(y) :- T13(11), labelled_edge(11, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 12), bc_reachable12(y).
+Q_light13(y) :- labelled_edge(13, 1, 12), bc_light12(y).
+T13(y) :- labelled_edge(13, 1, 12), bc_heavy12(y).
+T13(y) :- T13(12), labelled_edge(12, 2, y).
+Q_heavy13(y) :- T13(12), labelled_edge(12, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 13), bc_reachable13(y).
+Q_light13(y) :- labelled_edge(13, 1, 13), bc_light13(y).
+T13(y) :- labelled_edge(13, 1, 13), bc_heavy13(y).
+T13(y) :- T13(13), labelled_edge(13, 2, y).
+Q_heavy13(y) :- T13(13), labelled_edge(13, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 14), bc_reachable14(y).
+Q_light13(y) :- labelled_edge(13, 1, 14), bc_light14(y).
+T13(y) :- labelled_edge(13, 1, 14), bc_heavy14(y).
+T13(y) :- T13(14), labelled_edge(14, 2, y).
+Q_heavy13(y) :- T13(14), labelled_edge(14, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 15), bc_reachable15(y).
+Q_light13(y) :- labelled_edge(13, 1, 15), bc_light15(y).
+T13(y) :- labelled_edge(13, 1, 15), bc_heavy15(y).
+T13(y) :- T13(15), labelled_edge(15, 2, y).
+Q_heavy13(y) :- T13(15), labelled_edge(15, 3, y).
+
+bc_reachable13(y) :- labelled_edge(13, 2, 16), bc_reachable16(y).
+Q_light13(y) :- labelled_edge(13, 1, 16), bc_light16(y).
+T13(y) :- labelled_edge(13, 1, 16), bc_heavy16(y).
+T13(y) :- T13(16), labelled_edge(16, 2, y).
+Q_heavy13(y) :- T13(16), labelled_edge(16, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 0), bc_reachable0(y).
+Q_light14(y) :- labelled_edge(14, 1, 0), bc_light0(y).
+T14(y) :- labelled_edge(14, 1, 0), bc_heavy0(y).
+T14(y) :- T14(0), labelled_edge(0, 2, y).
+Q_heavy14(y) :- T14(0), labelled_edge(0, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 1), bc_reachable1(y).
+Q_light14(y) :- labelled_edge(14, 1, 1), bc_light1(y).
+T14(y) :- labelled_edge(14, 1, 1), bc_heavy1(y).
+T14(y) :- T14(1), labelled_edge(1, 2, y).
+Q_heavy14(y) :- T14(1), labelled_edge(1, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 2), bc_reachable2(y).
+Q_light14(y) :- labelled_edge(14, 1, 2), bc_light2(y).
+T14(y) :- labelled_edge(14, 1, 2), bc_heavy2(y).
+T14(y) :- T14(2), labelled_edge(2, 2, y).
+Q_heavy14(y) :- T14(2), labelled_edge(2, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 3), bc_reachable3(y).
+Q_light14(y) :- labelled_edge(14, 1, 3), bc_light3(y).
+T14(y) :- labelled_edge(14, 1, 3), bc_heavy3(y).
+T14(y) :- T14(3), labelled_edge(3, 2, y).
+Q_heavy14(y) :- T14(3), labelled_edge(3, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 4), bc_reachable4(y).
+Q_light14(y) :- labelled_edge(14, 1, 4), bc_light4(y).
+T14(y) :- labelled_edge(14, 1, 4), bc_heavy4(y).
+T14(y) :- T14(4), labelled_edge(4, 2, y).
+Q_heavy14(y) :- T14(4), labelled_edge(4, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 5), bc_reachable5(y).
+Q_light14(y) :- labelled_edge(14, 1, 5), bc_light5(y).
+T14(y) :- labelled_edge(14, 1, 5), bc_heavy5(y).
+T14(y) :- T14(5), labelled_edge(5, 2, y).
+Q_heavy14(y) :- T14(5), labelled_edge(5, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 6), bc_reachable6(y).
+Q_light14(y) :- labelled_edge(14, 1, 6), bc_light6(y).
+T14(y) :- labelled_edge(14, 1, 6), bc_heavy6(y).
+T14(y) :- T14(6), labelled_edge(6, 2, y).
+Q_heavy14(y) :- T14(6), labelled_edge(6, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 7), bc_reachable7(y).
+Q_light14(y) :- labelled_edge(14, 1, 7), bc_light7(y).
+T14(y) :- labelled_edge(14, 1, 7), bc_heavy7(y).
+T14(y) :- T14(7), labelled_edge(7, 2, y).
+Q_heavy14(y) :- T14(7), labelled_edge(7, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 8), bc_reachable8(y).
+Q_light14(y) :- labelled_edge(14, 1, 8), bc_light8(y).
+T14(y) :- labelled_edge(14, 1, 8), bc_heavy8(y).
+T14(y) :- T14(8), labelled_edge(8, 2, y).
+Q_heavy14(y) :- T14(8), labelled_edge(8, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 9), bc_reachable9(y).
+Q_light14(y) :- labelled_edge(14, 1, 9), bc_light9(y).
+T14(y) :- labelled_edge(14, 1, 9), bc_heavy9(y).
+T14(y) :- T14(9), labelled_edge(9, 2, y).
+Q_heavy14(y) :- T14(9), labelled_edge(9, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 10), bc_reachable10(y).
+Q_light14(y) :- labelled_edge(14, 1, 10), bc_light10(y).
+T14(y) :- labelled_edge(14, 1, 10), bc_heavy10(y).
+T14(y) :- T14(10), labelled_edge(10, 2, y).
+Q_heavy14(y) :- T14(10), labelled_edge(10, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 11), bc_reachable11(y).
+Q_light14(y) :- labelled_edge(14, 1, 11), bc_light11(y).
+T14(y) :- labelled_edge(14, 1, 11), bc_heavy11(y).
+T14(y) :- T14(11), labelled_edge(11, 2, y).
+Q_heavy14(y) :- T14(11), labelled_edge(11, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 12), bc_reachable12(y).
+Q_light14(y) :- labelled_edge(14, 1, 12), bc_light12(y).
+T14(y) :- labelled_edge(14, 1, 12), bc_heavy12(y).
+T14(y) :- T14(12), labelled_edge(12, 2, y).
+Q_heavy14(y) :- T14(12), labelled_edge(12, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 13), bc_reachable13(y).
+Q_light14(y) :- labelled_edge(14, 1, 13), bc_light13(y).
+T14(y) :- labelled_edge(14, 1, 13), bc_heavy13(y).
+T14(y) :- T14(13), labelled_edge(13, 2, y).
+Q_heavy14(y) :- T14(13), labelled_edge(13, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 14), bc_reachable14(y).
+Q_light14(y) :- labelled_edge(14, 1, 14), bc_light14(y).
+T14(y) :- labelled_edge(14, 1, 14), bc_heavy14(y).
+T14(y) :- T14(14), labelled_edge(14, 2, y).
+Q_heavy14(y) :- T14(14), labelled_edge(14, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 15), bc_reachable15(y).
+Q_light14(y) :- labelled_edge(14, 1, 15), bc_light15(y).
+T14(y) :- labelled_edge(14, 1, 15), bc_heavy15(y).
+T14(y) :- T14(15), labelled_edge(15, 2, y).
+Q_heavy14(y) :- T14(15), labelled_edge(15, 3, y).
+
+bc_reachable14(y) :- labelled_edge(14, 2, 16), bc_reachable16(y).
+Q_light14(y) :- labelled_edge(14, 1, 16), bc_light16(y).
+T14(y) :- labelled_edge(14, 1, 16), bc_heavy16(y).
+T14(y) :- T14(16), labelled_edge(16, 2, y).
+Q_heavy14(y) :- T14(16), labelled_edge(16, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 0), bc_reachable0(y).
+Q_light15(y) :- labelled_edge(15, 1, 0), bc_light0(y).
+T15(y) :- labelled_edge(15, 1, 0), bc_heavy0(y).
+T15(y) :- T15(0), labelled_edge(0, 2, y).
+Q_heavy15(y) :- T15(0), labelled_edge(0, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 1), bc_reachable1(y).
+Q_light15(y) :- labelled_edge(15, 1, 1), bc_light1(y).
+T15(y) :- labelled_edge(15, 1, 1), bc_heavy1(y).
+T15(y) :- T15(1), labelled_edge(1, 2, y).
+Q_heavy15(y) :- T15(1), labelled_edge(1, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 2), bc_reachable2(y).
+Q_light15(y) :- labelled_edge(15, 1, 2), bc_light2(y).
+T15(y) :- labelled_edge(15, 1, 2), bc_heavy2(y).
+T15(y) :- T15(2), labelled_edge(2, 2, y).
+Q_heavy15(y) :- T15(2), labelled_edge(2, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 3), bc_reachable3(y).
+Q_light15(y) :- labelled_edge(15, 1, 3), bc_light3(y).
+T15(y) :- labelled_edge(15, 1, 3), bc_heavy3(y).
+T15(y) :- T15(3), labelled_edge(3, 2, y).
+Q_heavy15(y) :- T15(3), labelled_edge(3, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 4), bc_reachable4(y).
+Q_light15(y) :- labelled_edge(15, 1, 4), bc_light4(y).
+T15(y) :- labelled_edge(15, 1, 4), bc_heavy4(y).
+T15(y) :- T15(4), labelled_edge(4, 2, y).
+Q_heavy15(y) :- T15(4), labelled_edge(4, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 5), bc_reachable5(y).
+Q_light15(y) :- labelled_edge(15, 1, 5), bc_light5(y).
+T15(y) :- labelled_edge(15, 1, 5), bc_heavy5(y).
+T15(y) :- T15(5), labelled_edge(5, 2, y).
+Q_heavy15(y) :- T15(5), labelled_edge(5, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 6), bc_reachable6(y).
+Q_light15(y) :- labelled_edge(15, 1, 6), bc_light6(y).
+T15(y) :- labelled_edge(15, 1, 6), bc_heavy6(y).
+T15(y) :- T15(6), labelled_edge(6, 2, y).
+Q_heavy15(y) :- T15(6), labelled_edge(6, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 7), bc_reachable7(y).
+Q_light15(y) :- labelled_edge(15, 1, 7), bc_light7(y).
+T15(y) :- labelled_edge(15, 1, 7), bc_heavy7(y).
+T15(y) :- T15(7), labelled_edge(7, 2, y).
+Q_heavy15(y) :- T15(7), labelled_edge(7, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 8), bc_reachable8(y).
+Q_light15(y) :- labelled_edge(15, 1, 8), bc_light8(y).
+T15(y) :- labelled_edge(15, 1, 8), bc_heavy8(y).
+T15(y) :- T15(8), labelled_edge(8, 2, y).
+Q_heavy15(y) :- T15(8), labelled_edge(8, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 9), bc_reachable9(y).
+Q_light15(y) :- labelled_edge(15, 1, 9), bc_light9(y).
+T15(y) :- labelled_edge(15, 1, 9), bc_heavy9(y).
+T15(y) :- T15(9), labelled_edge(9, 2, y).
+Q_heavy15(y) :- T15(9), labelled_edge(9, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 10), bc_reachable10(y).
+Q_light15(y) :- labelled_edge(15, 1, 10), bc_light10(y).
+T15(y) :- labelled_edge(15, 1, 10), bc_heavy10(y).
+T15(y) :- T15(10), labelled_edge(10, 2, y).
+Q_heavy15(y) :- T15(10), labelled_edge(10, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 11), bc_reachable11(y).
+Q_light15(y) :- labelled_edge(15, 1, 11), bc_light11(y).
+T15(y) :- labelled_edge(15, 1, 11), bc_heavy11(y).
+T15(y) :- T15(11), labelled_edge(11, 2, y).
+Q_heavy15(y) :- T15(11), labelled_edge(11, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 12), bc_reachable12(y).
+Q_light15(y) :- labelled_edge(15, 1, 12), bc_light12(y).
+T15(y) :- labelled_edge(15, 1, 12), bc_heavy12(y).
+T15(y) :- T15(12), labelled_edge(12, 2, y).
+Q_heavy15(y) :- T15(12), labelled_edge(12, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 13), bc_reachable13(y).
+Q_light15(y) :- labelled_edge(15, 1, 13), bc_light13(y).
+T15(y) :- labelled_edge(15, 1, 13), bc_heavy13(y).
+T15(y) :- T15(13), labelled_edge(13, 2, y).
+Q_heavy15(y) :- T15(13), labelled_edge(13, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 14), bc_reachable14(y).
+Q_light15(y) :- labelled_edge(15, 1, 14), bc_light14(y).
+T15(y) :- labelled_edge(15, 1, 14), bc_heavy14(y).
+T15(y) :- T15(14), labelled_edge(14, 2, y).
+Q_heavy15(y) :- T15(14), labelled_edge(14, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 15), bc_reachable15(y).
+Q_light15(y) :- labelled_edge(15, 1, 15), bc_light15(y).
+T15(y) :- labelled_edge(15, 1, 15), bc_heavy15(y).
+T15(y) :- T15(15), labelled_edge(15, 2, y).
+Q_heavy15(y) :- T15(15), labelled_edge(15, 3, y).
+
+bc_reachable15(y) :- labelled_edge(15, 2, 16), bc_reachable16(y).
+Q_light15(y) :- labelled_edge(15, 1, 16), bc_light16(y).
+T15(y) :- labelled_edge(15, 1, 16), bc_heavy16(y).
+T15(y) :- T15(16), labelled_edge(16, 2, y).
+Q_heavy15(y) :- T15(16), labelled_edge(16, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 0), bc_reachable0(y).
+Q_light16(y) :- labelled_edge(16, 1, 0), bc_light0(y).
+T16(y) :- labelled_edge(16, 1, 0), bc_heavy0(y).
+T16(y) :- T16(0), labelled_edge(0, 2, y).
+Q_heavy16(y) :- T16(0), labelled_edge(0, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 1), bc_reachable1(y).
+Q_light16(y) :- labelled_edge(16, 1, 1), bc_light1(y).
+T16(y) :- labelled_edge(16, 1, 1), bc_heavy1(y).
+T16(y) :- T16(1), labelled_edge(1, 2, y).
+Q_heavy16(y) :- T16(1), labelled_edge(1, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 2), bc_reachable2(y).
+Q_light16(y) :- labelled_edge(16, 1, 2), bc_light2(y).
+T16(y) :- labelled_edge(16, 1, 2), bc_heavy2(y).
+T16(y) :- T16(2), labelled_edge(2, 2, y).
+Q_heavy16(y) :- T16(2), labelled_edge(2, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 3), bc_reachable3(y).
+Q_light16(y) :- labelled_edge(16, 1, 3), bc_light3(y).
+T16(y) :- labelled_edge(16, 1, 3), bc_heavy3(y).
+T16(y) :- T16(3), labelled_edge(3, 2, y).
+Q_heavy16(y) :- T16(3), labelled_edge(3, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 4), bc_reachable4(y).
+Q_light16(y) :- labelled_edge(16, 1, 4), bc_light4(y).
+T16(y) :- labelled_edge(16, 1, 4), bc_heavy4(y).
+T16(y) :- T16(4), labelled_edge(4, 2, y).
+Q_heavy16(y) :- T16(4), labelled_edge(4, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 5), bc_reachable5(y).
+Q_light16(y) :- labelled_edge(16, 1, 5), bc_light5(y).
+T16(y) :- labelled_edge(16, 1, 5), bc_heavy5(y).
+T16(y) :- T16(5), labelled_edge(5, 2, y).
+Q_heavy16(y) :- T16(5), labelled_edge(5, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 6), bc_reachable6(y).
+Q_light16(y) :- labelled_edge(16, 1, 6), bc_light6(y).
+T16(y) :- labelled_edge(16, 1, 6), bc_heavy6(y).
+T16(y) :- T16(6), labelled_edge(6, 2, y).
+Q_heavy16(y) :- T16(6), labelled_edge(6, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 7), bc_reachable7(y).
+Q_light16(y) :- labelled_edge(16, 1, 7), bc_light7(y).
+T16(y) :- labelled_edge(16, 1, 7), bc_heavy7(y).
+T16(y) :- T16(7), labelled_edge(7, 2, y).
+Q_heavy16(y) :- T16(7), labelled_edge(7, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 8), bc_reachable8(y).
+Q_light16(y) :- labelled_edge(16, 1, 8), bc_light8(y).
+T16(y) :- labelled_edge(16, 1, 8), bc_heavy8(y).
+T16(y) :- T16(8), labelled_edge(8, 2, y).
+Q_heavy16(y) :- T16(8), labelled_edge(8, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 9), bc_reachable9(y).
+Q_light16(y) :- labelled_edge(16, 1, 9), bc_light9(y).
+T16(y) :- labelled_edge(16, 1, 9), bc_heavy9(y).
+T16(y) :- T16(9), labelled_edge(9, 2, y).
+Q_heavy16(y) :- T16(9), labelled_edge(9, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 10), bc_reachable10(y).
+Q_light16(y) :- labelled_edge(16, 1, 10), bc_light10(y).
+T16(y) :- labelled_edge(16, 1, 10), bc_heavy10(y).
+T16(y) :- T16(10), labelled_edge(10, 2, y).
+Q_heavy16(y) :- T16(10), labelled_edge(10, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 11), bc_reachable11(y).
+Q_light16(y) :- labelled_edge(16, 1, 11), bc_light11(y).
+T16(y) :- labelled_edge(16, 1, 11), bc_heavy11(y).
+T16(y) :- T16(11), labelled_edge(11, 2, y).
+Q_heavy16(y) :- T16(11), labelled_edge(11, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 12), bc_reachable12(y).
+Q_light16(y) :- labelled_edge(16, 1, 12), bc_light12(y).
+T16(y) :- labelled_edge(16, 1, 12), bc_heavy12(y).
+T16(y) :- T16(12), labelled_edge(12, 2, y).
+Q_heavy16(y) :- T16(12), labelled_edge(12, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 13), bc_reachable13(y).
+Q_light16(y) :- labelled_edge(16, 1, 13), bc_light13(y).
+T16(y) :- labelled_edge(16, 1, 13), bc_heavy13(y).
+T16(y) :- T16(13), labelled_edge(13, 2, y).
+Q_heavy16(y) :- T16(13), labelled_edge(13, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 14), bc_reachable14(y).
+Q_light16(y) :- labelled_edge(16, 1, 14), bc_light14(y).
+T16(y) :- labelled_edge(16, 1, 14), bc_heavy14(y).
+T16(y) :- T16(14), labelled_edge(14, 2, y).
+Q_heavy16(y) :- T16(14), labelled_edge(14, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 15), bc_reachable15(y).
+Q_light16(y) :- labelled_edge(16, 1, 15), bc_light15(y).
+T16(y) :- labelled_edge(16, 1, 15), bc_heavy15(y).
+T16(y) :- T16(15), labelled_edge(15, 2, y).
+Q_heavy16(y) :- T16(15), labelled_edge(15, 3, y).
+
+bc_reachable16(y) :- labelled_edge(16, 2, 16), bc_reachable16(y).
+Q_light16(y) :- labelled_edge(16, 1, 16), bc_light16(y).
+T16(y) :- labelled_edge(16, 1, 16), bc_heavy16(y).
+T16(y) :- T16(16), labelled_edge(16, 2, y).
+Q_heavy16(y) :- T16(16), labelled_edge(16, 3, y).
