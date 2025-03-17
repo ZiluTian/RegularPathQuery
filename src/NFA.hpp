@@ -48,6 +48,7 @@ private:
 	}
 
 public:
+	bool isDFA = false;
     // Add these declarations
     NFA() = default;
     NFA(const NFA&) = delete;              // Delete copy constructor
@@ -61,6 +62,11 @@ public:
 	// Creates and owns a new state
 	State* create_state() {
 		states.push_back(make_unique<State>(generate_id()));
+		return states.back().get();
+	}
+
+	State* create_state(StateID id) {
+		states.push_back(make_unique<State>(id));
 		return states.back().get();
 	}
 
@@ -99,8 +105,10 @@ public:
 	};
 
 	// subset construction
-	NFA toDFA() { 
+	NFA toDFA() {
 		NFA dfa;
+		dfa.isDFA = true;
+		
 		map<set<State*>, State*> subset_to_dfa_state;
 		
 		// Get all possible transition labels from the NFA (excluding ε)
@@ -114,7 +122,7 @@ public:
 		}
 
 		// Helper function to get next states for a given set of states and input
-		auto move = [](const set<State*>& states, const string& input) -> set<State*> {
+		auto label_closure = [](const set<State*>& states, const string& input) -> set<State*> {
 			set<State*> result;
 			for (State* s : states) {
 				for (const auto& trans : s->transitions) {
@@ -149,7 +157,7 @@ public:
 
 			// Process each possible input symbol
 			for (const string& label : all_labels) {
-				set<State*> next_states = move(current_subset, label);
+				set<State*> next_states = label_closure(current_subset, label);
 				if (next_states.empty()) continue;
 				
 				set<State*> next_subset = epsilon_closure(next_states);
@@ -299,7 +307,8 @@ public:
         }
 
         cout << "NFA Visualization:\n";
-        for (const auto& state : states) {
+        cout << "[Starting] " << start_state << endl;
+		for (const auto& state : states) {
             cout << "State " << state;
             if (state->is_accepting) {
                 cout << " [Accepting]";

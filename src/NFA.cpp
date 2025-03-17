@@ -50,7 +50,6 @@ void toDFATest() {
 
 int main(int argc, char **argv) {
 	RUN_TEST(testAccept);
-	// product_test1("ab*c", "ac");
 	toDFATest();
 	return 0;
 }
