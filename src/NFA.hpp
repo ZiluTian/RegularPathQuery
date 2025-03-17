@@ -1,335 +1,316 @@
-/*
- * Regular expression implementation.
- * Supports only ( | ) * + ?.  No escapes.
- * Compiles to NFA and then simulates NFA
- * using Thompson's algorithm.
- *
- * See also http://swtch.com/~rsc/regexp/ and
- * Thompson, Ken.  Regular Expression Search Algorithm,
- * Communications of the ACM 11(6) (June 1968), pp. 419-422.
- * 
- * Copyright (c) 2007 Russ Cox.
- * Can be distributed under the MIT license, see bottom of file.
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <vector>
+#include <stack>
+#include <string>
+#include <utility>
+#include <unordered_set>
+
+using namespace std;
 
 // See https://swtch.com/~rsc/regexp/regexp1.html
 /*
  * Convert infix regexp re to postfix notation.
  * Insert . as explicit concatenation operator.
- * Cheesy parser, return static buffer.
  */
-char* re2post(char *re) {
-	int nalt, natom;
-	static char buf[8000];
-	char *dst;
-	struct {
+
+class State;
+
+// typedef pair<int, int> StateID;
+typedef int StateID;
+
+// Transition structure to pair label with target state
+struct Transition {
+	string label;
+	State* target;
+};
+
+class State {
+public:
+	const StateID id;         // Immutable unique identifier
+	bool is_accepting;    // More semantic than 'end'
+	vector<Transition> transitions;
+
+	explicit State(StateID state_id) 
+		: id(state_id), is_accepting(false) {}
+};
+
+class NFA {
+private:
+	vector<unique_ptr<State>> states;
+	int state_counter = 0;  // Internal ID management
+	int nfa_counter = 0;
+
+	// Private method to generate unique state IDs
+	int generate_id() { 
+		return state_counter++; 
+	}
+
+public:
+    // Add these declarations
+    NFA() = default;
+    NFA(const NFA&) = delete;              // Delete copy constructor
+    NFA& operator=(const NFA&) = delete;    // Delete copy assignment
+    NFA(NFA&&) = default;                  // Enable move constructor
+    NFA& operator=(NFA&&) = default;       // Enable move assignment
+
+	State* start_state = nullptr;
+	State* end_state = nullptr;
+
+	// Creates and owns a new state
+	State* create_state() {
+		states.push_back(make_unique<State>(generate_id()));
+		return states.back().get();
+	}
+
+	// Adds a transition between states
+	void add_transition(State* from, State* to, const string& label) {
+		from->transitions.push_back({label, to});
+	}
+
+	// Merges another NFA into this one (basic implementation)
+	// rvalue reference to an NFA object that enables move semantics 
+	// transfer resources (dynamically allocated memory) from one object to another
+	void merge(NFA&& other) {
+		for (auto& state : other.states) {
+			states.push_back(std::move(state));
+		}
+	}
+
+	// Helper to create basic pattern: "from --label--> to"
+	static NFA create_basic(const string& label) {
+		NFA nfa;
+		State* start = nfa.create_state();
+		State* end = nfa.create_state();
+		end->is_accepting = true;
+		
+		nfa.add_transition(start, end, label);
+		nfa.start_state = start;
+		nfa.end_state = end;
+		return nfa;
+	}
+
+	void print() {
+        if (states.empty()) {
+            cout << "NFA is empty.\n";
+            return;
+        }
+
+        cout << "NFA Visualization:\n";
+        for (const auto& state : states) {
+            cout << "State " << state;
+            if (state->is_accepting) {
+                cout << " [Accepting]";
+            }
+            cout << ":\n";
+
+            for (const auto& trans : state->transitions) {
+                cout << "  --" << trans.label << "--> State " << trans.target << "\n";
+            }
+        }
+    }
+};
+
+string re2post(const string& re) {
+	int nalt = 0;  // Number of alternations
+	int natom = 0; // Number of atoms
+
+	string result; // Output string (replaces `buf`)
+	result.reserve(re.size() * 2); // Reserve space for efficiency
+
+	// Stack to track nested parentheses (replaces `paren` array)
+	struct ParenState {
 		int nalt;
 		int natom;
-	} paren[100], *p;
-	
-	p = paren;
-	dst = buf;
-	nalt = 0;
-	natom = 0;
-	if(strlen(re) >= sizeof buf/2)
-		return NULL;
-	for(; *re; re++){
-		switch(*re){
-		case '(':
-			if(natom > 1){
-				--natom;
-				*dst++ = '.';
-			}
-			if(p >= paren+100)
-				return NULL;
-			p->nalt = nalt;
-			p->natom = natom;
-			p++;
-			nalt = 0;
-			natom = 0;
-			break;
-		case '|':
-			if(natom == 0)
-				return NULL;
-			while(--natom > 0)
-				*dst++ = '.';
-			nalt++;
-			break;
-		case ')':
-			if(p == paren)
-				return NULL;
-			if(natom == 0)
-				return NULL;
-			while(--natom > 0)
-				*dst++ = '.';
-			for(; nalt > 0; nalt--)
-				*dst++ = '|';
-			--p;
-			nalt = p->nalt;
-			natom = p->natom;
-			natom++;
-			break;
-		case '*':
-		case '+':
-		case '?':
-			if(natom == 0)
-				return NULL;
-			*dst++ = *re;
-			break;
-		default:
-			if(natom > 1){
-				--natom;
-				*dst++ = '.';
-			}
-			*dst++ = *re;
-			natom++;
-			break;
-		}
-	}
-	if(p != paren)
-		return NULL;
-	while(--natom > 0)
-		*dst++ = '.';
-	for(; nalt > 0; nalt--)
-		*dst++ = '|';
-	*dst = 0;
-	return buf;
-}
+	};
+	stack<ParenState> parenStack;
+	ParenState state; 
 
-/*
- * Represents an NFA state plus zero or one or two arrows exiting.
- * if c == Match, no arrows out; matching state.
- * If c == Split, unlabeled arrows to out and out1 (if != NULL).
- * If c < 256, labeled arrow with character c to out.
- */
-enum {
-	Match = 256,
-	Split = 257
-};
-typedef struct State State;
-struct State {
-	int c;
-	State *out;
-	State *out1;
-	int lastlist;
-};
-State matchstate = { Match };	/* matching state */
-int nstate;
+	for (char ch : re) {
+		switch (ch) {
+			case '(':
+				if (natom > 1) {
+					--natom;
+					result += '.';
+				}
+				if (parenStack.size() >= 100) {
+					throw runtime_error("Too many nested parentheses");
+				}
+				parenStack.push({nalt, natom});
+				nalt = 0;
+				natom = 0;
+				break;
 
-/* Allocate and initialize State for NFA (at most two outgoing states in Thompson's algorithm) */
-State* state(int c, State *out, State *out1) {
-	State *s;
-	
-	nstate++;
-	s = (State*)malloc(sizeof *s);
-	s->lastlist = 0;
-	s->c = c;
-	s->out = out;
-	s->out1 = out1;
-	return s;
-}
+			case '|':
+				if (natom == 0) {
+					throw runtime_error("Invalid regex: alternation with no atoms");
+				}
+				while (--natom > 0) {
+					result += '.';
+				}
+				nalt++;
+				break;
 
-/*
- * A partially built NFA without the matching state filled in.
- * Frag.start points at the start state.
- * Frag.out is a list of places that need to be set to the
- * next state for this fragment.
- */
-typedef struct Frag Frag;
-typedef union Ptrlist Ptrlist;
-struct Frag {
-	State *start;
-	Ptrlist *out;
-};
+			case ')':
+				if (parenStack.empty()) {
+					throw runtime_error("Invalid regex: unmatched parenthesis");
+				}
+				if (natom == 0) {
+					throw runtime_error("Invalid regex: empty group");
+				}
+				while (--natom > 0) {
+					result += '.';
+				}
+				for (; nalt > 0; nalt--) {
+					result += '|';
+				}
+				state = parenStack.top();
+				parenStack.pop();
+				nalt = state.nalt;
+				natom = state.natom;
+				natom++;
+				break;
 
-/* Initialize Frag struct. */
-Frag frag(State *start, Ptrlist *out) {
-	Frag n = { start, out };
-	return n;
-}
+			case '*':
+			case '+':
+			case '?':
+				if (natom == 0) {
+					throw runtime_error("Invalid regex: quantifier with no atom");
+				}
+				result += ch;
+				break;
 
-/*
- * Since the out pointers in the list are always 
- * uninitialized, we use the pointers themselves
- * as storage for the Ptrlists.
- */
-union Ptrlist {
-	Ptrlist *next;
-	State *s;
-};
-
-/* Create singleton list containing just outp. */
-Ptrlist* list1(State **outp) {
-	Ptrlist *l;
-	
-	l = (Ptrlist*)outp;
-	l->next = NULL;
-	return l;
-}
-
-/* Patch the list of states at out to point to start. */
-void patch(Ptrlist *l, State *s) {
-	Ptrlist *next;
-	
-	for(; l; l=next){
-		next = l->next;
-		l->s = s;
-	}
-}
-
-/* Join the two lists l1 and l2, returning the combination. */
-Ptrlist* append(Ptrlist *l1, Ptrlist *l2) {
-	Ptrlist *oldl1;
-	
-	oldl1 = l1;
-	while(l1->next)
-		l1 = l1->next;
-	l1->next = l2;
-	return oldl1;
-}
-
-/*
- * Convert postfix regular expression to NFA.
- * Return start state.
- */
-State* post2nfa(char *postfix) {
-	char *p;
-	Frag stack[1000], *stackp, e1, e2, e;
-	State *s;
-	
-	// fprintf(stderr, "postfix: %s\n", postfix);
-
-	if(postfix == NULL)
-		return NULL;
-
-	#define push(s) *stackp++ = s
-	#define pop() *--stackp
-
-	stackp = stack;
-	for(p=postfix; *p; p++){
-		switch(*p){
-		default:
-			s = state(*p, NULL, NULL);
-			push(frag(s, list1(&s->out)));
-			break;
-		case '.':	/* catenate */
-			e2 = pop();
-			e1 = pop();
-			patch(e1.out, e2.start);
-			push(frag(e1.start, e2.out));
-			break;
-		case '|':	/* alternate */
-			e2 = pop();
-			e1 = pop();
-			s = state(Split, e1.start, e2.start);
-			push(frag(s, append(e1.out, e2.out)));
-			break;
-		case '?':	/* zero or one */
-			e = pop();
-			s = state(Split, e.start, NULL);
-			push(frag(s, append(e.out, list1(&s->out1))));
-			break;
-		case '*':	/* zero or more */
-			e = pop();
-			s = state(Split, e.start, NULL);
-			patch(e.out, s);
-			push(frag(s, list1(&s->out1)));
-			break;
-		case '+':	/* one or more */
-			e = pop();
-			s = state(Split, e.start, NULL);
-			patch(e.out, s);
-			push(frag(e.start, list1(&s->out1)));
-			break;
+			default:
+				if (natom > 1) {
+					--natom;
+					result += '.';
+				}
+				result += ch;
+				natom++;
+				break;
 		}
 	}
 
-	e = pop();
-	if(stackp != stack)
-		return NULL;
-
-	patch(e.out, &matchstate);
-	return e.start;
-#undef pop
-#undef push
-}
-
-typedef struct List List;
-struct List {
-	State **s;
-	int n;
-};
-List l1, l2;
-static int listid;
-
-void addstate(List*, State*);
-void step(List*, int, List*);
-
-/* Compute initial state list */
-List* startlist(State *start, List *l) {
-	l->n = 0;
-	listid++;
-	addstate(l, start);
-	return l;
-}
-
-/* Check whether state list contains a match. */
-int ismatch(List *l) {
-	int i;
-
-	for(i=0; i<l->n; i++)
-		if(l->s[i] == &matchstate)
-			return 1;
-	return 0;
-}
-
-/* Add s to l, following unlabeled arrows. */
-void addstate(List *l, State *s) {
-	if(s == NULL || s->lastlist == listid)
-		return;
-	s->lastlist = listid;
-	if(s->c == Split){
-		/* follow unlabeled arrows */
-		addstate(l, s->out);
-		addstate(l, s->out1);
-		return;
+	if (!parenStack.empty()) {
+		throw runtime_error("Invalid regex: unmatched parenthesis");
 	}
-	l->s[l->n++] = s;
+	while (--natom > 0) {
+		result += '.';
+	}
+	for (; nalt > 0; nalt--) {
+		result += '|';
+	}
+
+	return result;
 }
 
-/*
- * Step the NFA from the states in clist
- * past the character c,
- * to create next NFA state set nlist.
- */
-void step(List *clist, int c, List *nlist) {
-	int i;
-	State *s;
+NFA post2nfa(const string& postfix) {
+    if (postfix.empty()) {
+		throw runtime_error("Empty postfix expression");
+    }
 
-	listid++;
-	nlist->n = 0;
-	for(i=0; i<clist->n; i++){
-		s = clist->s[i];
-		if(s->c == c)
-			addstate(nlist, s->out);
-	}
-}
+    stack<NFA> nfa_stack;
+	
+    for (char ch : postfix) {
+        switch (ch) {
+            case '.': {
+                if (nfa_stack.size() < 2) {
+                    throw runtime_error("Invalid postfix expression: insufficient operands for concatenation");
+                }
+                NFA nfa2 = std::move(nfa_stack.top());
+                nfa_stack.pop();
+                NFA nfa1 = std::move(nfa_stack.top());
+                nfa_stack.pop();
+				nfa1.end_state->is_accepting = false;
+				nfa1.add_transition(nfa1.end_state, nfa2.start_state, ""); // ε-transition
+				nfa1.merge(std::move(nfa2));
+				nfa1.end_state = nfa2.end_state;
+				// nfa1.print();
+                nfa_stack.push(std::move(nfa1));
+                break;
+            }
 
-/* Run NFA to determine whether it matches s. */
-int match(State *start, char *s) {
-	int i, c;
-	List *clist, *nlist, *t;
+            // Alternation (|)
+            case '|': {
+                if (nfa_stack.size() < 2) {
+                    throw runtime_error("Invalid postfix expression: insufficient operands for alternation");
+                }
+                NFA nfa2 = std::move(nfa_stack.top());
+                nfa_stack.pop();
+                NFA nfa1 = std::move(nfa_stack.top());
+                nfa_stack.pop();
 
-	clist = startlist(start, &l1);
-	nlist = &l2;
-	for(; *s; s++){
-		c = *s & 0xFF;
-		step(clist, c, nlist);
-		t = clist; clist = nlist; nlist = t;	/* swap clist, nlist */
-	}
-	return ismatch(clist);
+                // Create a new NFA for the alternation
+				NFA result;
+                State * start = result.create_state();
+                State * end = result.create_state();
+                end->is_accepting = true;
+
+                // Add ε-transitions from the new start state to the start states of nfa1 and nfa2
+                result.add_transition(start, nfa1.start_state, "");
+                result.add_transition(start, nfa2.start_state, "");
+
+				result.merge(std::move(nfa1));
+				result.merge(std::move(nfa2));
+
+                // Add ε-transitions from the end states of nfa1 and nfa2 to the new end state
+                nfa1.end_state->is_accepting = false;
+                nfa2.end_state->is_accepting = false;
+                result.add_transition(nfa1.end_state, end, "");
+                result.add_transition(nfa2.end_state, end, "");
+
+                // Set the new start and end states
+                result.start_state = start;
+                result.end_state = end;
+
+                nfa_stack.push(std::move(result));
+                break;
+            }
+
+            // Kleene star (*)
+            case '*': {
+                if (nfa_stack.empty()) {
+                    throw runtime_error("Invalid postfix expression: insufficient operands for Kleene star");
+                }
+                NFA nfa1 = std::move(nfa_stack.top());
+                nfa_stack.pop();
+				NFA result;
+                // Create a new NFA for the Kleene star
+                State* start = result.create_state();
+                State* end = result.create_state();
+                end->is_accepting = true;
+
+				result.merge(std::move(nfa1));
+
+                // Add ε-transitions for the Kleene star
+                result.add_transition(start, end, ""); // ε-transition for zero repetitions
+                result.add_transition(start, nfa1.start_state, ""); // ε-transition to the NFA
+                nfa1.end_state->is_accepting = false;
+                result.add_transition(nfa1.end_state, end, ""); // ε-transition from the NFA to the end state
+                result.add_transition(nfa1.end_state, nfa1.start_state, ""); // ε-transition for repetition
+
+                // Set the new start and end states
+                result.start_state = start;
+                result.end_state = end;
+
+                nfa_stack.push(std::move(result));
+                break;
+            }
+
+            // Default case: single character
+            default: {
+                NFA nfa = NFA::create_basic(string(1, ch));
+				cout << "Debug: create a new basic block with id " << nfa.start_state << endl;
+				nfa_stack.push(std::move(nfa));
+                break;
+            }
+        }
+    }
+
+    if (nfa_stack.size() != 1) {
+		cout << "Debug: total operands is " << nfa_stack.size() << endl;
+        throw runtime_error("Invalid postfix expression: too many operands");
+    }
+
+	NFA result = std::move(nfa_stack.top());
+    nfa_stack.pop();  // Don't forget to pop!
+    return result;
 }
