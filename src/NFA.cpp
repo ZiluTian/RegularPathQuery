@@ -4,22 +4,53 @@
 #include <stdexcept>
 
 #include "NFA.hpp"
+#include "test.hpp"
 
 using namespace std;
 
-int main(int argc, char **argv) {
-	int i;
-	string post;
-
-	// if(argc < 3){
-	// 	fprintf(stderr, "usage: nfa regexp string...\n");
-	// 	return 1;
-	// }
-	
-	post = re2post(argv[1]);
-	cout << post << endl;	
-	NFA start = post2nfa(post);
-	start.print();
-	return 0;
+bool recognizes(const string& l, const string& word) {
+	NFA nfa1 = post2nfa(re2post(l));
+	return nfa1.accepts(word);
 }
 
+bool testAccept() {
+	ASSERT_TRUE(recognizes("a", "a"));
+	ASSERT_TRUE(recognizes("b*", ""));
+	ASSERT_FALSE(recognizes("b*", "a"));
+	ASSERT_FALSE(recognizes("ab*c", "c"));
+	ASSERT_TRUE(recognizes("ab*c", "ac"));
+	ASSERT_FALSE(recognizes("ab*c", "a"));
+	ASSERT_FALSE(recognizes("ab*c", "c"));
+	ASSERT_FALSE(recognizes("ab*c", "b"));
+	ASSERT_TRUE(recognizes("ab*c", "abc"));
+	ASSERT_FALSE(recognizes("ab*c", "abbbb"));
+	ASSERT_TRUE(recognizes("ab*c", "abbbbbc"));
+	ASSERT_FALSE(recognizes("a(b|c)*d", "abbbb"));
+	ASSERT_TRUE(recognizes("a(b|c)*d", "abbcbcbd"));
+	ASSERT_TRUE(recognizes("a(b|c)*d", "abbbbbd"));
+	return true;
+}
+
+void toDFATest() {
+	NFA nfa1 = post2nfa(re2post("ab*c"));
+	NFA nfa2 = post2nfa(re2post("ac"));
+
+	NFA dfa1 = nfa1.toDFA();
+	NFA dfa2 = nfa2.toDFA();
+	NFA ans = dfa1.product(std::move(dfa2));
+
+	cout << "DFA 1" << endl;
+	dfa1.print();
+	cout << "DFA 2" << endl;
+	dfa2.print();
+	cout << "Product DFA" << endl;
+	ans.print();
+}
+
+
+int main(int argc, char **argv) {
+	RUN_TEST(testAccept);
+	// product_test1("ab*c", "ac");
+	toDFATest();
+	return 0;
+}

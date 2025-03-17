@@ -3,6 +3,9 @@
 #include <string>
 #include <utility>
 #include <unordered_set>
+#include <map>
+#include <set>
+#include <queue>
 
 using namespace std;
 
@@ -26,7 +29,7 @@ struct Transition {
 class State {
 public:
 	const StateID id;         // Immutable unique identifier
-	bool is_accepting;    // More semantic than 'end'
+	bool is_accepting;    	// More semantic than 'end'
 	vector<Transition> transitions;
 
 	explicit State(StateID state_id) 
@@ -75,6 +78,161 @@ public:
 		}
 	}
 
+	// Helper function to get ε-closure
+	set<State *> epsilon_closure (const set<State*>& states) {
+		set<State*> closure = states;
+		stack<State*> stack;
+		for (State* s : states) stack.push(s);
+
+		while (!stack.empty()) {
+			State* current = stack.top();
+			stack.pop();
+
+			for (const auto& trans : current->transitions) {
+				if (trans.label.empty() && closure.find(trans.target) == closure.end()) {
+					closure.insert(trans.target);
+					stack.push(trans.target);
+				}
+			}
+		}
+		return closure;
+	};
+
+	// subset construction
+	NFA toDFA() { 
+		NFA dfa;
+		map<set<State*>, State*> subset_to_dfa_state;
+		
+		// Get all possible transition labels from the NFA (excluding ε)
+		set<string> all_labels;
+		for (const auto& state : states) {
+			for (const auto& trans : state->transitions) {
+				if (!trans.label.empty()) {
+					all_labels.insert(trans.label);
+				}
+			}
+		}
+
+		// Helper function to get next states for a given set of states and input
+		auto move = [](const set<State*>& states, const string& input) -> set<State*> {
+			set<State*> result;
+			for (State* s : states) {
+				for (const auto& trans : s->transitions) {
+					if (trans.label == input) {
+						result.insert(trans.target);
+					}
+				}
+			}
+			return result;
+		};
+
+		// Start with ε-closure of initial state
+		set<State*> initial = epsilon_closure({start_state});
+		dfa.start_state = dfa.create_state();
+		subset_to_dfa_state[initial] = dfa.start_state;
+
+		// Check if initial state should be accepting
+		for (State* s : initial) {
+			if (s->is_accepting) {
+				dfa.start_state->is_accepting = true;
+				break;
+			}
+		}
+
+		queue<set<State*>> worklist;
+		worklist.push(initial);
+
+		while (!worklist.empty()) {
+			set<State*> current_subset = worklist.front();
+			worklist.pop();
+			State* current_dfa_state = subset_to_dfa_state[current_subset];
+
+			// Process each possible input symbol
+			for (const string& label : all_labels) {
+				set<State*> next_states = move(current_subset, label);
+				if (next_states.empty()) continue;
+				
+				set<State*> next_subset = epsilon_closure(next_states);
+				if (next_subset.empty()) continue;
+
+				// Create new DFA state if needed
+				if (subset_to_dfa_state.find(next_subset) == subset_to_dfa_state.end()) {
+					State* new_state = dfa.create_state();
+					subset_to_dfa_state[next_subset] = new_state;
+					
+					// Check if new state should be accepting
+					for (State* s : next_subset) {
+						if (s->is_accepting) {
+							new_state->is_accepting = true;
+							break;
+						}
+					}
+					
+					worklist.push(next_subset);
+				}
+
+				// Add transition
+				dfa.add_transition(current_dfa_state, subset_to_dfa_state[next_subset], label);
+			}
+		}
+
+		return dfa;
+	}
+
+	// Apply to DFAs
+	NFA product(NFA&& other) {
+        NFA result;
+
+        // Map to store pairs of states and their corresponding new state in the product NFA
+        using StatePair = std::pair<State*, State*>;
+        map<StatePair, State*> state_map;
+
+        // Helper function to get or create a new state in the product NFA
+        auto get_or_create_state = [&](State* s1, State* s2) -> State* {
+            StatePair key = {s1, s2};
+            if (state_map.find(key) == state_map.end()) {
+                State* new_state = result.create_state();
+                state_map[key] = new_state;
+                // Mark as accepting if both s1 and s2 are accepting
+                if (s1->is_accepting && s2->is_accepting) {
+                    new_state->is_accepting = true;
+                }
+            }
+            return state_map[key];
+        };
+
+        State* start1 = start_state;
+        State* start2 = other.start_state;
+        result.start_state = get_or_create_state(start1, start2);
+
+        // Perform a breadth-first search (BFS) to explore all reachable state pairs
+        queue<StatePair> queue;
+        queue.push({start1, start2});
+
+        while (!queue.empty()) {
+            auto [current1, current2] = queue.front();
+            queue.pop();
+
+            // Get the corresponding state in the product NFA
+            State* current_product_state = get_or_create_state(current1, current2);
+
+            // Process transitions from both NFAs
+            for (const auto& trans1 : current1->transitions) {
+                for (const auto& trans2 : current2->transitions) {
+					State* next1 = trans1.target;
+					State* next2 = trans2.target;
+					if (trans1.label == trans2.label) {
+						State* next_product_state = get_or_create_state(next1, next2);
+						result.add_transition(current_product_state, next_product_state, trans1.label);
+						queue.push({next1, next2});
+					}
+				}
+            }
+        }
+
+        return result;
+    }
+
 	// Helper to create basic pattern: "from --label--> to"
 	static NFA create_basic(const string& label) {
 		NFA nfa;
@@ -87,6 +245,52 @@ public:
 		nfa.end_state = end;
 		return nfa;
 	}
+
+    bool accepts(const std::string& input) const {
+        if (!start_state) {
+            return false; // No start state, cannot accept any string
+        }
+
+        // Use a queue to perform a breadth-first search (BFS) of the NFA
+        // Each element in the queue is a pair: (current_state, current_position_in_input)
+        using StatePositionPair = std::pair<State*, size_t>;
+        std::queue<StatePositionPair> queue;
+
+        // Start with the initial state and the beginning of the input
+        queue.push({start_state, 0});
+
+        while (!queue.empty()) {
+            auto [current_state, current_position] = queue.front();
+            queue.pop();
+
+            // If we've processed the entire input and are in an accepting state, return true
+            if (current_position == input.size() && current_state->is_accepting) {
+                return true;
+            }
+
+            // Process ε-transitions (transitions with an empty label)
+            for (const auto& transition : current_state->transitions) {
+                if (transition.label.empty()) {
+                    // Move to the target state without consuming any input
+                    queue.push({transition.target, current_position});
+                }
+            }
+
+            // If we haven't reached the end of the input, process transitions that match the current input symbol
+            if (current_position < input.size()) {
+                char current_symbol = input[current_position];
+                for (const auto& transition : current_state->transitions) {
+                    if (!transition.label.empty() && transition.label[0] == current_symbol) {
+                        // Move to the target state and consume the current input symbol
+                        queue.push({transition.target, current_position + 1});
+                    }
+                }
+            }
+        }
+
+        // If no accepting state is reached, return false
+        return false;
+    }
 
 	void print() {
         if (states.empty()) {
@@ -298,7 +502,7 @@ NFA post2nfa(const string& postfix) {
             // Default case: single character
             default: {
                 NFA nfa = NFA::create_basic(string(1, ch));
-				cout << "Debug: create a new basic block with id " << nfa.start_state << endl;
+				// cout << "Debug: create a new basic block with id " << nfa.start_state << endl;
 				nfa_stack.push(std::move(nfa));
                 break;
             }
