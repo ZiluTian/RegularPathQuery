@@ -35,16 +35,15 @@ void toDFATest() {
 	NFA nfa1 = post2nfa(re2post("ab*c"));
 	NFA nfa2 = post2nfa(re2post("ac"));
 
-	NFA dfa1 = nfa1.toDFA();
-	NFA dfa2 = nfa2.toDFA();
-	NFA ans = dfa1.product(std::move(dfa2));
-
-	cout << "DFA 1" << endl;
-	dfa1.print();
-	cout << "DFA 2" << endl;
-	dfa2.print();
-	cout << "Product DFA" << endl;
-	ans.print();
+	NFA dfa1 = nfa1.getDFA();
+	NFA dfa2 = nfa2.getDFA();
+	NFA ans = dfa1.product(dfa2);
+	// cout << "DFA 1" << endl;
+	// dfa1.print();
+	// cout << "DFA 2" << endl;
+	// dfa2.print();
+	// cout << "Product DFA" << endl;
+	// ans.print();
 }
 
 

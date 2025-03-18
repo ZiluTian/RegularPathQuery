@@ -17,7 +17,7 @@ using namespace std;
 
 class State;
 
-// typedef pair<int, int> StateID;
+// typedef pair<int, int> StateID; 
 typedef int StateID;
 
 // Transition structure to pair label with target state
@@ -41,74 +41,17 @@ private:
 	vector<unique_ptr<State>> states;
 	int state_counter = 0;  // Internal ID management
 	int nfa_counter = 0;
+	bool dirty = true; // Flag to track if the NFA has been modified
+    unique_ptr<NFA> dfa; // Store the DFA representation
 
 	// Private method to generate unique state IDs
 	int generate_id() { 
 		return state_counter++; 
 	}
 
-public:
-	bool isDFA = false;
-    // Add these declarations
-    NFA() = default;
-    NFA(const NFA&) = delete;              // Delete copy constructor
-    NFA& operator=(const NFA&) = delete;    // Delete copy assignment
-    NFA(NFA&&) = default;                  // Enable move constructor
-    NFA& operator=(NFA&&) = default;       // Enable move assignment
-
-	State* start_state = nullptr;
-	State* end_state = nullptr;
-
-	// Creates and owns a new state
-	State* create_state() {
-		states.push_back(make_unique<State>(generate_id()));
-		return states.back().get();
-	}
-
-	State* create_state(StateID id) {
-		states.push_back(make_unique<State>(id));
-		return states.back().get();
-	}
-
-	// Adds a transition between states
-	void add_transition(State* from, State* to, const string& label) {
-		from->transitions.push_back({label, to});
-	}
-
-	// Merges another NFA into this one (basic implementation)
-	// rvalue reference to an NFA object that enables move semantics 
-	// transfer resources (dynamically allocated memory) from one object to another
-	void merge(NFA&& other) {
-		for (auto& state : other.states) {
-			states.push_back(std::move(state));
-		}
-	}
-
-	// Helper function to get ε-closure
-	set<State *> epsilon_closure (const set<State*>& states) {
-		set<State*> closure = states;
-		stack<State*> stack;
-		for (State* s : states) stack.push(s);
-
-		while (!stack.empty()) {
-			State* current = stack.top();
-			stack.pop();
-
-			for (const auto& trans : current->transitions) {
-				if (trans.label.empty() && closure.find(trans.target) == closure.end()) {
-					closure.insert(trans.target);
-					stack.push(trans.target);
-				}
-			}
-		}
-		return closure;
-	};
-
 	// subset construction
 	NFA toDFA() {
-		NFA dfa;
-		dfa.isDFA = true;
-		
+		NFA dfa;		
 		map<set<State*>, State*> subset_to_dfa_state;
 		
 		// Get all possible transition labels from the NFA (excluding ε)
@@ -183,12 +126,82 @@ public:
 				dfa.add_transition(current_dfa_state, subset_to_dfa_state[next_subset], label);
 			}
 		}
-
 		return dfa;
 	}
 
+public:
+    // Add these declarations
+    NFA() = default;
+    NFA(const NFA&) = delete;              // Delete copy constructor
+    NFA& operator=(const NFA&) = delete;    // Delete copy assignment
+    NFA(NFA&&) = default;                  // Enable move constructor
+    NFA& operator=(NFA&&) = default;       // Enable move assignment
+
+	State* start_state = nullptr;
+	State* end_state = nullptr;
+
+	// Creates and owns a new state
+	State* create_state() {
+		dirty = true;
+		states.push_back(make_unique<State>(generate_id()));
+		return states.back().get();
+	}
+
+	State* create_state(StateID id) {
+		dirty = true;
+		states.push_back(make_unique<State>(id));
+		return states.back().get();
+	}
+
+	// Adds a transition between states
+	void add_transition(State* from, State* to, const string& label) {
+		dirty = true;
+		from->transitions.push_back({label, to});
+	}
+
+	// Merges another NFA into this one (basic implementation)
+	// rvalue reference to an NFA object that enables move semantics 
+	// transfer resources (dynamically allocated memory) from one object to another
+	void merge(NFA&& other) {
+		dirty = true;
+		for (auto& state : other.states) {
+			states.push_back(std::move(state));
+		}
+	}
+
+	// Helper function to get ε-closure
+	set<State *> epsilon_closure (const set<State*>& states) {
+		set<State*> closure = states;
+		stack<State*> stack;
+		for (State* s : states) stack.push(s);
+
+		while (!stack.empty()) {
+			State* current = stack.top();
+			stack.pop();
+
+			for (const auto& trans : current->transitions) {
+				if (trans.label.empty() && closure.find(trans.target) == closure.end()) {
+					closure.insert(trans.target);
+					stack.push(trans.target);
+				}
+			}
+		}
+		return closure;
+	};
+
+	// Lazy computation
+	// NFA & allows the caller to access the DFA, w/o transferring ownership 
+	// NFA && allows the caller to steal/move the DFA
+	NFA getDFA() {
+        if (dirty || !dfa) {
+            dfa = make_unique<NFA>(toDFA()); // Compute and store the DFA
+            dirty = false; // Mark as clean
+        }
+        return std::move(*dfa);
+	}
+
 	// Apply to DFAs
-	NFA product(NFA&& other) {
+	NFA product(NFA& other) {
         NFA result;
 
         // Map to store pairs of states and their corresponding new state in the product NFA
