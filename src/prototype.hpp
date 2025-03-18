@@ -16,14 +16,14 @@
 using namespace std;
 
 
+// Graph class stores adjacency list representation
+class Graph {
 // Represents a labeled edge in the graph
 struct Edge {
     string label;
     int dest;
 };
 
-// Graph class stores adjacency list representation
-class Graph {
 private:
     unordered_map<int, vector<Edge>> adjList;
     unordered_set<int> vertices;
@@ -77,8 +77,8 @@ public:
         for (int vertex : accepting_vertices) {
             vertex_to_state[vertex]->is_accepting = true;
         }
-
-        return nfa.toDFA();
+        
+        return nfa.getDFA();
     }
 
     const unordered_map<int, vector<Edge>>& getAdjacencyList() const {
@@ -90,29 +90,12 @@ public:
     }
 };
 
-NFA query(NFA && data_nfa, const string& pattern) {
+NFA query(NFA & data_nfa, const string& pattern) {
     // cout << "Data nfa" << endl;
     // data_nfa.print();
-    NFA query_nfa = post2nfa(re2post(pattern)).toDFA();
+    NFA query_nfa = post2nfa(re2post(pattern)).getDFA();
     // cout << "Query NFA" << endl;
     // query_nfa.print();
-    return query_nfa.product(std::move(data_nfa));
+    return query_nfa.product(data_nfa);
 }
 
-
-int main() {
-    Graph graph;
-    graph.loadFromFile("graph.txt", " ");
-    NFA data_nfa = graph.constructDFA(1, {11});
-
-    ASSERT_TRUE(data_nfa.accepts("helloworld"));
-    ASSERT_FALSE(data_nfa.accepts("hello"));
-    ASSERT_FALSE(data_nfa.accepts("world"));
-    ASSERT_FALSE(data_nfa.accepts("hel*oworld"));
-    ASSERT_FALSE(data_nfa.accepts("hel*o*world"));
-
-    ASSERT_TRUE(query(std::move(data_nfa), "hel*oworld").accepts("helloworld"));
-    ASSERT_TRUE(query(std::move(data_nfa), "hel*o*wo*rld").accepts("helloworld"));
-    
-    return 0;
-}
