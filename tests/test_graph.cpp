@@ -1,6 +1,18 @@
-#include "prototype.hpp"
-#include <iostream>
-#include <cassert> // For ASSERT_TRUE and ASSERT_FALSE
+#include "rpqdb/Graph.hpp"
+#include <vector>
+#include "tests.hpp"
+
+using namespace rpqdb;
+
+class GraphFixtureTestSuite {
+    private:
+        const Graph graph;
+        std::vector<bool (*)(Graph &)> tests;
+
+    public:
+        explicit GraphFixtureTestSuite(Graph g)
+            : graph(g){}
+};
 
 void fixture_test(Graph & g, bool (*func)(Graph &)){
     if (func(g)){

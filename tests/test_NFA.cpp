@@ -1,12 +1,11 @@
-#include <iostream>
 #include <vector>
 #include <memory>
 #include <stdexcept>
 
-#include "NFA.hpp"
-#include "test.hpp"
+#include "rpqdb/NFA.hpp"
+#include "tests.hpp"
 
-using namespace std;
+using namespace rpqdb;
 
 bool recognizes(const string& l, const string& word) {
 	NFA nfa1 = post2nfa(re2post(l));

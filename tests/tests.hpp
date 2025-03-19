@@ -1,3 +1,5 @@
+#include <iostream>
+
 // Simple testing framework
 #define ASSERT_EQ(actual, expected) \
     if ((actual) != (expected)) { \
