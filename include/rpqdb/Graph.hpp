@@ -37,9 +37,24 @@ namespace rpqdb{
             vertices.insert(v2);
         }
     
+        // A debug method for visualizing the content of the graph
+        void print(){
+            for (const auto& [src, edges] : adjList) {
+                cout << src << ": ";
+                for (const auto& edge : edges) {
+                    cout << "(" << edge.label << " -> " << edge.dest << ") ";
+                }
+                cout << endl;
+            }
+        }
+
         // Serialization format: v1 label v2
-        void loadFromFile(const string& filename, const string& separator) {
+        void buildFromFile(const string& filename, const string& separator) {
             ifstream file(filename);
+            if (!file.is_open()) {
+                cerr << "Error: Unable to open file " << filename << " in the current directory." << endl;
+                return;
+            }
             string line;
             
             while (getline(file, line)) {

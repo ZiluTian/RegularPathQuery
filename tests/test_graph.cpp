@@ -23,6 +23,7 @@ void fixture_test(Graph & g, bool (*func)(Graph &)){
 }
 
 bool test_graphDFA1(Graph & graph){
+    cout << "Started test graph DFA 1" << endl;
     auto data_nfa = graph.constructDFA(1, {11});
     ASSERT_TRUE(data_nfa.accepts("helloworld"));
     ASSERT_FALSE(data_nfa.accepts("hello"));
@@ -34,7 +35,22 @@ bool test_graphDFA1(Graph & graph){
     return true;
 }
 
+bool test_graph2DFA1(Graph & graph){
+    cout << "Started test graph 2 DFA 1" << endl;
+    auto data_nfa = graph.constructDFA(1, {11});
+    ASSERT_TRUE(data_nfa.accepts("helloworld"));
+    ASSERT_TRUE(data_nfa.accepts("heloworld"));
+    ASSERT_FALSE(data_nfa.accepts("hello"));
+    ASSERT_FALSE(data_nfa.accepts("world"));
+    ASSERT_FALSE(data_nfa.accepts("hel*oworld"));
+    ASSERT_FALSE(data_nfa.accepts("hel*o*world"));
+    ASSERT_TRUE(query(data_nfa, "hel*oworld").accepts("helloworld"));
+    ASSERT_TRUE(query(data_nfa, "hel*oworld").accepts("heloworld"));
+    return true;
+}
+
 bool test_graphDFA2(Graph & graph){
+    cout << "Started test graph DFA 2" << endl;
     auto data_nfa = graph.constructDFA(4, {7});
     ASSERT_TRUE(data_nfa.accepts("low"));
     ASSERT_FALSE(data_nfa.accepts("hello"));
@@ -44,9 +60,17 @@ bool test_graphDFA2(Graph & graph){
 
 int main() {
     Graph graph;
-    graph.loadFromFile("resources/graph1.txt", " ");
-
+    // path relative to the binary (here in the local build)
+    graph.buildFromFile("../resources/graph1.txt", " ");
+    cout << "Successfully loaded graph 1!" << endl;
+    // graph.print();
     fixture_test(graph, test_graphDFA1);
     fixture_test(graph, test_graphDFA2);
+    Graph graph2;
+    graph2.buildFromFile("../resources/graph2.txt", " ");
+    cout << "Successfully loaded graph 2!" << endl;
+    // graph.print();
+    fixture_test(graph2, test_graph2DFA1);
+    fixture_test(graph2, test_graphDFA2);
     return 0;
 }
