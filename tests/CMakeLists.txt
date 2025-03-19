@@ -15,6 +15,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 add_executable(test_nfa test_nfa.cpp)
 add_executable(test_graph test_graph.cpp)
 
+add_definitions(-DMY_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+
 # Link the test executable with any required libraries (if applicable)
 # For example, if you use a testing framework like Google Test, link it here.
 # target_link_libraries(test_nfa gtest gtest_main pthread)

@@ -61,13 +61,16 @@ bool test_graphDFA2(Graph & graph){
 int main() {
     Graph graph;
     // path relative to the binary (here in the local build)
-    graph.buildFromFile("../resources/graph1.txt", " ");
+    string mySrcDir = MY_SRC_DIR;
+    cout << "Load graph from " << mySrcDir << "/resources" << endl;
+    graph.buildFromFile(mySrcDir + "/resources/graph1.txt", " ");
     cout << "Successfully loaded graph 1!" << endl;
     // graph.print();
     fixture_test(graph, test_graphDFA1);
     fixture_test(graph, test_graphDFA2);
+
     Graph graph2;
-    graph2.buildFromFile("../resources/graph2.txt", " ");
+    graph2.buildFromFile(mySrcDir + "/resources/graph2.txt", " ");
     cout << "Successfully loaded graph 2!" << endl;
     // graph.print();
     fixture_test(graph2, test_graph2DFA1);
