@@ -106,15 +106,6 @@ namespace rpqdb{
             return vertices;
         }
     };
-    
-    NFA query(NFA & data_nfa, const string& pattern) {
-        // cout << "Data nfa" << endl;
-        // data_nfa.print();
-        NFA query_nfa = post2nfa(re2post(pattern)).getDFA();
-        // cout << "Query NFA" << endl;
-        // query_nfa.print();
-        return query_nfa.product(data_nfa);
-    }
 } // namespace rpqdb
 
 #endif
