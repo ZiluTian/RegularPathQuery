@@ -9,11 +9,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the source directory for the NFA implementation
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 # Add the test executable
 add_executable(test_nfa test_nfa.cpp)
 add_executable(test_graph test_graph.cpp)
+add_executable(test_ostc test_ostc.cpp)
 
 add_definitions(-DMY_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -25,3 +27,4 @@ add_definitions(-DMY_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 enable_testing()
 add_test(NAME TestNFA COMMAND test_nfa)
 add_test(NAME TestGraph COMMAND test_graph)
+add_test(NAME TestOSTC COMMAND test_ostc)
