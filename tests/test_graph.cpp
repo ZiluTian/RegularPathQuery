@@ -1,6 +1,8 @@
 #include "rpqdb/Graph.hpp"
 #include <vector>
 #include "tests.hpp"
+#include "query.cpp"
+#include "rpqdb/NFA.hpp"
 
 using namespace rpqdb;
 
@@ -58,6 +60,19 @@ bool test_graphDFA2(Graph & graph){
     return true;
 }
 
+bool test_productGraph(Graph & graph){
+    NFA nfa1 = post2nfa(re2post("ab*"));
+    NFA dfa1 = nfa1.getDFA();
+    cout << " print dfa " << endl;
+    dfa1.print();
+    cout << " print graph " << endl;
+    graph.print();
+    cout << " print product graph " << endl;
+    Graph ans = graph.product(dfa1);
+    ans.print();
+    return true;
+}
+
 int main() {
     Graph graph;
     // path relative to the binary (here in the local build)
@@ -75,5 +90,10 @@ int main() {
     // graph.print();
     fixture_test(graph2, test_graph2DFA1);
     fixture_test(graph2, test_graphDFA2);
+
+    Graph graph3;
+    graph3.buildFromFile(mySrcDir + "/resources/graph_tc.txt", " ");
+    cout << "Successfully loaded graph_tc!" << endl;
+    fixture_test(graph3, test_productGraph);
     return 0;
 }

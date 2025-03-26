@@ -5,8 +5,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <unordered_set>
+#include <set>
 #include <queue>
 #include <tuple>
 #include <functional>
@@ -14,6 +15,21 @@
 #include <algorithm>
 
 #include "NFA.hpp"
+
+// Custom hash for StatePair
+using StatePair = std::pair<rpqdb::State*, int>;
+
+namespace std {
+    template<>
+    struct hash<StatePair> {
+        size_t operator()(const StatePair& sp) const {
+            // Combine hash of the pointer and the integer
+            size_t h1 = hash<rpqdb::State*>()(sp.first);   // Hash the pointer
+            size_t h2 = hash<int>()(sp.second);     // Hash the int
+            return h1 ^ (h2 << 1);  // Combine hashes (avoid XOR symmetry)
+        }
+    };
+}
 
 namespace rpqdb{
     using namespace std;
@@ -25,12 +41,11 @@ namespace rpqdb{
     };
             
     // Graph class stores adjacency list representation
-    class Graph {
-    private:
+    class Graph {   
+    public:
         unordered_map<int, vector<Edge>> adjList;
         unordered_set<int> vertices;
-    
-    public:
+
         void addEdge(int v1, const string& label, int v2) {
             adjList[v1].push_back({label, v2});
             vertices.insert(v1);
@@ -68,7 +83,61 @@ namespace rpqdb{
                 }
             }
         }
-    
+
+        // Construct a product graph from a DFA
+        Graph product(NFA& dfa) {
+            Graph result;
+
+            int product_vertex_id = 0;
+			unordered_map<StatePair, int> state_map;
+
+            State * start1 = dfa.start_state;
+            
+            // Helper function to get or create a new state in the product NFA
+			auto get_or_create_vertex = [&](State* s1, int s2) -> int {
+				StatePair key = {s1, s2};
+				if (state_map.find(key) == state_map.end()) {
+					product_vertex_id += 1;
+					state_map[key] = product_vertex_id;
+				}
+				return state_map[key];
+			};
+
+            // Perform a breadth-first search (BFS) to explore all reachable state pairs
+			queue<StatePair> queue;
+            unordered_set<StatePair> visited;
+
+            for (const auto& x : vertices) {
+                queue.push({start1, x});
+            }
+
+			while (!queue.empty()) {
+				auto [current1, current2] = queue.front();
+				queue.pop();
+                visited.insert({current1, current2});
+
+				// Get the corresponding state in the product NFA
+				int current_product_state = get_or_create_vertex(current1, current2);
+	
+				// Process transitions
+				for (const auto& trans1 : current1->transitions) {
+					for (const auto& trans2 : adjList[current2]) {
+						State* next1 = trans1.target;
+						if (trans1.label == trans2.label) {
+							int next_product_state = get_or_create_vertex(next1, trans2.dest);
+							result.addEdge(current_product_state, trans1.label, next_product_state);
+							// check if the node has been visited
+                            if (visited.find({next1, trans2.dest}) == visited.end()){
+                                queue.push({next1, trans2.dest});
+                            }
+						}
+					}
+				}
+			}
+
+			return result;
+        }
+
         NFA constructDFA(int start_vertex, set<int> accepting_vertices) {
             NFA nfa;
             std::map<int, State*> vertex_to_state;
