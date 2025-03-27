@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <unordered_set>
 #include <set>
 #include <queue>
@@ -39,12 +40,26 @@ namespace rpqdb{
         string label;
         int dest;
     };
-            
+    
+    // Allow to fine tune the data structure for the result
+    class ReachablePairs {
+        private:
+            unordered_map<int, unordered_set<int>>result;
+
+        public:
+            void addPair(int x, int y) {
+                result[x].insert(y);
+            }
+    };
+
     // Graph class stores adjacency list representation
     class Graph {   
     public:
         unordered_map<int, vector<Edge>> adjList;
         unordered_set<int> vertices;
+        // directed graph, can leave empty
+        unordered_set<int> starting_vertices;
+        unordered_set<int> accepting_vertices;
 
         void addEdge(int v1, const string& label, int v2) {
             adjList[v1].push_back({label, v2});
@@ -87,10 +102,8 @@ namespace rpqdb{
         // Construct a product graph from a DFA
         Graph product(NFA& dfa) {
             Graph result;
-
             int product_vertex_id = 0;
 			unordered_map<StatePair, int> state_map;
-
             State * start1 = dfa.start_state;
             
             // Helper function to get or create a new state in the product NFA
@@ -109,6 +122,9 @@ namespace rpqdb{
 
             for (const auto& x : vertices) {
                 queue.push({start1, x});
+                // Get the corresponding state in the product NFA
+				int product_state = get_or_create_vertex(start1, x);
+                result.starting_vertices.insert(product_state);
             }
 
 			while (!queue.empty()) {
@@ -118,7 +134,10 @@ namespace rpqdb{
 
 				// Get the corresponding state in the product NFA
 				int current_product_state = get_or_create_vertex(current1, current2);
-	
+                if (current1->is_accepting) {
+                    result.accepting_vertices.insert(current_product_state);
+                }
+
 				// Process transitions
 				for (const auto& trans1 : current1->transitions) {
 					for (const auto& trans2 : adjList[current2]) {
@@ -136,6 +155,39 @@ namespace rpqdb{
 			}
 
 			return result;
+        }
+
+        // reachability algorithm that returns the set of i/o vertices reachable in the product graph
+        ReachablePairs reachable(Graph& product) {
+            ReachablePairs result;
+            // For each starting vertex, perform BFS to find reachable accepting vertices
+            for (int start : product.starting_vertices) {
+                std::unordered_set<int> visited;
+                std::queue<int> q;
+                
+                q.push(start);
+                visited.insert(start);
+                
+                while (!q.empty()) {
+                    int current = q.front();
+                    q.pop();
+                    
+                    // If current is an accepting state, record the (start, accept) pair
+                    if (product.accepting_vertices.count(current)) {
+                        result.addPair(start, current);
+                    }
+                    
+                    // Explore all neighbors
+                    for (const auto& edge : product.adjList.at(current)) {
+                        int neighbor = edge.dest;
+                        if (visited.count(neighbor) == 0) {
+                            visited.insert(neighbor);
+                            q.push(neighbor);
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         NFA constructDFA(int start_vertex, set<int> accepting_vertices) {
