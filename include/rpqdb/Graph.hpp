@@ -72,17 +72,25 @@ namespace rpqdb{
 
     // Graph class stores adjacency list representation
     class Graph {   
+    private:
+        int totalEdges = 0;
+        
+        void addEdge(int v1, const string& label, int v2) {
+            adjList[v1].push_back({label, v2});
+            vertices.insert(v1);
+            vertices.insert(v2);
+            totalEdges += 1;
+        }
+
     public:
         unordered_map<int, vector<Edge>> adjList;
         unordered_set<int> vertices;
         // directed graph, can leave empty
         unordered_set<int> starting_vertices;
         unordered_set<int> accepting_vertices;
-
-        void addEdge(int v1, const string& label, int v2) {
-            adjList[v1].push_back({label, v2});
-            vertices.insert(v1);
-            vertices.insert(v2);
+        
+        int getEdges() {
+            return totalEdges;
         }
     
         // A debug method for visualizing the content of the graph
