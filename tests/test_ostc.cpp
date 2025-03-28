@@ -14,16 +14,14 @@ int main(int argc, char **argv) {
     string mySrcDir = MY_SRC_DIR;
 
     graph.buildFromFile(mySrcDir + "/resources/graph_tc.txt", " ");
-    unordered_map<int, unordered_set<int>> ans = ostc(graph);
+    // unordered_map<int, unordered_set<int>> ans = ostc(graph);
 
-    for (const auto& [src, edges] : ans) {
-        // lookup for e in edges in E
-        std::cout << "Edge " << src << " : ";
-        for (const auto& e: edges) {
-            std::cout << e << ", ";
-        }
-        std::cout << std::endl;
-    }
+    graph.starting_vertices = {1, 2};
+    graph.accepting_vertices = {1, 2, 3, 4, 5};
+
+    graph.PG().print();
+    cout << endl;
+    PG(graph).print();
 
     return 0;
 }

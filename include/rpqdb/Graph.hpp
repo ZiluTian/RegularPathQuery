@@ -41,14 +41,32 @@ namespace rpqdb{
         int dest;
     };
     
-    // Allow to fine tune the data structure for the result
+    // Allow fine tuning the data structure for the result
     class ReachablePairs {
         private:
             unordered_map<int, unordered_set<int>>result;
 
         public:
+            // Constructor that takes an existing map
+            ReachablePairs(const std::unordered_map<int, std::unordered_set<int>>& initialResult)
+            : result(initialResult) {}  // Member initializer list copies the input
+
+            // Default constructor (optional)
+            ReachablePairs() = default;  // Creates empty map
+
             void addPair(int x, int y) {
                 result[x].insert(y);
+            }
+
+            void print() {
+                cout << "Reachable pairs" << endl;
+                for (const auto& [src, edges] : result) {
+                    cout << src << ": ";
+                    for (const auto& edge : edges) {
+                        cout << edge << ", ";
+                    }
+                    cout << endl;
+                }
             }
     };
 
@@ -69,6 +87,18 @@ namespace rpqdb{
     
         // A debug method for visualizing the content of the graph
         void print(){
+            cout << "Starting vertices: ";
+            for (const auto& n: starting_vertices) {
+                cout << n << ", ";
+            }
+            cout << endl;
+
+            cout << "Ending vertices: ";
+            for (const auto& n: accepting_vertices) {
+                cout << n << ", ";
+            }
+            cout << endl;
+        
             for (const auto& [src, edges] : adjList) {
                 cout << src << ": ";
                 for (const auto& edge : edges) {
@@ -158,10 +188,10 @@ namespace rpqdb{
         }
 
         // reachability algorithm that returns the set of i/o vertices reachable in the product graph
-        ReachablePairs reachable(Graph& product) {
+        ReachablePairs PG() {
             ReachablePairs result;
             // For each starting vertex, perform BFS to find reachable accepting vertices
-            for (int start : product.starting_vertices) {
+            for (int start : starting_vertices) {
                 std::unordered_set<int> visited;
                 std::queue<int> q;
                 
@@ -173,12 +203,12 @@ namespace rpqdb{
                     q.pop();
                     
                     // If current is an accepting state, record the (start, accept) pair
-                    if (product.accepting_vertices.count(current)) {
+                    if (accepting_vertices.count(current)) {
                         result.addPair(start, current);
                     }
                     
                     // Explore all neighbors
-                    for (const auto& edge : product.adjList.at(current)) {
+                    for (const auto& edge : adjList.at(current)) {
                         int neighbor = edge.dest;
                         if (visited.count(neighbor) == 0) {
                             visited.insert(neighbor);
