@@ -11,37 +11,42 @@ def gen_edges(vertex, labels):
         ans += f"{vertex} {l} {vertex+1}\n"
     return ans
 
-def generate(graph_type, graph_size, file_name):
+def gen_path(graph_size, file_name):
     vid = 1
-    labels = ["a", "b"]
-    if graph_type == 2:
-        labels = ["b", "c"]
-    elif not graph_type == 1:
-        print("Unrecognized graph type!")
-        return
-    
     with open(file_name, "w") as file:
         print("Write to " + file_name)
         while (vid < graph_size):
-            file.write(gen_edges(vid, labels))
+            file.write(f"{vid} b {vid+1}\n")
             vid += 1
-        # Connect the last tail element with the head
-        for l in labels:
-            file.write(f"{vid} {l} 1\n")
+
+def gen_disjoint_cycles(cycle_size, num_cycles, file_name):
+    labels = ["b", "c"]
+
+    with open(file_name, "w") as file:
+        for i in range(num_cycles):
+            init_vid = 1 + i * cycle_size 
+            for i in range(init_vid, init_vid + cycle_size-1):
+                file.write(gen_edges(i, labels))
+            # Connect the last element to head
+            for l in labels:
+                file.write(f"{init_vid + cycle_size - 1} {l} {init_vid}\n")
 
 if (__name__ == "__main__"):
         # Get user input
         if len(sys.argv) > 1:
             graph_type = int(sys.argv[1])
             graph_size = int(sys.argv[2])
-            graph_file_name = f"graph_tc_{graph_type}_{graph_size}.txt"
-            print(f"The graph will be saved as {graph_file_name} in resources/")            
+            graph_file_name = save_dir+f"graph_tc_{graph_type}_{graph_size}.txt"
+            print(f"The graph will be saved as {graph_file_name}")            
             
-            if os.path.exists(save_dir+graph_file_name):
-                print(f"Graph file {graph_file_name} exists in {save_dir}!")
+            if os.path.exists(graph_file_name):
+                print(f"Graph file {graph_file_name} exists!")
                 exit()
             else:
-                generate(graph_type, graph_size, save_dir + graph_file_name)
+                if (graph_type == 1):
+                    gen_path(graph_size, graph_file_name)
+                else:
+                    gen_disjoint_cycles(graph_size, 2, graph_file_name)
         else:
             print("No input provided. Please pass the graph type, size, and file name as command-line arguments.")
             exit()
