@@ -36,7 +36,11 @@ if (__name__ == "__main__"):
         if len(sys.argv) > 1:
             graph_type = int(sys.argv[1])
             graph_size = int(sys.argv[2])
-            graph_file_name = save_dir+f"graph_tc_{graph_type}_{graph_size}.txt"
+            if (graph_type == 1):
+                graph_file_name = save_dir+f"path_{graph_size}.txt"
+            elif (graph_type == 2):
+                graph_file_name = save_dir+f"disjoint_cycles_{graph_size}.txt"
+
             print(f"The graph will be saved as {graph_file_name}")            
             
             if os.path.exists(graph_file_name):
