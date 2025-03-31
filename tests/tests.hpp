@@ -1,4 +1,7 @@
 #include <iostream>
+#include <chrono>
+
+using namespace std::chrono;
 
 // Simple testing framework
 #define ASSERT_EQ(actual, expected) \
@@ -26,3 +29,12 @@
     } else { \
         std::cerr << "Test failed: " << #test << std::endl; \
     }
+
+template<typename Func, typename... Args>
+long long benchmark(Func func, Args&&... args) {
+    auto start = high_resolution_clock::now();
+    func(std::forward<Args>(args)...);  // Execute the function
+    auto end = high_resolution_clock::now();
+    return duration_cast<milliseconds>(end - start).count();
+}
+    

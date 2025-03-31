@@ -195,17 +195,33 @@ namespace rpqdb{
 			return result;
         }
 
+
         // reachability algorithm that returns the set of i/o vertices reachable in the product graph
         ReachablePairs PG() {
             ReachablePairs result;
+            // if (size(starting_vertices) == 0 || size(accepting_vertices) == 0) {
+            //     return result;
+            // }
+            // if (adjList.empty()){
+            //     return result;
+            // }
+
+            unordered_set<int> visited;
+            // std::vector<bool> visited(adjList.size(), false);
+
             // For each starting vertex, perform BFS to find reachable accepting vertices
             for (int start : starting_vertices) {
-                std::unordered_set<int> visited;
+                if (visited.count(start)){
+                // if (visited[start]){
+                    continue;
+                }
+
                 std::queue<int> q;
                 
                 q.push(start);
                 visited.insert(start);
-                
+                // visited[start] = true;
+
                 while (!q.empty()) {
                     int current = q.front();
                     q.pop();
@@ -216,9 +232,11 @@ namespace rpqdb{
                     }
                     
                     // Explore all neighbors
-                    for (const auto& edge : adjList.at(current)) {
+                    for (const auto& edge : adjList[current]) {
                         int neighbor = edge.dest;
-                        if (visited.count(neighbor) == 0) {
+                        if (neighbor < visited.size() && !visited.count(neighbor)) {
+                        // if (neighbor < visited.size() && !visited[neighbor]) {
+                            // visited[neighbor] = true;
                             visited.insert(neighbor);
                             q.push(neighbor);
                         }
