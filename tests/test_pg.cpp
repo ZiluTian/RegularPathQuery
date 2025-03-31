@@ -14,7 +14,6 @@ void example61() {
     string query = "b*c";
     NFA query_dfa = post2nfa(re2post(query)).getDFA();    
 
-    // Benchmark results storage
     vector<tuple<int, long long, long long, long long>> results; 
     for (int size : sizes) {
         Graph graph;
@@ -45,18 +44,11 @@ void example61() {
     return;
 }
 
-// 10              0                             0               0
-// 100             0                             0               1
-// 1000            1                             4               12
-// 10000           19                            49              127
-// 100000          197                           533             1282
-
 void example62() {
     std::vector<int> sizes = {10, 100, 1000, 10000, 100000};
     string query = "ab*c";
     NFA query_dfa = post2nfa(re2post(query)).getDFA();    
 
-    // Benchmark results storage
     vector<tuple<int, long long, long long, long long>> results;  
     for (int size : sizes) {
         // cout << "Run example 6.2 with size " << size << endl;
