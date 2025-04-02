@@ -22,7 +22,7 @@ namespace rpqdb {
     // R^0(X, Y) = delta R^0(X, Y)
     // T^0(X, Z) = Ea(X, a, Y) and R^0(Y, Z)
     // 
-    // i = 0; repeat until delta T^i = \empty
+    // i = 0; repeat until delta R^i = \empty
     //  i += 1
     //  delta R^i(X, Z)  = Eb(X, b, Y) and delta R^{i-1}(Y, Z) and not R^{i-1}(X, Z)
     //  R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
@@ -66,15 +66,6 @@ namespace rpqdb {
             Ec[vertex] = {vertex};
         }
 
-        // All other edges correspond to edges with label b
-        for (const auto& [src, edges] : product.adjList) {
-            // unordered_set<int> dst_set;
-            for (const Edge& e : edges) {
-                // dst_set.insert(e.dest); 
-                Eb_reverse[e.dest].insert(src);
-            }
-        }
-
         auto init_edges = high_resolution_clock::now();
         auto init_edges_duration = duration_cast<milliseconds>(init_edges - start).count();
         logger.end_and_start_event("PG_init_relation");
@@ -83,14 +74,25 @@ namespace rpqdb {
         delta_R_prev = Ec;
         R_prev = Ec;
         
-        // T^0 = Ea(X,a,Y), R^0(Y, Z)
-        for (const auto& [x, ys] : Ea) {
-            for (const auto& y: ys) {
-                auto zs = R_prev[y];
+        // T^0(X, Z) = Ea(X,a,X), R^0(X, Z)
+        for (const auto& [x, zs]: R_prev) {
+            if (Ea.count(x) > 0) {
                 for (const auto& z: zs) {
                     T_prev[x].insert(z);
                 }
-            }    
+            }
+        }
+
+        // Build Eb_reverse jit
+        if (size(delta_R_prev) > 0) {
+            // All other edges correspond to edges with label b
+            for (const auto& [src, edges] : product.adjList) {
+                // unordered_set<int> dst_set;
+                for (const Edge& e : edges) {
+                    // dst_set.insert(e.dest); 
+                    Eb_reverse[e.dest].insert(src);
+                }
+            }
         }
 
         auto init_relations = high_resolution_clock::now();
@@ -144,7 +146,7 @@ namespace rpqdb {
         }
 
         logger.end_event();
-        logger.print();
+        // logger.print();
         auto end = high_resolution_clock::now();
         auto recursion_time = duration_cast<milliseconds>(end - init_relations).count();
         auto total = duration_cast<milliseconds>(end - start).count();
@@ -266,16 +268,6 @@ namespace rpqdb {
             Ec[vertex] = {vertex};
             degree[vertex] = 1;
         }
-
-        // All other edges correspond to edges with label b
-        for (const auto& [src, edges] : product.adjList) {
-            // unordered_set<int> dst_set;
-            for (const Edge& e : edges) {
-                // dst_set.insert(e.dest); 
-                Eb_reverse[e.dest].insert(src);
-            }
-        }
-
         
         // fast lookup on the first column of Eb
         unordered_map<int, unordered_set<int>> Eb; 
@@ -287,6 +279,18 @@ namespace rpqdb {
         // The degree condition is trivially satisfied
         delta_R_prev = Ec;
         R_prev = Ec;
+
+        // Build Eb_reverse jit
+        if (size(delta_R_prev) > 0) {
+            // All other edges correspond to edges with label b
+            for (const auto& [src, edges] : product.adjList) {
+                // unordered_set<int> dst_set;
+                for (const Edge& e : edges) {
+                    // dst_set.insert(e.dest); 
+                    Eb_reverse[e.dest].insert(src);
+                }
+            }
+        }
 
         // Compute R(X, Y) satisfying degree(X) < bound
         while (size(delta_R_prev) > 0) {
