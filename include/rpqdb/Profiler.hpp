@@ -8,6 +8,8 @@
 #include <mutex>
 #include <vector>
 #include <stack>
+#include <ctime>
+#include <iomanip>
 
 using namespace std;
 using namespace std::chrono;
@@ -18,6 +20,19 @@ namespace rpqdb {
         duration<double> duration;
     };
     
+    void log_time_human(const steady_clock::time_point& tp) {
+        // Convert steady_clock to system_clock for calendar time
+        auto system_now = system_clock::now() + duration_cast<system_clock::duration>(tp - steady_clock::now());
+        time_t time = system_clock::to_time_t(system_now);
+        
+        // Format as local time
+        cout << "[" << put_time(localtime(&time), "%Y-%m-%d %H:%M:%S");
+        
+        // Add milliseconds
+        auto ms = duration_cast<milliseconds>(tp.time_since_epoch()) % 1000;
+        cout << "." << setfill('0') << setw(3) << ms.count() << "] ";
+    }
+
     class EventProfiler {
         static unordered_map<string, vector<ProfileEvent>> profile_data;
         static mutex mtx;
@@ -33,11 +48,13 @@ namespace rpqdb {
 
         // Start a local event (automatically tracked in stack)
         static void start_local(const string& name) {
+            auto now = steady_clock::now();
             lock_guard<mutex> lock(mtx);
             if (verbose) {
+                log_time_human(now);
                 cout << "Start event " << name << endl;
             }
-            local_stack.push({name, steady_clock::now()});
+            local_stack.push({name, now});
         }
     
         // End the most recent local event
@@ -60,15 +77,18 @@ namespace rpqdb {
     
         // Start a named event (must be ended explicitly)
         static void start_event(const string& name) {
+            auto now = steady_clock::now();
+
             if (verbose) {
-                cout << "Start event " << name << endl;
+                log_time_human(now);
+                cout << " start event " << name << endl;
             }
             lock_guard<mutex> lock(mtx);
             if (active_events.count(name)) {
                 cerr << "Warning: Event '" << name << "' already started\n";
                 return;
             }
-            active_events[name] = steady_clock::now();
+            active_events[name] = now;
         }
     
         // End a named event
