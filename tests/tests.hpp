@@ -37,4 +37,3 @@ long long benchmark(Func func, Args&&... args) {
     auto end = high_resolution_clock::now();
     return duration_cast<milliseconds>(end - start).count();
 }
-    

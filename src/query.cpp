@@ -3,11 +3,7 @@
 #include <cmath>
 #include "rpqdb/Graph.hpp"
 #include "rpqdb/NFA.hpp"
-#include "rpqdb/Logger.hpp"
-
-using namespace std::chrono;
-
-// Logger logger;
+#include "rpqdb/Profiler.hpp"
 
 namespace rpqdb {
     using namespace std;
@@ -30,9 +26,6 @@ namespace rpqdb {
     //  T^i(X, Y) = T^{i-1}(X, Y) or delta T^i(X, Y)
     // return T^i
     ReachablePairs PG(Graph& product) {
-        logger.start_event("PG_init_edges");
-        auto start = high_resolution_clock::now();
-
         unordered_map<int, unordered_set<int>> Ea;
         unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
         unordered_map<int, unordered_set<int>> Ec;
@@ -57,6 +50,7 @@ namespace rpqdb {
             }
         };
 
+        START_LOCAL("PG semi-naive (Ea, Ec)");
         // Add self-loops corresponding to edges with label a
         for (const auto& vertex : product.starting_vertices) {
             Ea[vertex] = {vertex};
@@ -65,15 +59,12 @@ namespace rpqdb {
         for (const auto& vertex : product.accepting_vertices) {
             Ec[vertex] = {vertex};
         }
-
-        auto init_edges = high_resolution_clock::now();
-        auto init_edges_duration = duration_cast<milliseconds>(init_edges - start).count();
-        logger.end_and_start_event("PG_init_relation");
+        END_LOCAL();
 
         // delta R_0 and R_0
+        START_LOCAL("PG semi-naive (delta_R0, R0, T0, E_reverse)");
         delta_R_prev = Ec;
         R_prev = Ec;
-        
         // T^0(X, Z) = Ea(X,a,X), R^0(X, Z)
         for (const auto& [x, zs]: R_prev) {
             if (Ea.count(x) > 0) {
@@ -94,12 +85,9 @@ namespace rpqdb {
                 }
             }
         }
-
-        auto init_relations = high_resolution_clock::now();
-        auto init_relations_duration = duration_cast<milliseconds>(init_relations - init_edges).count();
-
-        logger.end_and_start_event("PG_recursion");
-
+        END_LOCAL();
+        
+        START_LOCAL("PG semi-naive (R, T)");
         // R is the only recursive relation. If no more delta_R relation can be derived, then there is also no more delta_T relation
         while (size(delta_R_prev) > 0) {
             unordered_map<int, unordered_set<int>> delta_R;
@@ -144,13 +132,7 @@ namespace rpqdb {
             }
             T_prev = T;
         }
-
-        logger.end_event();
-        // logger.print();
-        auto end = high_resolution_clock::now();
-        auto recursion_time = duration_cast<milliseconds>(end - init_relations).count();
-        auto total = duration_cast<milliseconds>(end - start).count();
-        cout << "PG: " << init_edges_duration << " " << init_relations_duration << " " << recursion_time << " total: " << total  << endl;
+        END_LOCAL();
         return ReachablePairs(T);
     }
 
@@ -222,8 +204,6 @@ namespace rpqdb {
     }
 
     ReachablePairs OSPG(Graph& product) {
-        auto start = high_resolution_clock::now();
-
         // A bound for heavy/light partition of R
         int bound = std::floor(std::sqrt(product.getEdges()))+1;
 
@@ -241,7 +221,6 @@ namespace rpqdb {
         unordered_map<int, unordered_set<int>> Q_light;
         unordered_map<int, unordered_set<int>> Q_heavy;
 
-        
         // per x, the number of unique ys satisfying R
         unordered_map<int, int> degree;
 
@@ -259,6 +238,7 @@ namespace rpqdb {
             }
         };
 
+        START_LOCAL("OSPG (Ea, Ec)");
         // Add self-loops corresponding to edges with label a
         for (const auto& vertex : product.starting_vertices) {
             Ea[vertex] = {vertex};
@@ -269,13 +249,11 @@ namespace rpqdb {
             degree[vertex] = 1;
         }
         
+        END_LOCAL();
         // fast lookup on the first column of Eb
         unordered_map<int, unordered_set<int>> Eb; 
-
-        auto init_edges = high_resolution_clock::now();
-        auto init_edges_duration = duration_cast<milliseconds>(init_edges - start).count();
-
                 
+        START_LOCAL("OSPG (delta_R, R0, Eb_reverse)");
         // The degree condition is trivially satisfied
         delta_R_prev = Ec;
         R_prev = Ec;
@@ -292,6 +270,9 @@ namespace rpqdb {
             }
         }
 
+        END_LOCAL();
+
+        START_LOCAL("OSPG (R)");
         // Compute R(X, Y) satisfying degree(X) < bound
         while (size(delta_R_prev) > 0) {
             unordered_map<int, unordered_set<int>> delta_R;
@@ -324,11 +305,9 @@ namespace rpqdb {
             R_prev = R;
             delta_R_prev = delta_R;
         }
+        END_LOCAL();
 
-        auto init_Rxy = high_resolution_clock::now();
-        auto init_Rxy_duration = duration_cast<milliseconds>(init_Rxy - init_edges).count();
-
-        // Compute R_l and R_h
+        START_LOCAL("OSPG (Rl, Rh)");
         for (const auto& [x, y]: degree) {
             if (y == bound) {
                 R_heavy.insert(x);
@@ -336,10 +315,9 @@ namespace rpqdb {
                 R_light[x] = R[x];
             }
         }
+        END_LOCAL();
 
-        auto init_Rl_Rh = high_resolution_clock::now();
-        auto init_Rl_Rh_duration = duration_cast<milliseconds>(init_Rl_Rh - init_Rxy).count();
-
+        START_LOCAL("OSPG (Ql)");
         // Compute Q_light (change the join order)
         // Ea is symmetric (Ql(X, Y) :- Rl(X, Y), Ea(X, X).)
         for (const auto& [x, ys] : R_light) {
@@ -349,33 +327,24 @@ namespace rpqdb {
                 }
             }
         }
-
-        // // Compute Q_light 
-        // for (const auto& [x, zs] : Ea) {
-        //     for (const auto& z: zs) {
-        //         for (const auto& y: R_light[z]) {
-        //             Q_light[x].insert(y);
-        //         }
-        //     }
-        // }
-
-        auto compute_Ql = high_resolution_clock::now();
-        auto compute_Ql_duration = duration_cast<milliseconds>(compute_Ql - init_Rl_Rh).count();
+        END_LOCAL();
 
         // Compute T using semi-naive
         unordered_map<int, unordered_set<int>> T;
         unordered_map<int, unordered_set<int>> T_prev;
         unordered_map<int, unordered_set<int>> delta_T_prev;
-        
+
+        START_LOCAL("OSPG (delta_T0, T0)");
         // delta T^0(Y, Y) :- R_heavy(Y), Ea(Y, Y) 
         for (const auto& y: R_heavy) {
             if (Ea.count(y) > 0) {
                 delta_T_prev[y].insert(y);
             }
         }
-
         T_prev = delta_T_prev;
+        END_LOCAL();
 
+        START_LOCAL("OSPG (Eb)");
         // Build Eb only if delta_T_prev is greater than 0
         if (size(delta_T_prev) > 0) {
             for (const auto& [src, edges] : product.adjList) {
@@ -386,7 +355,9 @@ namespace rpqdb {
                 }
             }
         }
+        END_LOCAL();
 
+        START_LOCAL("OSPG (T)");
         while (size(delta_T_prev) > 0) {
             unordered_map<int, unordered_set<int>> delta_T;
             // delta T^i(X, Y)  = delta T^{i-1}(X, Z) and Eb(Z, b, Y) and not T^{i-1}(X, Y)
@@ -409,11 +380,9 @@ namespace rpqdb {
             T_prev = T;
             delta_T_prev = delta_T;
         }
-        
-        auto compute_T = high_resolution_clock::now();
-        auto compute_T_duration = duration_cast<milliseconds>(compute_T - compute_Ql).count();
+        END_LOCAL();
 
-        // Compute Q_heavy
+        START_LOCAL("OSPG (Qh)");
         for (const auto& [x, zs] : T) {
             for (const auto& z: zs) {
                 for (const auto& y: Ec[z]) {
@@ -421,18 +390,11 @@ namespace rpqdb {
                 }
             }
         }
+        END_LOCAL();
 
-        auto compute_Qh = high_resolution_clock::now();
-        auto compute_Qh_duration = duration_cast<milliseconds>(compute_Qh - compute_T).count();
-
-        // Union of Q_heavy and Q_light
+        START_LOCAL("OSPG (Ql + Qh)");
         Q_heavy.insert(Q_light.begin(), Q_light.end());
-
-        auto end = high_resolution_clock::now();
-        auto merge_Ql_Qh = duration_cast<milliseconds>(end - compute_Qh).count();
-        auto total = duration_cast<milliseconds>(end - start).count();
-        
-        cout << "OSPG: " << init_edges_duration << " " << init_Rxy_duration << " " << init_Rl_Rh_duration << " " << compute_Ql_duration << " " << compute_T_duration << " " << compute_Qh_duration << " " << merge_Ql_Qh << " total: " << total << endl; 
+        END_LOCAL();
         return ReachablePairs(Q_heavy);
     }
 

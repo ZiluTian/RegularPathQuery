@@ -16,6 +16,7 @@
 #include <algorithm>
 
 #include "NFA.hpp"
+#include "Profiler.hpp"
 
 // Custom hash for StatePair
 using StatePair = std::pair<rpqdb::State*, int>;
@@ -195,16 +196,16 @@ namespace rpqdb{
 			return result;
         }
 
-
-        // reachability algorithm that returns the set of i/o vertices reachable in the product graph
         ReachablePairs PG() {
+            START_LOCAL("BFS");
+
             ReachablePairs result;
-            // if (size(starting_vertices) == 0 || size(accepting_vertices) == 0) {
-            //     return result;
-            // }
-            // if (adjList.empty()){
-            //     return result;
-            // }
+            if (size(starting_vertices) == 0 || size(accepting_vertices) == 0) {
+                return result;
+            }
+            if (adjList.empty()){
+                return result;
+            }
 
             unordered_set<int> visited;
             // std::vector<bool> visited(adjList.size(), false);
@@ -243,6 +244,48 @@ namespace rpqdb{
                     }
                 }
             }
+
+            END_LOCAL();
+            return result;
+        }
+
+        ReachablePairs PGNaive() {
+            START_LOCAL("BFS-Naive");
+            ReachablePairs result;
+            unordered_set<int> visited;
+
+            // For each starting vertex, perform BFS to find reachable accepting vertices
+            for (int start : starting_vertices) {
+                if (visited.count(start)){
+                    continue;
+                }
+
+                std::queue<int> q;
+                
+                q.push(start);
+                visited.insert(start);
+
+                while (!q.empty()) {
+                    int current = q.front();
+                    q.pop();
+                    
+                    // If current is an accepting state, record the (start, accept) pair
+                    if (accepting_vertices.count(current)) {
+                        result.addPair(start, current);
+                    }
+                    
+                    // Explore all neighbors
+                    for (const auto& edge : adjList[current]) {
+                        int neighbor = edge.dest;
+                        if (neighbor < visited.size() && !visited.count(neighbor)) {
+                            visited.insert(neighbor);
+                            q.push(neighbor);
+                        }
+                    }
+                }
+            }
+
+            END_LOCAL();
             return result;
         }
 
