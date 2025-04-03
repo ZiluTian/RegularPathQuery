@@ -70,6 +70,7 @@ namespace rpqdb {
             
             auto end = steady_clock::now();
             if (verbose) {
+                log_time_human(end);
                 cout << "End event " << name << endl;
             }
             profile_data[name].push_back({name, end - start});
@@ -103,6 +104,7 @@ namespace rpqdb {
             auto end = steady_clock::now();
             profile_data[name].push_back({name, end - it->second});
             if (verbose) {
+                log_time_human(end);
                 cout << "End event " << name << endl;
             }
             active_events.erase(it);
