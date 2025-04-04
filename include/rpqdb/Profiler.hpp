@@ -12,6 +12,7 @@
 #include <stack>
 #include <ctime>
 #include <iomanip>
+#include <sys/stat.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -140,7 +141,7 @@ namespace rpqdb {
                      << total_ms/events.size() << "ms avg\n";
             }
         }
-        
+
         static void export_to_file(const string& new_filename = "profile.dat") {
             namespace fs = std::filesystem;
     
@@ -148,12 +149,15 @@ namespace rpqdb {
             string timestamp = generate_timestamp();
         
             // Rename existing file if it exists
-            if (fs::exists(new_filename)) {
+            struct stat buffer;
+            if (stat(new_filename.c_str(), &buffer) == 0) {
                 try {
                     string backup_filename = new_filename + timestamp;
-                    fs::rename(new_filename, backup_filename);
+                    if (std::rename(new_filename.c_str(), backup_filename.c_str()) != 0) {
+                        throw runtime_error("Failed to rename existing file: " + new_filename);
+                    }
                     cout << "Existing profile.dat renamed to: " << backup_filename << endl;
-                } catch (const fs::filesystem_error& e) {
+                } catch (const std::runtime_error& e) {
                     throw runtime_error("Failed to rename existing file: " + string(e.what()));
                 }
             }
