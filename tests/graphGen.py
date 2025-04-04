@@ -11,13 +11,24 @@ def gen_edges(vertex, labels):
         ans += f"{vertex} {l} {vertex+1}\n"
     return ans
 
-def gen_path(graph_size, file_name):
+# path where all edges labelled with b (b*)
+def gen_path_bs(graph_size, file_name):
     vid = 1
     with open(file_name, "w") as file:
         print("Write to " + file_name)
         while (vid < graph_size):
             file.write(f"{vid} b {vid+1}\n")
             vid += 1
+
+# path where all edges labelled with b except the last one (b*c)
+def gen_path_bsc(graph_size, file_name):
+    vid = 1
+    with open(file_name, "w") as file:
+        print("Write to " + file_name)
+        while (vid < graph_size-1):
+            file.write(f"{vid} b {vid+1}\n")
+            vid += 1
+        file.write(f"{vid} c {vid+1}")
 
 def gen_disjoint_cycles(cycle_size, num_cycles, file_name):
     labels = ["b", "c"]
@@ -40,6 +51,8 @@ if (__name__ == "__main__"):
                 graph_file_name = save_dir+f"path_{graph_size}.txt"
             elif (graph_type == 2):
                 graph_file_name = save_dir+f"disjoint_cycles_{graph_size}.txt"
+            elif (graph_type == 3):
+                graph_file_name = save_dir+f"pathbsc_{graph_size}.txt"
 
             print(f"The graph will be saved as {graph_file_name}")            
             
@@ -48,9 +61,12 @@ if (__name__ == "__main__"):
                 exit()
             else:
                 if (graph_type == 1):
-                    gen_path(graph_size, graph_file_name)
-                else:
+                    gen_path_bs(graph_size, graph_file_name)
+                elif (graph_type == 2):
                     gen_disjoint_cycles(graph_size, 2, graph_file_name)
+                elif (graph_type == 3):
+                    gen_path_bsc(graph_size, graph_file_name)
+
         else:
             print("No input provided. Please pass the graph type, size, and file name as command-line arguments.")
             exit()

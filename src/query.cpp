@@ -16,23 +16,18 @@ namespace rpqdb {
     // Initialization
     // delta R^0(X, Y) = Ec(X, c, Y)
     // R^0(X, Y) = delta R^0(X, Y)
-    // T^0(X, Z) = Ea(X, a, Y) and R^0(Y, Z)
     // 
     // i = 0; repeat until delta R^i = \empty
     //  i += 1
     //  delta R^i(X, Z)  = Eb(X, b, Y) and delta R^{i-1}(Y, Z) and not R^{i-1}(X, Z)
     //  R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
-    //  delta T^i(X, Z)  = Ea(X, a, Y) and delta R^{i}(Y, Z) and not T^{i-1}(X, Z)
-    //  T^i(X, Y) = T^{i-1}(X, Y) or delta T^i(X, Y)
-    // return T^i
-    ReachablePairs PG(Graph& product) {
+    ReachablePairs PG(Graph&& product) {
         unordered_map<int, unordered_set<int>> Ea;
         unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
         unordered_map<int, unordered_set<int>> Ec;
         unordered_map<int, unordered_set<int>> R;
         unordered_map<int, unordered_set<int>> T;
 
-        unordered_map<int, unordered_set<int>> T_prev;
         unordered_map<int, unordered_set<int>> R_prev;
         unordered_map<int, unordered_set<int>> delta_R_prev;
         
@@ -65,14 +60,6 @@ namespace rpqdb {
         START_LOCAL("PG semi-naive (delta_R0, R0, T0, E_reverse)");
         delta_R_prev = Ec;
         R_prev = Ec;
-        // T^0(X, Z) = Ea(X,a,X), R^0(X, Z)
-        for (const auto& [x, zs]: R_prev) {
-            if (Ea.count(x) > 0) {
-                for (const auto& z: zs) {
-                    T_prev[x].insert(z);
-                }
-            }
-        }
 
         // Build Eb_reverse jit
         if (size(delta_R_prev) > 0) {
@@ -87,7 +74,7 @@ namespace rpqdb {
         }
         END_LOCAL();
         
-        START_LOCAL("PG semi-naive (R, T)");
+        START_LOCAL("PG semi-naive (R)");
         // R is the only recursive relation. If no more delta_R relation can be derived, then there is also no more delta_T relation
         while (size(delta_R_prev) > 0) {
             unordered_map<int, unordered_set<int>> delta_R;
@@ -99,6 +86,7 @@ namespace rpqdb {
                     for (const auto& x: xs) {
                         if (negate_prev(R_prev, x, z)) {
                             delta_R[x].insert(z);
+                            // cout << "insert " << x << " " << z << " to deltaR" << endl;
                         }
                     }
                 }
@@ -111,26 +99,16 @@ namespace rpqdb {
             }
             R_prev = R;
             delta_R_prev = delta_R;
+        }
+        END_LOCAL();
 
-            //  delta T^i(X, Z) = Ea(X, a, Y) and delta R^{i}(Y, Z) and not T^{i-1}(X, Z)
-            unordered_map<int, unordered_set<int>> delta_T;
-            for (const auto& [x, ys] : Ea) {
-                for (const auto& y: ys) {
-                    auto zs = delta_R[y];
-                    for (const auto& z: zs) {
-                        if (negate_prev(T_prev, x, z)) {
-                            delta_T[x].insert(z);
-                        }
-                    }
-                }    
-            }
-
-            //  T^i(X, Y) = T^{i-1}(X, Y) or delta T^i(X, Y)
-            T = T_prev;
-            for (const auto& [src, edges] : delta_T) {
-                T[src].insert(edges.begin(), edges.end());
-            }
-            T_prev = T;
+        START_LOCAL("PG semi-naive (T)");
+        for (const auto& [x, ys] : Ea) {
+            for (const auto& y: ys) {
+                for (const auto& z : R[y]) {
+                    T[x].insert(z);
+                }
+            }    
         }
         END_LOCAL();
         return ReachablePairs(T);
@@ -203,7 +181,7 @@ namespace rpqdb {
         return T;
     }
 
-    ReachablePairs OSPG(Graph& product) {
+    ReachablePairs OSPG(Graph&& product) {
         // A bound for heavy/light partition of R
         int bound = std::floor(std::sqrt(product.getEdges()))+1;
 

@@ -37,24 +37,24 @@ class QueryGraphClass {
         END_LOCAL();
 
         START_LOCAL("Build product graph");
-        Graph product = graph.product(query_dfa);
+        Graph&& product = graph.product(query_dfa);
         END_LOCAL();
 
-        START_LOCAL("BFS total");
+        // START_LOCAL("BFS total");
         product.PG();
-        END_LOCAL();
+        // END_LOCAL();
     
-        START_LOCAL("BFS (naive) total");
+        // START_LOCAL("BFS (naive) total");
         product.PGNaive();
-        END_LOCAL();
+        // END_LOCAL();
 
-        START_LOCAL("Semi-naive PG total");
-        PG(product);
-        END_LOCAL();
+        // START_LOCAL("Semi-naive PG total");
+        PG(std::move(product));
+        // END_LOCAL();
 
-        START_LOCAL("OSPG total");
-        OSPG(product);
-        END_LOCAL();
+        // START_LOCAL("OSPG total");
+        OSPG(std::move(product));
+        // END_LOCAL();
     
         EventProfiler::export_to_file(profile_name);
         return;
@@ -64,10 +64,12 @@ class QueryGraphClass {
 int main(int argc, char **argv) {
     int size = 1000000;
 
-    QueryGraphClass ex61 = QueryGraphClass("b*c", "path_");
-    QueryGraphClass ex62 = QueryGraphClass("ab*c", "disjoint_cycles_");
-
-    ex61.run(1000000, "ex61profile_1m.dat");
-    ex62.run(1000000, "ex62profile_1m.dat");
+    QueryGraphClass ex = QueryGraphClass("b*c", "pathbsc_");
+    ex.run(size, "ex61bscprofile_1m.dat");
+    // ex.run(size, "ex61bscprofile_1m.dat");
+    // QueryGraphClass ex61 = QueryGraphClass("b*c", "path_");
+    // ex61.run(size, "ex61profile_1m.dat");
+    // // QueryGraphClass ex62 = QueryGraphClass("ab*c", "disjoint_cycles_");
+    // // ex62.run(size, "ex62profile_1m.dat");
     return 0;
 }
