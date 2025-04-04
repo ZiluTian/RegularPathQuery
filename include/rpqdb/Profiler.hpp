@@ -203,5 +203,8 @@ namespace rpqdb {
     
     #define START_EVENT(name) EventProfiler::start_event(name)
     #define END_EVENT(name) EventProfiler::end_event(name)
+
+    #define IGNORE(...)
+    #define VERSIONED_IMPLEMENTATION(...)
 }; 
 #endif

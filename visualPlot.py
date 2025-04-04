@@ -26,7 +26,11 @@ def plotExperiment(experiment):
 
     # Plot vertical bar chart
     plt.figure(figsize=(14, 6))
-    plt.bar(df['Event'], df['Duration'], color='steelblue')
+    bars = plt.bar(df['Event'], df['Duration'], color='steelblue')
+    for bar in bars:
+        yval = bar.get_height()  # Get the height of each bar (the value)
+        plt.text(bar.get_x() + bar.get_width() / 2, yval, round(yval, 2), ha='center', va='bottom', fontsize=10)
+
     plt.ylabel('Duration (ms)')
     plt.xlabel('Event')
     # plt.title('Event Durations')
@@ -41,6 +45,7 @@ def plotExperiment(experiment):
     plt.show()
 
 if (__name__ == "__main__"):
-    experiments = ["ex61profile_1m", "ex62profile_1m"]
+    size=1000000
+    experiments = [f"ex61profile_{size}", f"ex62profile_{size}", f"exbscprofile_{size}"]
     for exp in experiments:
         plotExperiment(exp)

@@ -65,11 +65,11 @@ int main(int argc, char **argv) {
     int size = 1000000;
 
     QueryGraphClass ex = QueryGraphClass("b*c", "pathbsc_");
-    ex.run(size, "ex61bscprofile_1m.dat");
-    // ex.run(size, "ex61bscprofile_1m.dat");
-    // QueryGraphClass ex61 = QueryGraphClass("b*c", "path_");
-    // ex61.run(size, "ex61profile_1m.dat");
-    // // QueryGraphClass ex62 = QueryGraphClass("ab*c", "disjoint_cycles_");
-    // // ex62.run(size, "ex62profile_1m.dat");
+    QueryGraphClass ex61 = QueryGraphClass("b*c", "path_");
+    QueryGraphClass ex62 = QueryGraphClass("ab*c", "disjoint_cycles_");
+
+    ex61.run(size, "ex61profile_" + to_string(size) + ".dat");
+    ex62.run(size, "ex62profile_"+ to_string(size) + ".dat");
+    ex.run(size, "exbscprofile_"+ to_string(size) + ".dat");
     return 0;
 }
