@@ -103,12 +103,11 @@ namespace rpqdb {
         END_LOCAL();
 
         START_LOCAL("PG semi-naive (T)");
-        for (const auto& [x, ys] : Ea) {
-            for (const auto& y: ys) {
-                for (const auto& z : R[y]) {
-                    T[x].insert(z);
-                }
-            }    
+        // T(X, Z) = Ea(X, a, X), R(X, Z)
+        for (const auto& [x, zs] : R) {
+            if (Ea.find(x)!=Ea.end()){
+                T[x].insert(zs.begin(), zs.end());
+            }
         }
         END_LOCAL();
         return ReachablePairs(T);
