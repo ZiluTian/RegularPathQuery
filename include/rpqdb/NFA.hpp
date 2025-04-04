@@ -10,6 +10,7 @@
 #include <set>
 #include <queue>
 #include <iostream>
+#include <memory>
 
 namespace rpqdb {
 	using namespace std;
@@ -320,7 +321,7 @@ namespace rpqdb {
 			cout << "NFA Visualization:\n";
 			cout << "[Starting] " << start_state << endl;
 			for (const auto& state : states) {
-				cout << "State " << state;
+				cout << "State " << state.get();
 				if (state->is_accepting) {
 					cout << " [Accepting]";
 				}
