@@ -16,7 +16,7 @@
 #include <algorithm>
 
 #include "NFA.hpp"
-#include "Profiler.hpp"
+#include "rpqdb/Profiler.hpp"
 
 // Custom hash for StatePair
 using StatePair = std::pair<rpqdb::State*, int>;
