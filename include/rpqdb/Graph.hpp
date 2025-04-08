@@ -227,7 +227,7 @@ namespace rpqdb{
             START_LOCAL("BFS");
 
             ReachablePairs result;
-            if (size(starting_vertices) == 0 || size(accepting_vertices) == 0) {
+            if (starting_vertices.empty() || accepting_vertices.empty()) {
                 return result;
             }
             if (adjList.empty()){

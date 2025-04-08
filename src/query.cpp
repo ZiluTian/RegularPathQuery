@@ -4,6 +4,7 @@
 #include "rpqdb/Graph.hpp"
 #include "rpqdb/NFA.hpp"
 #include "rpqdb/Profiler.hpp"
+#include <iterator>
 
 namespace rpqdb {
     using namespace std;
@@ -45,7 +46,7 @@ namespace rpqdb {
         R_prev = Ec;
 
         unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
-        if (size(delta_R_prev) > 0) {
+        if (!delta_R_prev.empty()) {
             // All other edges correspond to edges with label b
             for (const auto& [src, edges] : product.adjList) {
                 // unordered_set<int> dst_set;
@@ -65,7 +66,7 @@ namespace rpqdb {
                 auto xs = Eb_reverse[y];
                 for (const auto& x: xs) {
                     if (R_prev.find(x) == R_prev.end()) {
-                        delta_R[x].insert(zs.begin(), zs.end());
+                        delta_R[x] = zs;
                     } else {
                         for (const auto& z: zs) {
                             if (R_prev[x].find(z) == R_prev[x].end()) {
@@ -149,7 +150,7 @@ namespace rpqdb {
         R_prev = Ec;
 
         // Build Eb_reverse jit
-        if (size(delta_R_prev) > 0) {
+        if (!delta_R_prev.empty()) {
             // All other edges correspond to edges with label b
             for (const auto& [src, edges] : product.adjList) {
                 // unordered_set<int> dst_set;
@@ -163,17 +164,17 @@ namespace rpqdb {
 
         START_LOCAL("OSPG (R)");
         // Compute R(X, Y) satisfying degree(X) < bound
-        while (size(delta_R_prev) > 0) {
-            unordered_map<int, unordered_set<int>> delta_R;
+        unordered_map<int, unordered_set<int>> delta_R;
+        while (!delta_R_prev.empty()) {
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
             for (const auto& [y, zs] : delta_R_prev) {
                 // lookup tuples in Eb
-                for (const auto& z: zs) {
-                    auto xs = Eb_reverse[y];
-                    for (const auto& x: xs) {
+                auto xs = Eb_reverse[y];
+                for (const auto& x: xs) {
+                    for (const auto& z: zs) {
                         if (negate_prev(R_prev, x, z)) {
                             if (degree.count(x) > 0) {
-                                if (degree[x] <= bound) {
+                                if (degree[x] < bound) {
                                     delta_R[x].insert(z);
                                     degree[x] += 1;    
                                 }
@@ -185,12 +186,43 @@ namespace rpqdb {
                     }
                 }
             }
+
+            VERSIONED_IMPLEMENTATION("Too slow (189248 (below) vs 64 (above) for a neural net with 20000 vertices)", {
+                for (const auto& [y, zs] : delta_R_prev) {
+                    // lookup tuples in Eb
+                    auto xs = Eb_reverse[y];
+                    int zs_size = size(zs);
+                    for (const auto& x: xs) {
+                        if (R_prev.find(x) == R_prev.end()) {
+                            // degree will be 0
+                            if (zs_size <= bound) {
+                                delta_R[x] = zs;
+                                degree[x] = zs_size;
+                            } else {
+                                delta_R[x].insert(zs.begin(), std::next(zs.begin(), bound - 1)); // compared with delta_R[x]=z, the iterator-based merge is very expensive due to data movement, necessary for degree bound
+                                degree[x] = bound;
+                            }
+                        } else if (degree[x] == bound) {
+                            continue;
+                        } else {
+                            if (degree[x] + zs_size <= bound) {
+                                delta_R[x] = zs;
+                                degree[x] += zs_size;    
+                            } else {
+                                delta_R[x].insert(zs.begin(), std::next(zs.begin(), bound - degree[x] - 1));  
+                                degree[x] = bound;
+                            }
+                        }
+                    }
+                }
+            });
             
             // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
             for (const auto& [src, edges] : delta_R) {
                 R_prev[src].insert(edges.begin(), edges.end());
             }
             delta_R_prev = std::move(delta_R);
+            delta_R.clear();
         }
         R = std::move(R_prev);
         END_LOCAL();
@@ -234,7 +266,7 @@ namespace rpqdb {
 
         START_LOCAL("OSPG (Eb)");
         // Build Eb only if delta_T_prev is greater than 0
-        if (size(delta_T_prev) > 0) {
+        if (!delta_T_prev.empty()) {
             for (const auto& [src, edges] : product.adjList) {
                 // unordered_set<int> dst_set;
                 for (const Edge& e : edges) {
@@ -246,7 +278,7 @@ namespace rpqdb {
         END_LOCAL();
 
         START_LOCAL("OSPG (T)");
-        while (size(delta_T_prev) > 0) {
+        while (!delta_T_prev.empty()) {
             unordered_map<int, unordered_set<int>> delta_T;
             // delta T^i(X, Y)  = delta T^{i-1}(X, Z) and Eb(Z, b, Y) and not T^{i-1}(X, Y)
             for (const auto& [x, zs] : delta_T_prev) {
@@ -257,6 +289,18 @@ namespace rpqdb {
                             delta_T[x].insert(y);
                         }
                     }
+
+                    VERSIONED_IMPLEMENTATION("Inlined with bulk movement", {
+                        if (T_prev.find(x) == T_prev.end()) {
+                            delta_T[x].insert(ys.begin(), ys.end());
+                        } else {
+                            for (const auto& y: ys) {
+                                if (T_prev[x].find(y) == T_prev[x].end()) {
+                                    delta_T[x].insert(y);
+                                }
+                            }
+                        }
+                    });
                 }
             }
             
@@ -336,7 +380,7 @@ namespace rpqdb {
         delta_prev = E;
         T_prev = E;
         
-        while (size(delta_prev) > 0) {
+        while (!delta_prev.empty()) {
             unordered_map<int, unordered_set<int>> delta;
             for (const auto& [src, edges] : delta_prev) {
                 for (const auto& e: edges) {
