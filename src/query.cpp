@@ -40,14 +40,11 @@ namespace rpqdb {
         END_LOCAL();
 
         // delta R_0 and R_0
-        START_LOCAL("PG semi-naive (delta_R0, R0)");
+        START_LOCAL("PG semi-naive (delta_R0, R0, Eb_reverse)");
         delta_R_prev = Ec;
         R_prev = Ec;
-        END_LOCAL();
-        
-        START_LOCAL("PG semi-naive (R)");
-        unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
 
+        unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
         if (size(delta_R_prev) > 0) {
             // All other edges correspond to edges with label b
             for (const auto& [src, edges] : product.adjList) {
@@ -58,7 +55,9 @@ namespace rpqdb {
                 }
             }
         }
+        END_LOCAL();
 
+        START_LOCAL("PG semi-naive (R)");
         unordered_map<int, unordered_set<int>> delta_R;
         while (!delta_R_prev.empty()) {
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
@@ -144,7 +143,7 @@ namespace rpqdb {
         // fast lookup on the first column of Eb
         unordered_map<int, unordered_set<int>> Eb; 
                 
-        START_LOCAL("OSPG (delta_R, R0, Eb_reverse)");
+        START_LOCAL("OSPG (delta_R0, R0, Eb_reverse)");
         // The degree condition is trivially satisfied
         delta_R_prev = Ec;
         R_prev = Ec;
@@ -160,7 +159,6 @@ namespace rpqdb {
                 }
             }
         }
-
         END_LOCAL();
 
         START_LOCAL("OSPG (R)");
