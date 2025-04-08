@@ -138,6 +138,33 @@ namespace rpqdb{
             }
         }
 
+        // Serialization format: v1 label v2
+        void buildLabelledGraphFromFile(const string& filename, const string& separator) {
+            ifstream file(filename);
+            if (!file.is_open()) {
+                cerr << "Error: Unable to open file " << filename << " in the current directory." << endl;
+                return;
+            }
+            string line;
+            
+            while (getline(file, line)) {
+                size_t pos1 = line.find(separator);
+                size_t pos2 = line.rfind(separator);
+                if (pos1 != string::npos && pos2 != string::npos && pos1 != pos2) {
+                    int v1 = stoi(line.substr(0, pos1));
+                    string label = line.substr(pos1+1, pos2-pos1-1);
+                    int v2 = stoi(line.substr(pos2+1));
+                    addEdge(v1, label, v2);
+                    if (label == "a" && v1 == v2){
+                        starting_vertices.insert(v1);   
+                    }
+                    if (label == "c" && v1 == v2){
+                        accepting_vertices.insert(v1);   
+                    }
+                }
+            }
+        }
+
         // Construct a product graph from a DFA
         Graph product(NFA& dfa) {
             Graph result;

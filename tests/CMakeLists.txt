@@ -16,6 +16,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 add_executable(test_nfa test_nfa.cpp)
 add_executable(test_graph test_graph.cpp)
 add_executable(test_pg test_pg.cpp)
+add_executable(test_nn test_nn.cpp)
 
 add_definitions(-DMY_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 

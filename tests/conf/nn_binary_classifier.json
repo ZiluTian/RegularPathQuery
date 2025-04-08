@@ -1,6 +1,6 @@
 {
-    "graph_size": [10000, 90000], 
-    "output_graph": "resources/nn_2layers_binary_classifier_100000.txt",
+    "graph_size": [10000, 10000, 10000, 10000, 10000], 
+    "output_graph": "resources/nn_binary_classifier_50000.txt",
     "query": "ab*c",
     "generator": "gen_nn_binary_classifier",
     "gen_args": ["graph_size", "output_graph"]
