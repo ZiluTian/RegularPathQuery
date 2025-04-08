@@ -167,27 +167,43 @@ namespace rpqdb {
         unordered_map<int, unordered_set<int>> delta_R;
         while (!delta_R_prev.empty()) {
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
+            // 67ms (similar to below) for nn with 20000 vertices
             for (const auto& [y, zs] : delta_R_prev) {
                 // lookup tuples in Eb
                 auto xs = Eb_reverse[y];
                 for (const auto& x: xs) {
-                    for (const auto& z: zs) {
+                    int d = degree[x]; // create an entry with value 0 if not exists
+                    auto z_it = zs.begin();
+                    while ((d < bound) && (z_it!=zs.end())) {
+                        int z = *z_it;
                         if (negate_prev(R_prev, x, z)) {
-                            if (degree.count(x) > 0) {
+                            delta_R[x].insert(z);
+                            ++d; 
+                        }
+                        ++z_it;
+                    }
+                    degree[x] = d;
+                }
+            }
+
+            VERSIONED_IMPLEMENTATION("65ms for nn with 20000 vertices", {
+                for (const auto& [y, zs] : delta_R_prev) {
+                    // lookup tuples in Eb
+                    auto xs = Eb_reverse[y];
+                    for (const auto& x: xs) {
+                        for (const auto& z: zs) {
+                            if (negate_prev(R_prev, x, z)) {
                                 if (degree[x] < bound) {
                                     delta_R[x].insert(z);
                                     degree[x] += 1;    
                                 }
-                            } else {
-                                delta_R[x].insert(z);
-                                degree[x] = 1;   
                             }
-                        }
+                        } 
                     }
                 }
-            }
+            });
 
-            VERSIONED_IMPLEMENTATION("Too slow (189248 (below) vs 64 (above) for a neural net with 20000 vertices)", {
+            VERSIONED_IMPLEMENTATION("189248ms for nn with 20000 vertices", {
                 for (const auto& [y, zs] : delta_R_prev) {
                     // lookup tuples in Eb
                     auto xs = Eb_reverse[y];
