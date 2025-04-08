@@ -1,0 +1,7 @@
+{
+    "graph_size": [9000, 90000, 900, 100], 
+    "output_graph": "resources/cnn_100k_4layers.txt",
+    "query": "ab*c",
+    "generator": "gen_cnn",
+    "gen_args": ["graph_size", "output_graph"]
+}

@@ -1,0 +1,7 @@
+{
+    "graph_size": 1000000, 
+    "output_graph": "resources/path_1000000.txt",
+    "query": "b*",
+    "generator": "gen_path_bs",
+    "gen_args": ["graph_size", "outputgraph"]
+}
