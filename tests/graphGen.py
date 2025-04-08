@@ -33,7 +33,7 @@ def gen_path_bsc(graph_size, file_name):
 # nodes in the first layer are associated with a self-loop labelled with a
 # nodes in the last layer are associated with a self-loop labelled with c
 # edges connecting layers are labelled with b
-def gen_cnn(layers, file_name):
+def gen_nn(layers, file_name):
     S = layers[0]
     T = layers[-1]
     total_nodes = sum(layers)
@@ -49,8 +49,35 @@ def gen_cnn(layers, file_name):
         for i in range(S):
             f.write(f"{i} a {i}\n")
 
-        # Add a self-loop with label b on the target nodes
+        # Add a self-loop with label c on the target nodes
         for i in range(total_nodes - T, total_nodes):
+            f.write(f"{i} c {i}\n")
+
+        # Add edges with label b between intermediate nodes
+        for i in range(1, len(prefix_sum)-1):
+            for j in range(prefix_sum[i-1], prefix_sum[i]):
+                for k in range(prefix_sum[i], prefix_sum[i+1]):
+                    f.write(f"{j} b {k}\n")
+
+# only two nodes in the last layer are considered as accepting
+def gen_nn_binary_classifier(layers, file_name):
+    S = layers[0]
+    T = layers[-1]
+    total_nodes = sum(layers)
+
+    print(f"Write to {file_name} a {len(layers)}-layer graph with {S} source nodes, {T} target nodes, and {total_nodes} nodes")
+
+    with open(file_name, "w") as f:
+        prefix_sum = [0]
+        for p in layers:
+            prefix_sum.append(prefix_sum[-1] + p)
+
+        # Add a self-loop with label a on the source nodes
+        for i in range(S):
+            f.write(f"{i} a {i}\n")
+
+        # Add a self-loop with label c on the target nodes
+        for i in range(total_nodes - T, total_nodes - T + 2):
             f.write(f"{i} c {i}\n")
 
         # Add edges with label b between intermediate nodes
