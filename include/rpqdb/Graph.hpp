@@ -235,20 +235,27 @@ namespace rpqdb{
             }
 
             unordered_set<int> visited;
-            // std::vector<bool> visited(adjList.size(), false);
+
+            VERSIONED_IMPLEMENTATION("Using bit vector for visited is much faster than set, but not fair comparison with semi-naive and ospg", {
+                std::vector<bool> visited(adjList.size(), false);
+                if (visited[start]){
+                    ...
+                }
+                visited[start] = true;
+                if (neighbor < visited.size() && !visited[neighbor]) {
+                    visited[neighbor] = true;
+                    q.push(neighbor);
+            }});
 
             // For each starting vertex, perform BFS to find reachable accepting vertices
             for (int start : starting_vertices) {
                 if (visited.count(start)){
-                // if (visited[start]){
                     continue;
                 }
-
                 std::queue<int> q;
                 
                 q.push(start);
                 visited.insert(start);
-                // visited[start] = true;
 
                 while (!q.empty()) {
                     int current = q.front();
@@ -262,9 +269,7 @@ namespace rpqdb{
                     // Explore all neighbors
                     for (const auto& edge : adjList[current]) {
                         int neighbor = edge.dest;
-                        if (neighbor < visited.size() && !visited.count(neighbor)) {
-                        // if (neighbor < visited.size() && !visited[neighbor]) {
-                            // visited[neighbor] = true;
+                        if (!visited.count(neighbor)) {
                             visited.insert(neighbor);
                             q.push(neighbor);
                         }
@@ -304,7 +309,7 @@ namespace rpqdb{
                     // Explore all neighbors
                     for (const auto& edge : adjList[current]) {
                         int neighbor = edge.dest;
-                        if (neighbor < visited.size() && !visited.count(neighbor)) {
+                        if (!visited.count(neighbor)) {
                             visited.insert(neighbor);
                             q.push(neighbor);
                         }
