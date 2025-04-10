@@ -50,7 +50,7 @@ namespace rpqdb{
         public:
             // Constructor that takes an existing map
             ReachablePairs(const std::unordered_map<int, std::unordered_set<int>>& initialResult)
-            : result(initialResult) {}  // Member initializer list copies the input
+            : result(std::move(initialResult)) {}  // Member initializer list copies the input
 
             // Default constructor (optional)
             ReachablePairs() = default;  // Creates empty map
@@ -225,16 +225,15 @@ namespace rpqdb{
 
         ReachablePairs PG() {
             START_LOCAL("BFS");
+            // print();
+            unordered_map<int, unordered_set<int>> result;
 
-            ReachablePairs result;
             if (starting_vertices.empty() || accepting_vertices.empty()) {
-                return result;
+                return ReachablePairs();
             }
             if (adjList.empty()){
-                return result;
+                return ReachablePairs();
             }
-
-            unordered_set<int> visited;
 
             VERSIONED_IMPLEMENTATION("Using bit vector for visited is much faster than set, but not fair comparison with semi-naive and ospg", {
                 std::vector<bool> visited(adjList.size(), false);
@@ -249,40 +248,35 @@ namespace rpqdb{
 
             // For each starting vertex, perform BFS to find reachable accepting vertices
             for (const auto& start : starting_vertices) {
-                // cout << "Visit starting vertex " << start << endl;
-                if (visited.find(start) != visited.end()){
-                    continue;
-                }
+                unordered_set<int> visited;
                 std::queue<int> q;
+                std::unordered_set<int> accept_nodes;
                 q.push(start);
-                visited.insert(start);
 
                 while (!q.empty()) {
                     int current = q.front();
                     q.pop();
+                    visited.insert(current);
 
                     // Explore all neighbors
                     for (const auto& edge : adjList[current]) {
                         int neighbor = edge.dest;
-                        // cout << "Explore neighbor " << neighbor << endl;
-
-                        // If current is an accepting state, record the (start, accept) pair
-                        if (accepting_vertices.find(neighbor) != accepting_vertices.end()) {
-                            // cout << "Add pair (" << start << ", " << current << ")" << endl;
-                            result.addPair(start, neighbor);
-                        }
 
                         if (visited.find(neighbor) == visited.end()) { // not visited
-                            visited.insert(neighbor);
                             q.push(neighbor);
+                            if (accept_nodes.find(neighbor) == accept_nodes.end() && accepting_vertices.find(neighbor) != accepting_vertices.end()) {
+                                // cout << "Add pair (" << start << ", " << neighbor << ")" << endl;
+                                accept_nodes.insert(neighbor);
+                            }
                         }
                     }
                 }
+                result[start] = std::move(accept_nodes);
             }
             END_LOCAL();
             // cout << "BFS results" << endl;
-            // result.print();
-            return result;
+            // ReachablePairs(result).print();
+            return ReachablePairs(result);
         }
 
         NFA constructDFA(int start_vertex, set<int> accepting_vertices) {
