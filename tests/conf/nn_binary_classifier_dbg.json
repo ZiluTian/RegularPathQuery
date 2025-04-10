@@ -1,0 +1,7 @@
+{
+    "graph_size": [10, 10, 10], 
+    "output_graph": "resources/nn_binary_classifier_30.txt",
+    "query": "ab*c",
+    "generator": "gen_nn_binary_classifier",
+    "gen_args": ["graph_size", "output_graph"]
+}

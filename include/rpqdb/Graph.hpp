@@ -248,76 +248,40 @@ namespace rpqdb{
             }});
 
             // For each starting vertex, perform BFS to find reachable accepting vertices
-            for (int start : starting_vertices) {
-                if (visited.count(start)){
+            for (const auto& start : starting_vertices) {
+                // cout << "Visit starting vertex " << start << endl;
+                if (visited.find(start) != visited.end()){
                     continue;
                 }
                 std::queue<int> q;
-                
                 q.push(start);
                 visited.insert(start);
 
                 while (!q.empty()) {
                     int current = q.front();
                     q.pop();
-                    
-                    // If current is an accepting state, record the (start, accept) pair
-                    if (accepting_vertices.count(current)) {
-                        result.addPair(start, current);
-                    }
-                    
+
                     // Explore all neighbors
                     for (const auto& edge : adjList[current]) {
                         int neighbor = edge.dest;
-                        if (!visited.count(neighbor)) {
+                        // cout << "Explore neighbor " << neighbor << endl;
+
+                        // If current is an accepting state, record the (start, accept) pair
+                        if (accepting_vertices.find(neighbor) != accepting_vertices.end()) {
+                            // cout << "Add pair (" << start << ", " << current << ")" << endl;
+                            result.addPair(start, neighbor);
+                        }
+
+                        if (visited.find(neighbor) == visited.end()) { // not visited
                             visited.insert(neighbor);
                             q.push(neighbor);
                         }
                     }
                 }
             }
-
             END_LOCAL();
-            return result;
-        }
-
-        ReachablePairs PGNaive() {
-            START_LOCAL("BFS-Naive");
-            ReachablePairs result;
-            unordered_set<int> visited;
-
-            // For each starting vertex, perform BFS to find reachable accepting vertices
-            for (int start : starting_vertices) {
-                if (visited.count(start)){
-                    continue;
-                }
-
-                std::queue<int> q;
-                
-                q.push(start);
-                visited.insert(start);
-
-                while (!q.empty()) {
-                    int current = q.front();
-                    q.pop();
-                    
-                    // If current is an accepting state, record the (start, accept) pair
-                    if (accepting_vertices.count(current)) {
-                        result.addPair(start, current);
-                    }
-                    
-                    // Explore all neighbors
-                    for (const auto& edge : adjList[current]) {
-                        int neighbor = edge.dest;
-                        if (!visited.count(neighbor)) {
-                            visited.insert(neighbor);
-                            q.push(neighbor);
-                        }
-                    }
-                }
-            }
-
-            END_LOCAL();
+            // cout << "BFS results" << endl;
+            // result.print();
             return result;
         }
 

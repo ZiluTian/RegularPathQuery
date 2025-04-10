@@ -33,7 +33,8 @@ namespace rpqdb {
         
         START_LOCAL("PG semi-naive (Ea, Ec)");
         // Add self-loops corresponding to edges with label a
-        Ea = std::move(product.starting_vertices);
+        // create a copy, not move, since product is still used in later benchmark
+        Ea = product.starting_vertices;
         // Add self-loops corresponding to edges with label c
         for (const auto& vertex : product.accepting_vertices) {
             Ec[vertex] = {vertex};
@@ -59,30 +60,35 @@ namespace rpqdb {
         END_LOCAL();
 
         START_LOCAL("PG semi-naive (R)");
-        unordered_map<int, unordered_set<int>> delta_R;
         while (!delta_R_prev.empty()) {
+            unordered_map<int, unordered_set<int>> delta_R;
+
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
             for (const auto& [y, zs] : delta_R_prev) {
                 auto xs = Eb_reverse[y];
                 for (const auto& x: xs) {
                     if (R_prev.find(x) == R_prev.end()) {
+                        R_prev[x] = zs;
                         delta_R[x] = zs;
                     } else {
                         for (const auto& z: zs) {
                             if (R_prev[x].find(z) == R_prev[x].end()) {
                                 delta_R[x].insert(z);
+                                R_prev[x].insert(z);
                             }
                         }
                     }
                 }
             }
             
+            VERSIONED_IMPLEMENTATION("Inline update to R_prev to above", {
             // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
             for (const auto& [src, edges] : delta_R) {
                 R_prev[src].insert(edges.begin(), edges.end());
             }
+            });
+
             delta_R_prev = std::move(delta_R);
-            delta_R.clear();
         }
         R = std::move(R_prev);
         END_LOCAL();
@@ -91,10 +97,14 @@ namespace rpqdb {
         // T(X, Z) = Ea(X, a, X), R(X, Z)
         for (const auto& [x, zs] : R) {
             if (Ea.find(x)!=Ea.end()){
-                T[x].insert(zs.begin(), zs.end());
+                T[x] = zs;
             }
         }
         END_LOCAL();
+
+        // cout << "PG seminaive" << endl;
+        // auto result = ReachablePairs(T);
+        // result.print();
         return ReachablePairs(T);
     }
 
@@ -134,6 +144,13 @@ namespace rpqdb {
         };
 
         START_LOCAL("OSPG (Ea, Ec)");
+        Ea = product.starting_vertices;
+        // cout << "Ea has elements " << endl;
+        // for (auto c: Ea) {
+        //     cout << c << ", ";
+        // }
+        // cout << endl;
+
         // Add self-loops corresponding to edges with label c
         for (const auto& vertex : product.accepting_vertices) {
             Ec[vertex] = {vertex};
@@ -141,8 +158,6 @@ namespace rpqdb {
         }
         
         END_LOCAL();
-        // fast lookup on the first column of Eb
-        unordered_map<int, unordered_set<int>> Eb; 
                 
         START_LOCAL("OSPG (delta_R0, R0, Eb_reverse)");
         // The degree condition is trivially satisfied
@@ -164,8 +179,9 @@ namespace rpqdb {
 
         START_LOCAL("OSPG (R)");
         // Compute R(X, Y) satisfying degree(X) < bound
-        unordered_map<int, unordered_set<int>> delta_R;
         while (!delta_R_prev.empty()) {
+            unordered_map<int, unordered_set<int>> delta_R;
+
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
             // 67ms (similar to below) for nn with 20000 vertices
             for (const auto& [y, zs] : delta_R_prev) {
@@ -178,6 +194,7 @@ namespace rpqdb {
                         int z = *z_it;
                         if (negate_prev(R_prev, x, z)) {
                             delta_R[x].insert(z);
+                            R_prev[x].insert(z);
                             ++d; 
                         }
                         ++z_it;
@@ -233,19 +250,21 @@ namespace rpqdb {
                 }
             });
             
+            VERSIONED_IMPLEMENTATION("Inline update to R_prev", {
             // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
             for (const auto& [src, edges] : delta_R) {
                 R_prev[src].insert(edges.begin(), edges.end());
             }
+            });
+
             delta_R_prev = std::move(delta_R);
-            delta_R.clear();
         }
         R = std::move(R_prev);
         END_LOCAL();
 
         START_LOCAL("OSPG (Rl, Rh)");
         for (const auto& [x, y]: degree) {
-            if (y == bound) {
+            if (y >= bound) {
                 R_heavy.insert(x);
             } else {
                 R_light[x] = R[x];
@@ -253,17 +272,28 @@ namespace rpqdb {
         }
         END_LOCAL();
 
+        // cout << "R light" << endl;
+        // ReachablePairs(R_light).print();
+        // cout << "R heavy" << endl;
+        // for (auto i : R_heavy){
+        //     cout << i << " ";
+        // }
+        // cout << endl;
+
+        
         START_LOCAL("OSPG (Ql)");
         // Compute Q_light (change the join order)
         // Ea is symmetric (Ql(X, Y) :- Rl(X, Y), Ea(X, X).)
+        
         for (const auto& [x, ys] : R_light) {
-            if (Ea.find(x)!=Ea.end()) {
-                for (const auto& y: ys) {
-                    Q_light[x].insert(y);
-                }
+            if (Ea.count(x)) {
+                Q_light[x] = std::move(ys);
             }
         }
         END_LOCAL();
+
+        // cout << "Q light" << endl;
+        // ReachablePairs(Q_light).print();
 
         // Compute T using semi-naive
         unordered_map<int, unordered_set<int>> T;
@@ -277,10 +307,17 @@ namespace rpqdb {
                 delta_T_prev[y].insert(y);
             }
         }
+
+        // cout << "Delta T prev is" << endl;
+        // ReachablePairs(delta_T_prev).print();
+
         T_prev = delta_T_prev;
         END_LOCAL();
 
         START_LOCAL("OSPG (Eb)");
+        // fast lookup on the first column of Eb
+        unordered_map<int, unordered_set<int>> Eb; 
+
         // Build Eb only if delta_T_prev is greater than 0
         if (!delta_T_prev.empty()) {
             for (const auto& [src, edges] : product.adjList) {
@@ -297,34 +334,49 @@ namespace rpqdb {
         while (!delta_T_prev.empty()) {
             unordered_map<int, unordered_set<int>> delta_T;
             // delta T^i(X, Y)  = delta T^{i-1}(X, Z) and Eb(Z, b, Y) and not T^{i-1}(X, Y)
+            
             for (const auto& [x, zs] : delta_T_prev) {
                 for (const auto& z: zs) {
-                    auto ys = Eb[z];
-                    for (const auto& y: ys) {
-                        if (negate_prev(T_prev, x, y)) {
-                            delta_T[x].insert(y);
-                        }
-                    }
-
-                    VERSIONED_IMPLEMENTATION("Inlined with bulk movement", {
+                    if (Eb.find(z) != Eb.end()) {
+                        auto ys = Eb[z];
                         if (T_prev.find(x) == T_prev.end()) {
-                            delta_T[x].insert(ys.begin(), ys.end());
+                            delta_T[x] = ys;
+                            T_prev[x] = ys;
                         } else {
                             for (const auto& y: ys) {
                                 if (T_prev[x].find(y) == T_prev[x].end()) {
                                     delta_T[x].insert(y);
+                                    T_prev[x].insert(y);
                                 }
                             }
-                        }
-                    });
+                        }                            
+                    }
                 }
             }
-            
-            // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
-            for (const auto& [src, edges] : delta_T_prev) {
-                T_prev[src].insert(edges.begin(), edges.end());
-            }
-            delta_T_prev = delta_T;
+
+            VERSIONED_IMPLEMENTATION("Too slow, over an hour. auto ys = Eb[z] creates an empty entry if not found, not desirable", {
+            for (const auto& [x, zs] : delta_T_prev) {
+                for (const auto& z: zs) {
+                    auto ys = Eb[z]; 
+                    if (T_prev.find(x) == T_prev.end()) {
+                        delta_T[x] = ys;
+                    } else {
+                        for (const auto& y: ys) {
+                            if (T_prev[x].find(y) == T_prev[x].end()) {
+                                delta_T[x].insert(y);
+                            }
+                        }
+                    }
+                }
+            }});
+
+            VERSIONED_IMPLEMENTATION("Inline update to T_prev", {
+                // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
+                for (const auto& [src, edges] : delta_T) {
+                    T_prev[src].insert(edges.begin(), edges.end());
+                }   
+            });
+            delta_T_prev = std::move(delta_T);
         }
         T = std::move(T_prev);
         END_LOCAL();
@@ -340,9 +392,14 @@ namespace rpqdb {
         END_LOCAL();
 
         START_LOCAL("OSPG (Ql + Qh)");
-        Q_heavy.insert(Q_light.begin(), Q_light.end());
+        Q_light.insert(Q_heavy.begin(), Q_heavy.end());
+        // Q_heavy.insert(Q_light.begin(), Q_light.end());
         END_LOCAL();
-        return ReachablePairs(Q_heavy);
+
+        // cout << "OSPG results" << endl;
+        // auto result = ReachablePairs(Q_light);
+        // result.print();
+        return Q_light;
     }
 
     NFA query(NFA & data_nfa, const string& pattern) {
