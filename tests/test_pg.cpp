@@ -43,10 +43,6 @@ class QueryGraphClass {
         // START_LOCAL("BFS total");
         product.PG();
         // END_LOCAL();
-    
-        // START_LOCAL("BFS (naive) total");
-        product.PGNaive();
-        // END_LOCAL();
 
         // START_LOCAL("Semi-naive PG total");
         PG(std::move(product));
