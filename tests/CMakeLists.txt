@@ -12,11 +12,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
+
+
 # Add the test executable
 add_executable(test_nfa test_nfa.cpp)
 add_executable(test_graph test_graph.cpp)
 add_executable(test_pg test_pg.cpp)
 add_executable(test_nn test_nn.cpp)
+
+add_executable(test_view_update_dbg test_view_update.cpp)
+target_compile_definitions(test_view_update_dbg PRIVATE DEBUG)
+
+add_executable(test_view_update test_view_update.cpp)
+target_compile_definitions(test_view_update PRIVATE)
 
 add_definitions(-DMY_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
