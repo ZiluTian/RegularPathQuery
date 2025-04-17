@@ -17,6 +17,7 @@
 
 #include "NFA.hpp"
 #include "rpqdb/Profiler.hpp"
+#include <boost/container/flat_set.hpp>
 
 // Custom hash for StatePair
 using StatePair = std::pair<rpqdb::State*, int>;
@@ -46,11 +47,15 @@ namespace rpqdb{
     class ReachablePairs {
         private:
             unordered_map<int, unordered_set<int>>result;
+            unordered_map<int, boost::container::flat_set<int>>result2;
 
         public:
             // Constructor that takes an existing map
             ReachablePairs(const std::unordered_map<int, std::unordered_set<int>>& initialResult)
             : result(std::move(initialResult)) {}  // Member initializer list copies the input
+
+            ReachablePairs(const std::unordered_map<int, boost::container::flat_set<int>>& initialResult)
+            : result2(std::move(initialResult)) {}  // Member initializer list copies the input
 
             // Default constructor (optional)
             ReachablePairs() = default;  // Creates empty map

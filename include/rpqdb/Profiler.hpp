@@ -2,6 +2,7 @@
 #define RPQDB_Profiler_H
 
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include <fstream>
 #include <sstream>

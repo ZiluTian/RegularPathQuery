@@ -5,6 +5,8 @@
 #include "rpqdb/NFA.hpp"
 #include "rpqdb/Profiler.hpp"
 #include <iterator>
+// #define DEBUG
+#include <boost/container/flat_set.hpp>
 
 namespace rpqdb {
     using namespace std;
@@ -24,12 +26,12 @@ namespace rpqdb {
     //  R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
     ReachablePairs PG(Graph&& product) {
         unordered_set<int> Ea;  // reflexive
-        unordered_map<int, unordered_set<int>> Ec; 
-        unordered_map<int, unordered_set<int>> R;
-        unordered_map<int, unordered_set<int>> T;
+        unordered_map<int, boost::container::flat_set<int>> Ec; 
+        unordered_map<int, boost::container::flat_set<int>> R;
+        unordered_map<int, boost::container::flat_set<int>> T;
 
-        unordered_map<int, unordered_set<int>> R_prev;
-        unordered_map<int, unordered_set<int>> delta_R_prev;
+        unordered_map<int, boost::container::flat_set<int>> R_prev;
+        unordered_map<int, boost::container::flat_set<int>> delta_R_prev;
         
         START_LOCAL("PG semi-naive (Ea, Ec)");
         // Add self-loops corresponding to edges with label a
@@ -46,7 +48,7 @@ namespace rpqdb {
         delta_R_prev = Ec;
         R_prev = Ec;
 
-        unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
+        unordered_map<int, boost::container::flat_set<int>> Eb_reverse; // fast lookup on the second column of Eb
         if (!delta_R_prev.empty()) {
             // All other edges correspond to edges with label b
             for (const auto& [src, edges] : product.adjList) {
@@ -61,7 +63,7 @@ namespace rpqdb {
 
         START_LOCAL("PG semi-naive (R)");
         while (!delta_R_prev.empty()) {
-            unordered_map<int, unordered_set<int>> delta_R;
+            unordered_map<int, boost::container::flat_set<int>> delta_R;
 
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
             for (const auto& [y, zs] : delta_R_prev) {
@@ -80,13 +82,6 @@ namespace rpqdb {
                     }
                 }
             }
-            
-            VERSIONED_IMPLEMENTATION("Inline update to R_prev to above", {
-            // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
-            for (const auto& [src, edges] : delta_R) {
-                R_prev[src].insert(edges.begin(), edges.end());
-            }
-            });
 
             delta_R_prev = std::move(delta_R);
         }
@@ -102,15 +97,21 @@ namespace rpqdb {
         }
         END_LOCAL();
 
-        // cout << "PG seminaive" << endl;
-        // auto result = ReachablePairs(T);
-        // result.print();
+        #ifdef DEBUG
+        cout << "PG seminaive result" << endl;
+        auto result = ReachablePairs(T);
+        result.print();
+        #endif
         return ReachablePairs(T);
     }
 
     ReachablePairs OSPG(Graph&& product) {
         // A bound for heavy/light partition of R
+        // int bound = int(0.2*std::floor(std::sqrt(product.getEdges())))+1;
+
         int bound = std::floor(std::sqrt(product.getEdges()))+1;
+        // int bound = 5;
+        cout << "Degree bound is "<< bound << endl;
 
         unordered_set<int> Ea;
         unordered_map<int, unordered_set<int>> Eb_reverse; // fast lookup on the second column of Eb
@@ -127,7 +128,7 @@ namespace rpqdb {
         unordered_map<int, unordered_set<int>> Q_heavy;
 
         // per x, the number of unique ys satisfying R
-        unordered_map<int, int> degree;
+        unordered_map<int, int> degree; // ab*c-degree
 
         auto negate_prev = [](const unordered_map<int, unordered_set<int>>& prev, int x, int y) -> bool {
             auto search = prev.find(x); 
@@ -145,11 +146,6 @@ namespace rpqdb {
 
         START_LOCAL("OSPG (Ea, Ec)");
         Ea = product.starting_vertices;
-        // cout << "Ea has elements " << endl;
-        // for (auto c: Ea) {
-        //     cout << c << ", ";
-        // }
-        // cout << endl;
 
         // Add self-loops corresponding to edges with label c
         for (const auto& vertex : product.accepting_vertices) {
@@ -168,9 +164,7 @@ namespace rpqdb {
         if (!delta_R_prev.empty()) {
             // All other edges correspond to edges with label b
             for (const auto& [src, edges] : product.adjList) {
-                // unordered_set<int> dst_set;
                 for (const Edge& e : edges) {
-                    // dst_set.insert(e.dest); 
                     Eb_reverse[e.dest].insert(src);
                 }
             }
@@ -183,10 +177,10 @@ namespace rpqdb {
             unordered_map<int, unordered_set<int>> delta_R;
 
             // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
-            // 67ms (similar to below) for nn with 20000 vertices
             for (const auto& [y, zs] : delta_R_prev) {
                 // lookup tuples in Eb
                 auto xs = Eb_reverse[y];
+                
                 for (const auto& x: xs) {
                     int d = degree[x]; // create an entry with value 0 if not exists
                     auto z_it = zs.begin();
@@ -249,13 +243,6 @@ namespace rpqdb {
                     }
                 }
             });
-            
-            VERSIONED_IMPLEMENTATION("Inline update to R_prev", {
-            // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
-            for (const auto& [src, edges] : delta_R) {
-                R_prev[src].insert(edges.begin(), edges.end());
-            }
-            });
 
             delta_R_prev = std::move(delta_R);
         }
@@ -272,14 +259,15 @@ namespace rpqdb {
         }
         END_LOCAL();
 
-        // cout << "R light" << endl;
-        // ReachablePairs(R_light).print();
-        // cout << "R heavy" << endl;
-        // for (auto i : R_heavy){
-        //     cout << i << " ";
-        // }
-        // cout << endl;
-
+        #ifdef DEBUG
+        cout << "R light" << endl;
+        ReachablePairs(R_light).print();
+        cout << "R heavy" << endl;
+        for (auto i : R_heavy){
+            cout << i << " ";
+        }
+        cout << endl;
+        #endif
         
         START_LOCAL("OSPG (Ql)");
         // Compute Q_light (change the join order)
@@ -354,28 +342,6 @@ namespace rpqdb {
                 }
             }
 
-            VERSIONED_IMPLEMENTATION("Too slow, over an hour. auto ys = Eb[z] creates an empty entry if not found, not desirable", {
-            for (const auto& [x, zs] : delta_T_prev) {
-                for (const auto& z: zs) {
-                    auto ys = Eb[z]; 
-                    if (T_prev.find(x) == T_prev.end()) {
-                        delta_T[x] = ys;
-                    } else {
-                        for (const auto& y: ys) {
-                            if (T_prev[x].find(y) == T_prev[x].end()) {
-                                delta_T[x].insert(y);
-                            }
-                        }
-                    }
-                }
-            }});
-
-            VERSIONED_IMPLEMENTATION("Inline update to T_prev", {
-                // R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
-                for (const auto& [src, edges] : delta_T) {
-                    T_prev[src].insert(edges.begin(), edges.end());
-                }   
-            });
             delta_T_prev = std::move(delta_T);
         }
         T = std::move(T_prev);
@@ -396,9 +362,11 @@ namespace rpqdb {
         // Q_heavy.insert(Q_light.begin(), Q_light.end());
         END_LOCAL();
 
-        // cout << "OSPG results" << endl;
-        // auto result = ReachablePairs(Q_light);
-        // result.print();
+        #ifdef DEBUG
+        cout << "OSPG results" << endl;
+        auto result = ReachablePairs(Q_light);
+        result.print();
+        #endif
         return Q_light;
     }
 
@@ -409,6 +377,459 @@ namespace rpqdb {
         // cout << "Query NFA" << endl;
         // query_nfa.print();
         return query_nfa.product(data_nfa);
+    }
+
+    ReachablePairs OSPG_OrderedSet(Graph&& product) {
+        // Represent binary relations as insertion-ordered set
+        // A bound for heavy/light partition of R
+        int bound = std::floor(std::sqrt(product.getEdges()))+1;
+        cout << "Degree bound is "<< bound << endl;
+    
+        // Ea simply looks up, still use unordered set (hash map)
+        unordered_set<int> Ea;
+        unordered_map<int, set<int>> Eb_reverse; // fast lookup on the second column of Eb
+        unordered_map<int, set<int>> Ec;
+    
+        unordered_map<int, set<int>> R;
+        unordered_map<int, set<int>> R_prev;
+        unordered_map<int, set<int>> delta_R_prev;
+    
+        unordered_map<int, set<int>> R_light;
+        unordered_set<int> R_heavy;
+    
+        unordered_map<int, set<int>> Q_light;
+        unordered_map<int, unordered_set<int>> Q_heavy;
+    
+        // use the default size operator (constant time) instead of degree
+        // unordered_map<int, int> degree; // ab*c-degree
+    
+        auto negate_prev = [](const unordered_map<int, set<int>>& prev, int x, int y) -> bool {
+            auto search = prev.find(x); 
+            if (search == prev.end()) {
+                return true; 
+            } else {
+                auto ans = search->second;
+                if (ans.find(y) == ans.end()){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+    
+        START_LOCAL("OSPG_OrderedSet (Ea, Ec)");
+        Ea = product.starting_vertices;
+    
+        // Add self-loops corresponding to edges with label c
+        for (const auto& vertex : product.accepting_vertices) {
+            Ec[vertex] = {vertex};
+        }
+        END_LOCAL();
+                
+        START_LOCAL("OSPG_OrderedSet (delta_R0, R0, Eb_reverse)");
+        // The degree condition is trivially satisfied
+        delta_R_prev = Ec;
+        R_prev = Ec;
+    
+        // Build Eb_reverse jit
+        if (!delta_R_prev.empty()) {
+            // All other edges correspond to edges with label b
+            for (const auto& [src, edges] : product.adjList) {
+                for (const Edge& e : edges) {
+                    Eb_reverse[e.dest].insert(src);
+                }
+            }
+        }
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedSet (R)");
+        // Compute R(X, Y) satisfying degree(X) < bound
+        while (!delta_R_prev.empty()) {
+            unordered_map<int, set<int>> delta_R;
+    
+            // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not R^{i-1}(X, Z)
+            for (const auto& [y, zs] : delta_R_prev) {
+                // lookup tuples in Eb
+                auto xs = Eb_reverse[y];
+                
+                for (const auto& x: xs) {
+                    int degree = R_prev[x].size();
+                    auto z_it = zs.begin();
+                    while ((degree < bound) && (z_it!=zs.end())) {
+                        int z = *z_it;
+                        if (negate_prev(R_prev, x, z)) {
+                            delta_R[x].insert(z);
+                            R_prev[x].insert(z);
+                            degree++;
+                        }
+                        ++z_it;
+                    }
+                }
+            }
+    
+            delta_R_prev = std::move(delta_R);
+        }
+        R = std::move(R_prev);
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedSet (Rl, Rh)");
+        for (const auto& [x, ys]: R) {
+            if (ys.size() >= bound) {
+                R_heavy.insert(x);
+            } else {
+                R_light[x] = R[x];
+            }
+        }
+        END_LOCAL();
+    
+        #ifdef DEBUG
+        cout << "R light" << endl;
+        for (const auto& [src, edges] : R_light) {
+            cout << src << ": ";
+            for (const auto& edge : edges) {
+                cout << edge << ", ";
+            }
+            cout << endl;
+        }
+        cout << "R heavy" << endl;
+        for (auto i : R_heavy){
+            cout << i << " ";
+        }
+        cout << endl;
+        #endif
+        
+        START_LOCAL("OSPG_OrderedSet (Ql)");
+        // Compute Q_light (change the join order)
+        // Ea is symmetric (Ql(X, Y) :- Rl(X, Y), Ea(X, X).)
+        
+        for (const auto& [x, ys] : R_light) {
+            if (Ea.count(x)) {
+                Q_light[x] = std::move(ys);
+            }
+        }
+        END_LOCAL();
+    
+        // cout << "Q light" << endl;
+        // ReachablePairs(Q_light).print();
+    
+        // Compute T using semi-naive
+        unordered_map<int, unordered_set<int>> T;
+        unordered_map<int, unordered_set<int>> T_prev;
+        unordered_map<int, unordered_set<int>> delta_T_prev;
+    
+        START_LOCAL("OSPG_OrderedSet (delta_T0, T0)");
+        // delta T^0(Y, Y) :- R_heavy(Y), Ea(Y, Y) 
+        for (const auto& y: R_heavy) {
+            if (Ea.find(y) != Ea.end()) {
+                delta_T_prev[y].insert(y);
+            }
+        }
+    
+        // cout << "Delta T prev is" << endl;
+        // ReachablePairs(delta_T_prev).print();
+    
+        T_prev = delta_T_prev;
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedSet (Eb)");
+        // fast lookup on the first column of Eb
+        unordered_map<int, unordered_set<int>> Eb; 
+    
+        // Build Eb only if delta_T_prev is greater than 0
+        if (!delta_T_prev.empty()) {
+            for (const auto& [src, edges] : product.adjList) {
+                // unordered_set<int> dst_set;
+                for (const Edge& e : edges) {
+                    // dst_set.insert(e.dest); 
+                    Eb[src].insert(e.dest);
+                }
+            }
+        }
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedSet (T)");
+        while (!delta_T_prev.empty()) {
+            unordered_map<int, unordered_set<int>> delta_T;
+            // delta T^i(X, Y)  = delta T^{i-1}(X, Z) and Eb(Z, b, Y) and not T^{i-1}(X, Y)
+            
+            for (const auto& [x, zs] : delta_T_prev) {
+                for (const auto& z: zs) {
+                    if (Eb.find(z) != Eb.end()) {
+                        auto ys = Eb[z];
+                        if (T_prev.find(x) == T_prev.end()) {
+                            delta_T[x] = ys;
+                            T_prev[x] = ys;
+                        } else {
+                            for (const auto& y: ys) {
+                                if (T_prev[x].find(y) == T_prev[x].end()) {
+                                    delta_T[x].insert(y);
+                                    T_prev[x].insert(y);
+                                }
+                            }
+                        }                            
+                    }
+                }
+            }
+    
+            delta_T_prev = std::move(delta_T);
+        }
+        T = std::move(T_prev);
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedSet (Qh)");
+        for (const auto& [x, zs] : T) {
+            for (const auto& z: zs) {
+                for (const auto& y: Ec[z]) {
+                    Q_heavy[x].insert(y);
+                }
+            }
+        }
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedSet (Ql + Qh)");
+        for (const auto& [x, ys]: Q_light) {
+            for (const auto& y: ys){
+                Q_heavy[x].insert(y);
+            }
+        }
+        // Q_heavy.insert(Q_light.begin(), Q_light.end());
+        END_LOCAL();
+    
+        #ifdef DEBUG
+        cout << "OSPG_OrderedSet results" << endl;
+        for (const auto& [src, edges] : Q_heavy) {
+            cout << src << ": ";
+            for (const auto& edge : edges) {
+                cout << edge << ", ";
+            }
+            cout << endl;
+        }
+        #endif
+        return Q_heavy;
+    }
+    
+    ReachablePairs OSPG_OrderedVector(Graph&& product) {
+        // A bound for heavy/light partition of R
+        int bound = std::floor(std::sqrt(product.getEdges()))+1;
+        cout << "Degree bound is "<< bound << endl;
+    
+        // Ea simply looks up, still use unordered set (hash map)
+        unordered_set<int> Ea;
+        unordered_map<int, vector<int>> Eb_reverse; // fast lookup on the second column of Eb
+        unordered_map<int, boost::container::flat_set<int>> Ec;
+    
+        unordered_map<int, boost::container::flat_set<int>> R;
+        unordered_map<int, boost::container::flat_set<int>> R_prev;
+        unordered_map<int, boost::container::flat_set<int>> delta_R_prev;
+    
+        unordered_map<int, boost::container::flat_set<int>> R_light;
+        unordered_set<int> R_heavy;
+    
+        unordered_map<int, boost::container::flat_set<int>> Q_light;
+        unordered_map<int, unordered_set<int>> Q_heavy;
+    
+        // auto negate_prev = [](const unordered_map<int, vector<int>>& prev, int x, int y) -> bool {
+        //     auto search = prev.find(x); 
+        //     if (search == prev.end()) {
+        //         return true; 
+        //     } else {
+        //         auto ans = search->second;
+        //         if (ans.find(y) == ans.end()){
+        //             return true;
+        //         } else {
+        //             return false;
+        //         }
+        //     }
+        // };
+    
+        START_LOCAL("OSPG_OrderedVector (Ea, Ec)");
+        Ea = product.starting_vertices;
+    
+        // Add self-loops corresponding to edges with label c
+        for (const auto& vertex : product.accepting_vertices) {
+            Ec[vertex].insert(vertex);
+        }
+        END_LOCAL();
+                
+        START_LOCAL("OSPG_OrderedVector (delta_R0, R0, Eb_reverse)");
+        // The degree condition is trivially satisfied
+        delta_R_prev = Ec;
+        R_prev = Ec;
+    
+        // Build Eb_reverse jit
+        if (!delta_R_prev.empty()) {
+            // All other edges correspond to edges with label b
+            for (const auto& [src, edges] : product.adjList) {
+                for (const Edge& e : edges) {
+                    Eb_reverse[e.dest].push_back(src);
+                }
+            }
+        }
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedVector (R)");
+        while (!delta_R_prev.empty()) {
+            unordered_map<int, boost::container::flat_set<int>> delta_R;
+    
+            // delta R^i(X, Z)  = delta R^{i-1}(Y, Z) and Eb(X, b, Y) and not delta R prev
+            for (const auto& [y, zs] : delta_R_prev) {
+                // lookup tuples in Eb
+                auto xs = Eb_reverse[y];
+                
+                for (const auto& x: xs) {
+                    if (R_prev.find(x) == R_prev.end()){
+                        auto rhs = boost::container::flat_set<int>(zs.begin(), min(zs.begin()+bound-1, zs.end()));
+                        R_prev[x] = rhs;
+                        delta_R[x] = rhs;
+                    } else {
+                        for (const auto& z: zs) {
+                            if (R_prev[x].find(z) == R_prev[x].end() && R_prev[x].size() < bound) {
+                                delta_R[x].insert(z);
+                                R_prev[x].insert(z);
+                            }
+                        }
+                    }
+                }
+            }
+            delta_R_prev = std::move(delta_R);
+        }
+        R = std::move(R_prev);
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedVector (Rl, Rh)");
+        for (const auto& [x, ys]: R) {
+            if (ys.size() >= bound) {
+                R_heavy.insert(x);
+            } else {
+                R_light[x] = R[x];
+            }
+        }
+        END_LOCAL();
+    
+        #ifdef DEBUG
+        cout << "R light" << endl;
+        for (const auto& [src, edges] : R_light) {
+            cout << src << ": ";
+            for (const auto& edge : edges) {
+                cout << edge << ", ";
+            }
+            cout << endl;
+        }
+        cout << "R heavy" << endl;
+        for (auto i : R_heavy){
+            cout << i << " ";
+        }
+        cout << endl;
+        #endif
+        
+        START_LOCAL("OSPG_OrderedVector (Ql)");
+        // Compute Q_light (change the join order)
+        // Ea is symmetric (Ql(X, Y) :- Rl(X, Y), Ea(X, X).)
+        
+        for (const auto& [x, ys] : R_light) {
+            if (Ea.count(x)) {
+                Q_light[x] = std::move(ys);
+            }
+        }
+        END_LOCAL();
+    
+        // cout << "Q light" << endl;
+        // ReachablePairs(Q_light).print();
+    
+        // Compute T using semi-naive
+        unordered_map<int, boost::container::flat_set<int>> T;
+        unordered_map<int, boost::container::flat_set<int>> T_prev;
+        unordered_map<int, boost::container::flat_set<int>> delta_T_prev;
+    
+        START_LOCAL("OSPG_OrderedVector (delta_T0, T0)");
+        // delta T^0(Y, Y) :- R_heavy(Y), Ea(Y, Y) 
+        for (const auto& y: R_heavy) {
+            if (Ea.find(y) != Ea.end()) {
+                delta_T_prev[y].insert(y);
+            }
+        }
+    
+        // cout << "Delta T prev is" << endl;
+        // ReachablePairs(delta_T_prev).print();
+    
+        T_prev = delta_T_prev;
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedVector (Eb)");
+        // fast lookup on the first column of Eb
+        unordered_map<int, boost::container::flat_set<int>> Eb; 
+    
+        // Build Eb only if delta_T_prev is greater than 0
+        if (!delta_T_prev.empty()) {
+            for (const auto& [src, edges] : product.adjList) {
+                // unordered_set<int> dst_set;
+                for (const Edge& e : edges) {
+                    // dst_set.insert(e.dest); 
+                    Eb[src].insert(e.dest);
+                }
+            }
+        }
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedVector (T)");
+        while (!delta_T_prev.empty()) {
+            unordered_map<int, boost::container::flat_set<int>> delta_T;
+            // delta T^i(X, Y)  = delta T^{i-1}(X, Z) and Eb(Z, b, Y) and not T^{i-1}(X, Y)
+            
+            for (const auto& [x, zs] : delta_T_prev) {
+                for (const auto& z: zs) {
+                    if (Eb.find(z) != Eb.end()) {
+                        auto ys = Eb[z];
+                        if (T_prev.find(x) == T_prev.end()) {
+                            delta_T[x] = ys;
+                            T_prev[x] = ys;
+                        } else {
+                            for (const auto& y: ys) {
+                                if (T_prev[x].find(y) == T_prev[x].end()) {
+                                    delta_T[x].insert(y);
+                                    T_prev[x].insert(y);
+                                }
+                            }
+                        }                            
+                    }
+                }
+            }
+    
+            delta_T_prev = std::move(delta_T);
+        }
+        T = std::move(T_prev);
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedVector (Qh)");
+        for (const auto& [x, zs] : T) {
+            for (const auto& z: zs) {
+                for (const auto& y: Ec[z]) {
+                    Q_heavy[x].insert(y);
+                }
+            }
+        }
+        END_LOCAL();
+    
+        START_LOCAL("OSPG_OrderedVector (Ql + Qh)");
+        for (const auto& [x, ys]: Q_light) {
+            for (const auto& y: ys){
+                Q_heavy[x].insert(y);
+            }
+        }
+        // Q_heavy.insert(Q_light.begin(), Q_light.end());
+        END_LOCAL();
+    
+        #ifdef DEBUG
+        cout << "OSPG_OrderedVector results" << endl;
+        for (const auto& [src, edges] : Q_heavy) {
+            cout << src << ": ";
+            for (const auto& edge : edges) {
+                cout << edge << ", ";
+            }
+            cout << endl;
+        }
+        #endif
+        return Q_heavy;
     }
 
     // semi-naive / output-sensitive transitive closure

@@ -1,7 +1,29 @@
 #include <iostream>
 #include <chrono>
+#include "rpqdb/Profiler.hpp"
 
 using namespace std::chrono;
+using namespace rpqdb;
+
+class QueryGraphClass {
+    public:
+    string query;
+    string graph_name_prefix;
+
+    public:
+    // Constructor
+    QueryGraphClass(const std::string& q, const std::string& prefix)
+        : query(q), graph_name_prefix(prefix) {
+        std::cout << "QueryGraphClass constructed.\n";
+    }
+
+    // Destructor
+    ~QueryGraphClass() {
+        std::cout << "QueryGraphClass destroyed.\n";
+    }
+
+    virtual void run(int size, const string& profile_name = "profile.dat") {}
+};
 
 // Simple testing framework
 #define ASSERT_EQ(actual, expected) \
