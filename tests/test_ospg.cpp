@@ -9,23 +9,11 @@
 
 using namespace rpqdb;
 
-class QueryGraphClass {
+class OSPGTest : public QueryGraphClass {
     public:
-    string query;
-    string graph_name_prefix;
-
-    // Constructor
-    QueryGraphClass(const std::string& q, const std::string& prefix)
-        : query(q), graph_name_prefix(prefix) {
-        std::cout << "QueryGraphClass constructed.\n";
-    }
-
-    // Destructor
-    ~QueryGraphClass() {
-        std::cout << "QueryGraphClass destroyed.\n";
-    }
-
-    void run(int size, const string& profile_name = "profile.dat") {
+    using QueryGraphClass :: QueryGraphClass;
+    
+    void run(int size, const string& profile_name = "profile.dat") override {
         EventProfiler::reset();
         Graph product;
 
@@ -35,17 +23,17 @@ class QueryGraphClass {
         product.buildLabelledGraphFromFile(mySrcDir + "/resources/" + graph_name_prefix + std::to_string(size) + ".txt", " ");
         END_LOCAL();
 
-        product.PG();
-        PG(std::move(product));
+        OSPG_OrderedVector(std::move(product));
         OSPG(std::move(product));    
-        
+        OSPG_OrderedSet(std::move(product));
+
         EventProfiler::export_to_file(profile_name);
         return;
     }
 };
 
 int main(int argc, char **argv) {
-    int size = 20000;
+    int size = 2000;
     
     if (argc > 1) {
         size = atoi(argv[1]);
@@ -58,7 +46,7 @@ int main(int argc, char **argv) {
         std::cout << "To specify a different size, run: " << argv[0] << " <size>\n";
     }
 
-    QueryGraphClass ex = QueryGraphClass("ab*c", "nn_binary_classifier_");
+    OSPGTest ex = OSPGTest("ab*c", "nn_heavy_hitters_");
     std::string output_filename = "exnn_binary_profile_" + std::to_string(size) + ".dat";
     ex.run(size, output_filename);
     return 0;
