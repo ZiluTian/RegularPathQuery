@@ -2,6 +2,8 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
+OUTPUT_DIR = "images"
+
 def backup_existing_pdf(filename):
     if os.path.exists(filename):
         base, ext = os.path.splitext(filename)
@@ -13,7 +15,7 @@ def backup_existing_pdf(filename):
 
 def plotExperiment(experiment):
     data_file = f"{experiment}.dat"
-    output_file = f'{experiment}.pdf'
+    output_file = f'{OUTPUT_DIR}/{experiment}.pdf'
 
     # Load the tab-separated file (skip comment lines)
     df = pd.read_csv(f'build/{data_file}', sep='\t', comment='#', header=None, names=['Event', 'Duration'])
@@ -45,7 +47,7 @@ def plotExperiment(experiment):
     plt.show()
 
 if (__name__ == "__main__"):
-    size=1000000
-    experiments = [f"ex61profile_{size}", f"ex62profile_{size}", f"exbscprofile_{size}"]
+    size=2000
+    experiments = [f"exnn_binary_profile_{size}"]
     for exp in experiments:
         plotExperiment(exp)
