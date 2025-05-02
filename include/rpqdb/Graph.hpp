@@ -159,12 +159,12 @@ namespace rpqdb{
                     int v1 = stoi(line.substr(0, pos1));
                     string label = line.substr(pos1+1, pos2-pos1-1);
                     int v2 = stoi(line.substr(pos2+1));
-                    addEdge(v1, label, v2);
                     if (label == "a" && v1 == v2){
                         starting_vertices.insert(v1);   
-                    }
-                    if (label == "c" && v1 == v2){
+                    } else if (label == "c" && v1 == v2){
                         accepting_vertices.insert(v1);   
+                    } else {
+                        addEdge(v1, label, v2);
                     }
                 }
             }
@@ -270,7 +270,6 @@ namespace rpqdb{
                         if (visited.find(neighbor) == visited.end()) { // not visited
                             q.push(neighbor);
                             if (accept_nodes.find(neighbor) == accept_nodes.end() && accepting_vertices.find(neighbor) != accepting_vertices.end()) {
-                                // cout << "Add pair (" << start << ", " << neighbor << ")" << endl;
                                 accept_nodes.insert(neighbor);
                             }
                         }
@@ -279,8 +278,10 @@ namespace rpqdb{
                 result[start] = std::move(accept_nodes);
             }
             END_LOCAL();
-            // cout << "BFS results" << endl;
-            // ReachablePairs(result).print();
+            #ifdef DEBUG
+            cout << "BFS result" << endl;
+            ReachablePairs(result).print();
+            #endif
             return ReachablePairs(result);
         }
 
