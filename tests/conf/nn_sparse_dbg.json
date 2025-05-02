@@ -1,0 +1,9 @@
+{
+    "graph_size": [10, 10, 10], 
+    "connectivity": [1, 0.8, 0.2, 1],
+    "light_edge_connectivity": 0.2,
+    "output_graph": "resources/nn_mixed_3layers_08_02_dbg.txt",
+    "query": "ab*c",
+    "generator": "gen_nn_sparse",
+    "gen_args": ["graph_size", "connectivity", "light_edge_connectivity", "output_graph"]
+}

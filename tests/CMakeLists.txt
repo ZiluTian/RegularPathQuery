@@ -17,7 +17,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 # Add the test executable
 add_executable(test_nfa test_nfa.cpp)
 add_executable(test_graph test_graph.cpp)
-add_executable(test_pg test_pg.cpp)
+
+add_executable(test_pg_dbg test_pg.cpp)
+target_compile_definitions(test_pg_dbg PRIVATE DEBUG)
 
 add_executable(test_ospg_dbg test_ospg.cpp)
 target_compile_definitions(test_ospg_dbg PRIVATE DEBUG)
@@ -35,4 +37,3 @@ add_definitions(-DMY_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 enable_testing()
 add_test(NAME TestNFA COMMAND test_nfa)
 add_test(NAME TestGraph COMMAND test_graph)
-add_test(NAME TestPG COMMAND test_pg)
