@@ -44,37 +44,34 @@ namespace rpqdb{
     };
     
     // Allow fine tuning the data structure for the result
+    template<typename SetType>
     class ReachablePairs {
         private:
-            unordered_map<int, unordered_set<int>>result;
-            unordered_map<int, boost::container::flat_set<int>>result2;
+            unordered_map<int, SetType>reachability_map;
 
         public:
             // Constructor that takes an existing map
-            ReachablePairs(const std::unordered_map<int, std::unordered_set<int>>& initialResult)
-            : result(std::move(initialResult)) {}  // Member initializer list copies the input
-
-            ReachablePairs(const std::unordered_map<int, boost::container::flat_set<int>>& initialResult)
-            : result2(std::move(initialResult)) {}  // Member initializer list copies the input
-
-            // Default constructor (optional)
-            ReachablePairs() = default;  // Creates empty map
+            ReachablePairs(std::unordered_map<int, SetType> initial_map = {})
+            : reachability_map(std::move(initial_map)) {}
 
             void addPair(int x, int y) {
-                result[x].insert(y);
+                reachability_map[x].insert(y);
             }
 
-            void print() {
-                cout << "Reachable pairs" << endl;
-                for (const auto& [src, edges] : result) {
-                    cout << src << ": ";
-                    for (const auto& edge : edges) {
-                        cout << edge << ", ";
+            void print() const {
+                std::cout << "Reachable pairs:\n";
+                for (const auto& [source, destinations] : reachability_map) {
+                    std::cout << source << ": ";
+                    for (const auto& dest : destinations) {
+                        std::cout << dest << ", ";
                     }
-                    cout << endl;
+                    std::cout << "\n";
                 }
             }
     };
+
+    using UnorderedReachablePairs = ReachablePairs<std::unordered_set<int>>;
+    using VectorReachablePairs = ReachablePairs<boost::container::flat_set<int>>;
 
     // Graph class stores adjacency list representation
     class Graph {   
@@ -228,16 +225,16 @@ namespace rpqdb{
 			return result;
         }
 
-        ReachablePairs PG() {
+        UnorderedReachablePairs PG() {
             START_LOCAL("BFS");
             // print();
             unordered_map<int, unordered_set<int>> result;
 
             if (starting_vertices.empty() || accepting_vertices.empty()) {
-                return ReachablePairs();
+                return ReachablePairs<std::unordered_set<int>>();
             }
             if (adjList.empty()){
-                return ReachablePairs();
+                return ReachablePairs<std::unordered_set<int>>();
             }
 
             VERSIONED_IMPLEMENTATION("Using bit vector for visited is much faster than set, but not fair comparison with semi-naive and ospg", {
@@ -280,9 +277,9 @@ namespace rpqdb{
             END_LOCAL();
             #ifdef DEBUG
             cout << "BFS result" << endl;
-            ReachablePairs(result).print();
+            UnorderedReachablePairs(result).print();
             #endif
-            return ReachablePairs(result);
+            return UnorderedReachablePairs(result);
         }
 
         NFA constructDFA(int start_vertex, set<int> accepting_vertices) {

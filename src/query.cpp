@@ -8,6 +8,10 @@
 // #define DEBUG
 #include <boost/container/flat_set.hpp>
 
+// See https://www.boost.org/doc/libs/1_84_0/boost/container/flat_set.hpp
+// Flatset is a sorted, unique associative container
+// Similar to set, but implemented by an ordered sequence container instead (vector)
+
 namespace rpqdb {
     using namespace std;
 
@@ -24,7 +28,7 @@ namespace rpqdb {
     //  i += 1
     //  delta R^i(X, Z)  = Eb(X, b, Y) and delta R^{i-1}(Y, Z) and not R^{i-1}(X, Z)
     //  R^i(X, Y) = R^{i-1}(X, Y) or delta R^i(X, Y)
-    ReachablePairs PG(Graph&& product) {
+    ReachablePairs<boost::container::flat_set<int>> PG(Graph&& product) {
         unordered_set<int> Ea;  // reflexive
         unordered_map<int, boost::container::flat_set<int>> Ec; 
         unordered_map<int, boost::container::flat_set<int>> R;
@@ -43,6 +47,20 @@ namespace rpqdb {
         }
         END_LOCAL();
 
+        #ifdef DEBUG
+        cout << "PG seminaive Initial values" << endl;
+        cout << "Ea" << endl;
+        for (auto i: Ea) {
+            cout << i << ", ";
+        }
+        cout << endl;
+        cout << "Ec" << endl;
+        for (auto [i, j]: Ec) {
+            cout << i << ", ";
+        }
+        cout << endl;
+        #endif
+
         // delta R_0 and R_0
         START_LOCAL("PG semi-naive (delta_R0, R0, Eb_reverse)");
         delta_R_prev = Ec;
@@ -60,6 +78,18 @@ namespace rpqdb {
             }
         }
         END_LOCAL();
+
+        #ifdef DEBUG
+        cout << endl << "Eb_reverse" << endl;
+
+        for (auto [i, j]: Eb_reverse) {
+            cout << i << ": ";
+            for (auto k: j) {
+                cout << k << ", ";
+            }
+            cout << endl;
+        }
+        #endif
 
         START_LOCAL("PG semi-naive (R)");
         while (!delta_R_prev.empty()) {
@@ -83,10 +113,32 @@ namespace rpqdb {
                 }
             }
 
+            #ifdef DEBUG
+            cout << endl << "Delta_R derived" << endl;    
+            for (auto [i, j]: delta_R) {
+                cout << i << ": ";
+                for (auto k: j) {
+                    cout << k << ", ";
+                }
+                cout << endl;
+            }
+            #endif
+
             delta_R_prev = std::move(delta_R);
         }
         R = std::move(R_prev);
         END_LOCAL();
+
+        #ifdef DEBUG
+        cout << endl << "R value" << endl;    
+        for (auto [i, j]: R) {
+            cout << i << ": ";
+            for (auto k: j) {
+                cout << k << ", ";
+            }
+            cout << endl;
+        }
+        #endif
 
         START_LOCAL("PG semi-naive (T)");
         // T(X, Z) = Ea(X, a, X), R(X, Z)
@@ -99,13 +151,18 @@ namespace rpqdb {
 
         #ifdef DEBUG
         cout << "PG seminaive result" << endl;
-        auto result = ReachablePairs(T);
-        result.print();
+        for (auto [i, j]: T) {
+            cout << i << ": ";
+            for (auto k: j) {
+                cout << k << ", ";
+            }
+            cout << endl;
+        }
         #endif
-        return ReachablePairs(T);
+        return VectorReachablePairs(T);
     }
 
-    ReachablePairs OSPG(Graph&& product) {
+    ReachablePairs<std::unordered_set<int>> OSPG(Graph&& product) {
         // A bound for heavy/light partition of R
         // int bound = int(0.2*std::floor(std::sqrt(product.getEdges())))+1;
 
@@ -261,7 +318,13 @@ namespace rpqdb {
 
         #ifdef DEBUG
         cout << "R light" << endl;
-        ReachablePairs(R_light).print();
+        for (const auto& [source, destinations] : R_light) {
+            std::cout << source << ": ";
+            for (const auto& dest : destinations) {
+                std::cout << dest << ", ";
+            }
+            std::cout << "\n";
+        }
         cout << "R heavy" << endl;
         for (auto i : R_heavy){
             cout << i << " ";
@@ -280,9 +343,6 @@ namespace rpqdb {
         }
         END_LOCAL();
 
-        // cout << "Q light" << endl;
-        // ReachablePairs(Q_light).print();
-
         // Compute T using semi-naive
         unordered_map<int, unordered_set<int>> T;
         unordered_map<int, unordered_set<int>> T_prev;
@@ -295,9 +355,6 @@ namespace rpqdb {
                 delta_T_prev[y].insert(y);
             }
         }
-
-        // cout << "Delta T prev is" << endl;
-        // ReachablePairs(delta_T_prev).print();
 
         T_prev = delta_T_prev;
         END_LOCAL();
@@ -364,8 +421,13 @@ namespace rpqdb {
 
         #ifdef DEBUG
         cout << "OSPG results" << endl;
-        auto result = ReachablePairs(Q_light);
-        result.print();
+        for (const auto& [source, destinations] : Q_light) {
+            std::cout << source << ": ";
+            for (const auto& dest : destinations) {
+                std::cout << dest << ", ";
+            }
+            std::cout << "\n";
+        }
         #endif
         return Q_light;
     }
@@ -379,7 +441,7 @@ namespace rpqdb {
         return query_nfa.product(data_nfa);
     }
 
-    ReachablePairs OSPG_OrderedSet(Graph&& product) {
+    ReachablePairs<std::set<int>> OSPG_OrderedSet(Graph&& product) {
         // Represent binary relations as insertion-ordered set
         // A bound for heavy/light partition of R
         int bound = std::floor(std::sqrt(product.getEdges()))+1;
@@ -395,10 +457,10 @@ namespace rpqdb {
         unordered_map<int, set<int>> delta_R_prev;
     
         unordered_map<int, set<int>> R_light;
-        unordered_set<int> R_heavy;
+        set<int> R_heavy;
     
         unordered_map<int, set<int>> Q_light;
-        unordered_map<int, unordered_set<int>> Q_heavy;
+        unordered_map<int, set<int>> Q_heavy;
     
         // use the default size operator (constant time) instead of degree
         // unordered_map<int, int> degree; // ab*c-degree
@@ -509,9 +571,6 @@ namespace rpqdb {
         }
         END_LOCAL();
     
-        // cout << "Q light" << endl;
-        // ReachablePairs(Q_light).print();
-    
         // Compute T using semi-naive
         unordered_map<int, unordered_set<int>> T;
         unordered_map<int, unordered_set<int>> T_prev;
@@ -524,10 +583,7 @@ namespace rpqdb {
                 delta_T_prev[y].insert(y);
             }
         }
-    
-        // cout << "Delta T prev is" << endl;
-        // ReachablePairs(delta_T_prev).print();
-    
+        
         T_prev = delta_T_prev;
         END_LOCAL();
     
@@ -605,10 +661,10 @@ namespace rpqdb {
             cout << endl;
         }
         #endif
-        return Q_heavy;
+        return ReachablePairs<std::set<int>>(Q_heavy);
     }
     
-    ReachablePairs OSPG_OrderedVector(Graph&& product) {
+    ReachablePairs<boost::container::flat_set<int>> OSPG_OrderedVector(Graph&& product) {
         // A bound for heavy/light partition of R
         int bound = std::floor(std::sqrt(product.getEdges()))+1;
         cout << "Degree bound is "<< bound << endl;
@@ -626,7 +682,7 @@ namespace rpqdb {
         unordered_set<int> R_heavy;
     
         unordered_map<int, boost::container::flat_set<int>> Q_light;
-        unordered_map<int, unordered_set<int>> Q_heavy;
+        unordered_map<int, boost::container::flat_set<int>> Q_heavy;
     
         // auto negate_prev = [](const unordered_map<int, vector<int>>& prev, int x, int y) -> bool {
         //     auto search = prev.find(x); 
@@ -732,10 +788,7 @@ namespace rpqdb {
             }
         }
         END_LOCAL();
-    
-        // cout << "Q light" << endl;
-        // ReachablePairs(Q_light).print();
-    
+        
         // Compute T using semi-naive
         unordered_map<int, boost::container::flat_set<int>> T;
         unordered_map<int, boost::container::flat_set<int>> T_prev;
@@ -748,10 +801,7 @@ namespace rpqdb {
                 delta_T_prev[y].insert(y);
             }
         }
-    
-        // cout << "Delta T prev is" << endl;
-        // ReachablePairs(delta_T_prev).print();
-    
+        
         T_prev = delta_T_prev;
         END_LOCAL();
     
@@ -810,26 +860,45 @@ namespace rpqdb {
         }
         END_LOCAL();
     
-        START_LOCAL("OSPG_OrderedVector (Ql + Qh)");
-        for (const auto& [x, ys]: Q_light) {
-            for (const auto& y: ys){
-                Q_heavy[x].insert(y);
+        if (Q_heavy.size() < Q_light.size()) {
+            START_LOCAL("OSPG_OrderedVector (Ql + Qh)");    
+            for (const auto& [x, ys]: Q_heavy) {
+                for (const auto& y: ys){
+                    Q_light[x].insert(y);
+                }
+            }    
+            END_LOCAL();
+            #ifdef DEBUG
+            cout << "OSPG_OrderedVector results" << endl;
+            for (const auto& [src, edges] : Q_light) {
+                cout << src << ": ";
+                for (const auto& edge : edges) {
+                    cout << edge << ", ";
+                }
+                cout << endl;
             }
-        }
-        // Q_heavy.insert(Q_light.begin(), Q_light.end());
-        END_LOCAL();
-    
-        #ifdef DEBUG
-        cout << "OSPG_OrderedVector results" << endl;
-        for (const auto& [src, edges] : Q_heavy) {
-            cout << src << ": ";
-            for (const auto& edge : edges) {
-                cout << edge << ", ";
+            #endif
+            return ReachablePairs<boost::container::flat_set<int>>(Q_light);
+        } else {
+            START_LOCAL("OSPG_OrderedVector (Ql + Qh)");    
+            for (const auto& [x, ys]: Q_light) {
+                for (const auto& y: ys){
+                    Q_heavy[x].insert(y);
+                }
             }
-            cout << endl;
+            END_LOCAL();
+            #ifdef DEBUG
+            cout << "OSPG_OrderedVector results" << endl;
+            for (const auto& [src, edges] : Q_heavy) {
+                cout << src << ": ";
+                for (const auto& edge : edges) {
+                    cout << edge << ", ";
+                }
+                cout << endl;
+            }
+            #endif
+            return ReachablePairs<boost::container::flat_set<int>>(Q_heavy);
         }
-        #endif
-        return Q_heavy;
     }
 
     // semi-naive / output-sensitive transitive closure
