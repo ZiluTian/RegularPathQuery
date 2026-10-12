@@ -1,4 +1,10 @@
-A graph DB for regular path queries. A prototype to demonstrate two different approaches: pg and ospg (output-sensitive) 
+# RegularPathQuery
+
+A graph DB for regular path queries. A prototype to demonstrate two different approaches: pg and ospg (output-sensitive).
+
+Prototype behind:
+
+> Mahmoud Abo Khamis, Alexandru-Mihai Hurjui, Ahmet Kara, Dan Olteanu, Dan Suciu, Zilu Tian. *"Output-sensitive evaluation of acyclic conjunctive regular path queries."* ICDT 2026 (to appear).
 
 Instructions for running tests. At the root directory of the project:
 ```
